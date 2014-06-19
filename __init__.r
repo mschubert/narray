@@ -1,11 +1,10 @@
 # array programming utility functions
 # some tools to handle R^n matrices and perform operations on them
-library(parallel)
 library(abind)
 library(reshape2)
 library(plyr)
 library(modules)
-gn = import('general')
+base = import('base')
 
 #TODO: make sure there is no NA in the combined names
 #TODO:? would be faster if just call abind() when there is nothing to sort
@@ -78,7 +77,7 @@ array_filter = function(X, along, FUN, subsets=rep(1,dim(X)[along]), na.rm=F) {
                 X[subsets==msub] = NA #FIXME: work for matrices as well
 
     if (na.rm)
-        gn$na.col.omit(na.omit(X))
+        base$na.col.omit(na.omit(X))
     else
         X
 }
@@ -213,7 +212,7 @@ array_intersect = function(..., along=1) {
     l. = list(...)
     varnames = match.call(expand.dots=FALSE)$...
     namesalong = lapply(l., function(f) dimnames(as.array(f))[[along]])
-    common = do.call(gn$intersect, namesalong)
+    common = do.call(base$intersect, namesalong)
     for (i in seq_along(l.)) {
         dims = as.list(rep(T, length(dim(l.[[i]]))))
         dims[[along]] = common
@@ -230,7 +229,7 @@ like = function(X, like) {
 intersect_list = function(x, along=1) {
     re = list()
     namesalong = lapply(x, function(f) dimnames(as.array(f))[[along]])
-    common = do.call(gn$intersect, namesalong)
+    common = do.call(base$intersect, namesalong)
     for (i in seq_along(x)) {
         dims = as.list(rep(T, length(dim(x[[i]]))))
         dims[[along]] = common
