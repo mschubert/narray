@@ -8,7 +8,7 @@ base = import('base')
 
 #TODO: make sure there is no NA in the combined names
 #TODO:? would be faster if just call abind() when there is nothing to sort
-array_stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, like=NA) {
+stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, like=NA) {
     if (!is.list(arrayList))
         stop(paste("arrayList needs to be a list, not a", class(arrayList)))
     if (length(arrayList) == 1)
@@ -22,7 +22,7 @@ array_stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, 
         newAxis = TRUE
 
     if (identical(like, NA)) {
-        dn = lapply(arrayList, array_dimnames)
+        dn = lapply(arrayList, dimnames)
         dimNames = lapply(1:length(dn[[1]]), function(j) 
             unique(c(unlist(sapply(1:length(dn), function(i) 
                 dn[[i]][[j]]
@@ -47,8 +47,8 @@ array_stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, 
     }
 
     # create stack with fill=fill, replace each slice with matched values of arrayList
-    for (i in array_dimnames(arrayList, null.as.integer=T)) {
-        dm = array_dimnames(arrayList[[i]], null.as.integer=T)
+    for (i in dimnames(arrayList, null.as.integer=T)) {
+        dm = dimnames(arrayList[[i]], null.as.integer=T)
         if (newAxis)
             dm[[along]] = i
         result = do.call("[<-", c(list(result), dm, list(arrayList[[i]])))
@@ -56,7 +56,7 @@ array_stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, 
     result
 }
 
-array_bind = function(arrayList, along=length(dim(arrayList[[1]]))+1) {
+bind = function(arrayList, along=length(dim(arrayList[[1]]))+1) {
 #TODO:
 # check names?
 # call bind when no stacking needed automatically?
@@ -64,10 +64,10 @@ array_bind = function(arrayList, along=length(dim(arrayList[[1]]))+1) {
 }
 
 # function to KEEP!
-array_filter = function(X, along, FUN, subsets=rep(1,dim(X)[along]), na.rm=F) {
+filter = function(X, along, FUN, subsets=rep(1,dim(X)[along]), na.rm=F) {
     X = as.array(X)
     # apply the function to get a subset mask
-    mask = array_map(X, along, function(x) FUN(x), subsets)
+    mask = map(X, along, function(x) FUN(x), subsets)
     if (mode(mask) != 'logical' || dim(mask)[1] != length(unique(subsets)))
         stop("FUN needs to return a single logical value")
 
@@ -82,16 +82,16 @@ array_filter = function(X, along, FUN, subsets=rep(1,dim(X)[along]), na.rm=F) {
         X
 }
 
-array_unmelt = function(X, value, axes) {
+unmelt = function(X, value, axes) {
     acast(as.data.frame(X), formula=as.formula(paste(axes, collapse = "~")), value.var=value)
 }
 
-array_subset = function(X, ll) {
+subset = function(X, ll) {
     asub(X, ll)
 }
 
 # http://www.r-bloggers.com/a-multidimensional-which-function/
-array_which = function(A){
+which = function(A){
     if ( is.vector(A) ) return(which(A))
     d = dim(A)
     T = which(A) - 1
@@ -107,7 +107,7 @@ array_which = function(A){
 }
 
 # apply function that preserves order of dimensions
-array_map_simple = function(X, along, FUN) { #TODO: replace this by alply?
+map_simple = function(X, along, FUN) { #TODO: replace this by alply?
     if (is.vector(X) || length(dim(X))==1)
         return(FUN(X))
 
@@ -127,7 +127,7 @@ array_map_simple = function(X, along, FUN) { #TODO: replace this by alply?
     }
 }
 
-array_map = function(X, along, FUN, subsets=rep(1,dim(X)[along])) {
+map = function(X, along, FUN, subsets=rep(1,dim(X)[along])) {
     stopifnot(length(subsets) == dim(X)[along])
 
     X = as.array(X)
@@ -142,8 +142,8 @@ array_map = function(X, along, FUN, subsets=rep(1,dim(X)[along])) {
 
     # for each subset, call mymap
     resultList = lapply(subsetIndices, function(f)
-        array_map_simple(array_subset(X, f), along, FUN))
-#    resultList = lapply(subsetIndices, function(x) alply(array_subset(X, f), along, FUN)) FIXME:
+        map_simple(subset(X, f), along, FUN))
+#    resultList = lapply(subsetIndices, function(x) alply(subset(X, f), along, FUN)) FIXME:
 
     # assemble results together
     Y = do.call(function(...) abind(..., along=along), resultList)
@@ -155,7 +155,7 @@ array_map = function(X, along, FUN, subsets=rep(1,dim(X)[along])) {
 
 }
 
-array_split = function(X, along, subsets=c(1:dim(X)[along])) {
+split = function(X, along, subsets=c(1:dim(X)[along])) {
     X = as.array(X)
 #TODO: check if names unique, otherwise weird error
     if (is.character(along))
@@ -174,10 +174,10 @@ array_split = function(X, along, subsets=c(1:dim(X)[along])) {
         lnames = dimnames(X)[[along]]
     else
         lnames = usubsets
-    setNames(lapply(idxList, function(ll) array_subset(X, ll)), lnames)
+    setNames(lapply(idxList, function(ll) subset(X, ll)), lnames)
 }
 
-array_dimnames = function(X, null.as.integer=FALSE) {
+dimnames = function(X, null.as.integer=FALSE) {
     if (is.list(X)) {
         if (is.null(names(X))) {
             if (null.as.integer)
@@ -202,13 +202,13 @@ array_dimnames = function(X, null.as.integer=FALSE) {
 }
 
 # assigns matrix element names by row- and column names
-array_elementnames = function(X, sep=":") {
-    apply(expand.grid(array_dimnames(X, null.as.integer=T)), 1, 
+elementnames = function(X, sep=":") {
+    apply(expand.grid(dimnames(X, null.as.integer=T)), 1, 
           function(x) paste(x,collapse=sep))
 }
 
 #TODO: common.axis=T/F, specify the axis of each element
-array_intersect = function(..., along=1) {
+intersect = function(..., along=1) {
     l. = list(...)
     varnames = match.call(expand.dots=FALSE)$...
     namesalong = lapply(l., function(f) dimnames(as.array(f))[[along]])
