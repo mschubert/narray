@@ -3,7 +3,6 @@
 library(abind)
 library(reshape2)
 library(plyr)
-library(modules)
 base = import('base')
 
 #TODO: make sure there is no NA in the combined names
