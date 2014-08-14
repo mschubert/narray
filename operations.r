@@ -44,7 +44,7 @@ stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, like=N
 
         result = array(fill, dim=ndim, dimnames=dimNames)
     } else {
-        result = array(fill, dim=dim(like), dimnames=dimnames(like))
+        result = array(fill, dim=dim(like), dimnames=base::dimnames(like))
     }
 
     # create stack with fill=fill, replace each slice with matched values of arrayList
@@ -95,7 +95,7 @@ subset = function(X, ll) {
 which = function(A){
     if ( is.vector(A) ) return(which(A))
     d = dim(A)
-    T = which(A) - 1
+    T = base::which(A) - 1
     nd = length(d)
     t( sapply(T, function(t){
         I = integer(nd)
@@ -149,9 +149,9 @@ map = function(X, along, FUN, subsets=rep(1,dim(X)[along])) {
     # assemble results together
     Y = do.call(function(...) abind(..., along=along), resultList)
     if (dim(Y)[along] == dim(X)[along])
-        dimnames(Y)[[along]] = dimnames(X)[[along]]
+        base::dimnames(Y)[[along]] = base::dimnames(X)[[along]]
     else if (dim(Y)[along] == nsubsets)
-         dimnames(Y)[[along]] = lsubsets
+        base::dimnames(Y)[[along]] = lsubsets
     drop(Y)
 
 }
@@ -172,7 +172,7 @@ split = function(X, along, subsets=c(1:dim(X)[along])) {
         idxList[[i]][[along]] = subsets==usubsets[i]
 
     if (length(usubsets)==dim(X)[along])
-        lnames = dimnames(X)[[along]]
+        lnames = base::dimnames(X)[[along]]
     else
         lnames = usubsets
     setNames(lapply(idxList, function(ll) subset(X, ll)), lnames)
@@ -190,10 +190,10 @@ dimnames = function(X, null.as.integer=FALSE) {
             dn = names(X)
     } else {
         X = as.array(X)
-        if (is.null(dimnames(X)))
+        if (is.null(base::dimnames(X)))
             dn = rep(list(NULL), length(dim(X)))
         else
-            dn = dimnames(X)
+            dn = base::dimnames(X)
         if (null.as.integer == TRUE)
             dn = lapply(1:length(dn), function(i) 
                 if (is.null(dn[[i]])) 1:dim(X)[i] else dn[[i]])
@@ -229,7 +229,7 @@ like = function(X, like) {
 #TODO: common.axis=T/F, specify the axis of each element
 intersect_list = function(x, along=1) {
     re = list()
-    namesalong = lapply(x, function(f) dimnames(as.array(f))[[along]])
+    namesalong = lapply(x, function(f) base::dimnames(as.array(f))[[along]])
     common = do.call(b$intersect, namesalong)
     for (i in seq_along(x)) {
         dims = as.list(rep(T, length(dim(x[[i]]))))
