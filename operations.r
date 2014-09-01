@@ -50,6 +50,8 @@ stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, like=N
     # create stack with fill=fill, replace each slice with matched values of arrayList
     for (i in dimnames(arrayList, null.as.integer=T)) {
         dm = dimnames(arrayList[[i]], null.as.integer=T)
+        if (any(is.na(unlist(dm))))
+            stop("NA found in array names, do not know how to stack those")
         if (newAxis)
             dm[[along]] = i
         result = do.call("[<-", c(list(result), dm, list(arrayList[[i]])))
