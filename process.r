@@ -1,15 +1,21 @@
-# array programming utility functions
-# some tools to handle R^n matrices and perform operations on them
-library(parallel)
+# Array programming utility functions
+# Some tools to handle R^n matrices and perform operations on them
 library(abind)
 library(reshape2)
 library(plyr)
-library(modules)
 b = import('base')
+import('./util', attach=T)
 
+#' Stacks arrays while respecting names in each dimension
+#'
+#' @param arrayList  A list of n-dimensional arrays
+#' @param along      Which axis arrays should be stacked on (default: new axis)
+#' @param fill       Value for unknown values (default: \code{NA})
+#' @param like       Array whose form/names the return value should take
+#' @return           A stacked array, either n or n+1 dimensional
+stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, like=NA) {
 #TODO: make sure there is no NA in the combined names
 #TODO:? would be faster if just call abind() when there is nothing to sort
-stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, like=NA) {
     if (!is.list(arrayList))
         stop(paste("arrayList needs to be a list, not a", class(arrayList)))
     if (length(arrayList) == 1)
@@ -59,14 +65,24 @@ stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, like=N
     result
 }
 
+#' Binds arrays together disregarding names
+#'
+#' @param arrayList  A list of n-dimensional arrays
+#' @param along      Along which axis to bind them together
+#' @return           A joined array
 bind = function(arrayList, along=length(dim(arrayList[[1]]))+1) {
-#TODO:
-# check names?
-# call bind when no stacking needed automatically?
+#TODO: check names?, call bind when no stacking needed automatically?
     do.call(function(f) abind(f, along=along), arrayList)
 }
 
-# function to KEEP!
+#' Function to discard subsets of an array (NA or drop)
+#'
+#' @param X        An n-dimensional array
+#' @param along    Along which axis to apply \code{FUN}
+#' @param FUN      Function to apply, needs to return \code{TRUE} (keep) or \code{FALSE}
+#' @param subsets  Subsets that should be used when applying \code{FUN}
+#' @param na.rm    Whether to omit columns and rows with \code{NA}s
+#' @return         An array where filtered values are \code{NA} or dropped
 filter = function(X, along, FUN, subsets=rep(1,dim(X)[along]), na.rm=F) {
     X = as.array(X)
     # apply the function to get a subset mask
@@ -80,36 +96,35 @@ filter = function(X, along, FUN, subsets=rep(1,dim(X)[along]), na.rm=F) {
                 X[subsets==msub] = NA #FIXME: work for matrices as well
 
     if (na.rm)
-        b$na.col.omit(na.omit(X))
+        b$omit$na.col(na.omit(X))
     else
         X
 }
 
+#' The opposite of \code{melt()} for n-dimensional arrays
+#'
+#' @param X      A \code{melt()}ed array
+#' @param value  Name of the field which contains the value
+#' @param axes   Names of the axes to reconstruct
+#' @return       An array with structure before \code{melt()}
 unmelt = function(X, value, axes) {
     acast(as.data.frame(X), formula=as.formula(paste(axes, collapse = "~")), value.var=value)
 }
 
+#' Subsets an array using a list with indices or names
+#'
+#' @param X   The array to subset
+#' @param ll  The list to use for subsetting
+#' @return    The subset of the array
 subset = function(X, ll) {
     asub(X, ll)
 }
 
-# http://www.r-bloggers.com/a-multidimensional-which-function/
-which = function(A){
-    if ( is.vector(A) ) return(which(A))
-    d = dim(A)
-    T = base::which(A) - 1
-    nd = length(d)
-    t( sapply(T, function(t){
-        I = integer(nd)
-        I[1] = t %% d[1]
-        sapply(2:nd, function(j){
-            I[j] <<- (t %/% prod(d[1:(j-1)])) %% d[j]
-        })
-        I
-    }) + 1 )
-}
-
-# apply function that preserves order of dimensions
+#' Apply function that preserves order of dimensions
+#'
+#' @param X        An n-dimensional array
+#' @param along    Along which axis to apply the function
+#' @param FUN      A function that maps a vector to the same length or a scalar
 map_simple = function(X, along, FUN) { #TODO: replace this by alply?
     if (is.vector(X) || length(dim(X))==1)
         return(FUN(X))
@@ -130,6 +145,13 @@ map_simple = function(X, along, FUN) { #TODO: replace this by alply?
     }
 }
 
+#' Maps a function along an array preserving its structure
+#'
+#' @param X        An n-dimensional array
+#' @param along    Along which axis to apply the function
+#' @param FUN      A function that maps a vector to the same length or a scalar
+#' @param subsets  Whether to apply \code{FUN} along the whole axis or subsets thereof
+#' @return         An array where \code{FUN} has been applied
 map = function(X, along, FUN, subsets=rep(1,dim(X)[along])) {
     stopifnot(length(subsets) == dim(X)[along])
 
@@ -155,9 +177,14 @@ map = function(X, along, FUN, subsets=rep(1,dim(X)[along])) {
     else if (dim(Y)[along] == nsubsets)
         base::dimnames(Y)[[along]] = lsubsets
     drop(Y)
-
 }
 
+#' Splits and array along a given axis, either totally or only subsets
+#'
+#' @param X        An array that should be split
+#' @param along    Along which axis to split
+#' @param subsets  Whether to split each element or keep some together
+#' @return         A list of arrays that combined make up the input array
 split = function(X, along, subsets=c(1:dim(X)[along])) {
     X = as.array(X)
 #TODO: check if names unique, otherwise weird error
@@ -180,38 +207,11 @@ split = function(X, along, subsets=c(1:dim(X)[along])) {
     setNames(lapply(idxList, function(ll) subset(X, ll)), lnames)
 }
 
-dimnames = function(X, null.as.integer=FALSE) {
-    if (is.list(X)) {
-        if (is.null(names(X))) {
-            if (null.as.integer)
-                dn = c(1:length(X))
-            else
-                dn = list(NULL)
-        }
-        else
-            dn = names(X)
-    } else {
-        X = as.array(X)
-        if (is.null(base::dimnames(X)))
-            dn = rep(list(NULL), length(dim(X)))
-        else
-            dn = base::dimnames(X)
-        if (null.as.integer == TRUE)
-            dn = lapply(1:length(dn), function(i) 
-                if (is.null(dn[[i]])) 1:dim(X)[i] else dn[[i]])
-    }
-
-    dn
-}
-
-# assigns matrix element names by row- and column names
-elementnames = function(X, sep=":") {
-    apply(expand.grid(dimnames(X, null.as.integer=T)), 1, 
-          function(x) paste(x,collapse=sep))
-}
-
-#TODO: common.axis=T/F, specify the axis of each element
-intersect = function(..., along=1) {
+#' Intersects all passed arrays along a give dimension, and modifies them in place
+#'
+#' @param ...    Arrays that should be intersected
+#' @param along  The axis along which to intersect
+intersect = function(..., along=1) { #TODO: accept along=c(1,2,1,1...)
     l. = list(...)
     varnames = match.call(expand.dots=FALSE)$...
     namesalong = lapply(l., function(f) dimnames(as.array(f))[[along]])
@@ -223,12 +223,11 @@ intersect = function(..., along=1) {
     }
 }
 
-like = function(X, like) {
-    like[] = X
-    like
-}
-
-#TODO: common.axis=T/F, specify the axis of each element
+#' Intersects a list of arrays, orders them the same, and returns the new list
+#'
+#' @param x      A list of arrays
+#' @param along  The axis along which to intersect
+#' @return       A list of intersected arrays
 intersect_list = function(x, along=1) {
     re = list()
     namesalong = lapply(x, function(f) base::dimnames(as.array(f))[[along]])
