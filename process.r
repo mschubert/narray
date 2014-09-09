@@ -22,7 +22,7 @@ stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, like=N
         return(arrayList[[1]])
 
     # union set of dimnames along a list of arrays (TODO: better way?)
-    arrayList = lapply(arrayList, function(x) as.array(drop(x)))
+    arrayList = lapply(arrayList, function(x) as.array(x))
 
     newAxis = FALSE
     if (along > length(dim(arrayList[[1]])))
@@ -157,7 +157,7 @@ map = function(X, along, FUN, subsets=rep(1,dim(X)[along])) {
 
     X = as.array(X)
     subsets = as.factor(subsets)
-    lsubsets = levels(subsets)
+    lsubsets = as.character(unique(subsets)) # levels(subsets) changes order!
     nsubsets = length(lsubsets)
 
     # create a list to index X with each subset
