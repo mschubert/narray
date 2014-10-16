@@ -3,7 +3,7 @@
 library(abind)
 library(methods) # abind bug: relies on methods::Quote, which is not loaded from Rscript
 library(reshape2)
-library(plyr)
+library(dplyr)
 b = import('base')
 import('./util', attach=T)
 
@@ -246,3 +246,12 @@ intersect_list = function(x, along=1) {
     re
 }
 
+#' Converts a list of character vectors to an occurrence matrix
+#'
+#' @param vectorList  A list of character vectors
+#' @return            A logical occurrence matrix
+occurrence = function(vectorList) {
+    vectorList = lapply(vectorList,
+                        function(x) setNames(rep(T, length(x)), x))
+    ar$stack(vectorList, fill=F)
+}
