@@ -246,12 +246,14 @@ intersect_list = function(x, along=1) {
     re
 }
 
-#' Converts a list of character vectors to an occurrence matrix
+#' Converts a list of character vectors to a logical matrix
 #'
-#' @param vectorList  A list of character vectors
-#' @return            A logical occurrence matrix
-occurrence = function(vectorList) {
-    vectorList = lapply(vectorList,
-                        function(x) setNames(rep(T, length(x)), x))
-    ar$stack(vectorList, fill=F)
+#' @param x  A list of character vectors
+#' @return   A logical occurrence matrix
+mask = function(x) {
+    if (is.factor(x))
+        x = as.character(x)
+
+    vectorList = lapply(x, function(xi) setNames(rep(T, length(xi)), xi))
+    t(ar$stack(vectorList, fill=F))
 }
