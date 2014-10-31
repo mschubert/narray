@@ -255,5 +255,5 @@ mask = function(x) {
         x = as.character(x)
 
     vectorList = lapply(x, function(xi) setNames(rep(T, length(xi)), xi))
-    t(ar$stack(vectorList, fill=F))
+    t(stack(vectorList, fill=F))
 }
