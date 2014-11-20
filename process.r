@@ -1,8 +1,6 @@
 # Array programming utility functions
 # Some tools to handle R^n matrices and perform operations on them
-library(abind)
 library(methods) # abind bug: relies on methods::Quote, which is not loaded from Rscript
-library(reshape2)
 library(dplyr)
 b = import('base')
 import('./util', attach=T)
@@ -76,7 +74,8 @@ stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, like=N
 #' @return           A joined array
 bind = function(arrayList, along=length(dim(arrayList[[1]]))+1) {
 #TODO: check names?, call bind when no stacking needed automatically?
-    do.call(function(f) abind(f, along=along), arrayList)
+#TODO: data.table::rbindlist?
+    do.call(function(f) abind::abind(f, along=along), arrayList)
 }
 
 #' Function to discard subsets of an array (NA or drop)
@@ -105,14 +104,22 @@ filter = function(X, along, FUN, subsets=rep(1,dim(X)[along]), na.rm=F) {
         X
 }
 
-#' The opposite of \code{melt()} for n-dimensional arrays
+#' A wrapper around reshape2::acast using a more intuitive formula syntax
 #'
-#' @param X      A \code{melt()}ed array
-#' @param value  Name of the field which contains the value
-#' @param axes   Names of the axes to reconstruct
-#' @return       An array with structure before \code{melt()}
-unmelt = function(X, value, axes) {
-    acast(as.data.frame(X), formula=as.formula(paste(axes, collapse = "~")), value.var=value)
+#' @param X       A data frame
+#' @param formula A formula value ~ axis1 + axis2 [+ axis n]
+#' @return        A structured array
+construct = function(X, formula, ...) {
+    if (!is.data.frame(X) && is.list(X)) #TODO: check, names at level 1 = '.id'
+        X = plyr::ldply(X, data.frame)
+#TODO: work for files as well?
+#TODO: convert nested list to data.frame first as well?
+#    if (is.character(formula))
+#        formula = as.formula(formula)
+    vars = all.vars(formula)
+    value.var = vars[1]
+    form = as.formula(paste(vars[-1], collapse = "~"))
+    reshape2::acast(as.data.frame(X), formula=form, value.var=value.var, ...)
 }
 
 #' Subsets an array using a list with indices or names
@@ -121,7 +128,7 @@ unmelt = function(X, value, axes) {
 #' @param ll  The list to use for subsetting
 #' @return    The subset of the array
 subset = function(X, ll) {
-    asub(X, ll)
+    abind::asub(X, ll)
 }
 
 #' Apply function that preserves order of dimensions
@@ -175,7 +182,7 @@ map = function(X, along, FUN, subsets=rep(1,dim(X)[along])) {
 #    resultList = lapply(subsetIndices, function(x) alply(subset(X, f), along, FUN)) FIXME:
 
     # assemble results together
-    Y = do.call(function(...) abind(..., along=along), resultList)
+    Y = do.call(function(...) abind::abind(..., along=along), resultList)
     if (dim(Y)[along] == dim(X)[along])
         base::dimnames(Y)[[along]] = base::dimnames(X)[[along]]
     else if (dim(Y)[along] == nsubsets)
@@ -225,7 +232,9 @@ intersect = function(..., along=1) { #TODO: accept along=c(1,2,1,1...)
     for (i in seq_along(l.)) {
         dims = as.list(rep(T, length(dim(l.[[i]]))))
         dims[[along]] = common
-        assign(as.character(varnames[[i]]), value=asub(l.[[i]], dims), envir=parent.frame())
+        assign(as.character(varnames[[i]]),
+               value = abind::asub(l.[[i]], dims),
+               envir = parent.frame())
     }
 }
 
@@ -241,7 +250,7 @@ intersect_list = function(x, along=1) {
     for (i in seq_along(x)) {
         dims = as.list(rep(T, length(dim(x[[i]]))))
         dims[[along]] = common
-        re[[names(x)[i]]] = asub(x[[i]], dims)
+        re[[names(x)[i]]] = abind::asub(x[[i]], dims)
     }
     re
 }
