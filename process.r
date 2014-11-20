@@ -128,7 +128,7 @@ construct = function(X, formula, ...) {
 #' @param ll  The list to use for subsetting
 #' @return    The subset of the array
 subset = function(X, ll) {
-    abind::asub(X, ll)
+    abind::asub(X, ll, drop=F)
 }
 
 #' Apply function that preserves order of dimensions
