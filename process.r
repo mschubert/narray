@@ -266,3 +266,37 @@ mask = function(x) {
     vectorList = lapply(x, function(xi) setNames(rep(T, length(xi)), xi))
     t(stack(vectorList, fill=F))
 }
+
+#' Summarize a matrix analogous to a grouped df in dplyr
+#'
+#' @param x      A matrix
+#' @param from   Names that matche the dimension `along`
+#' @param to     Names that this dimension should be summarized to
+#' @param along  Along which axis to summarize
+#' @param FUN    Which function to apply, default is `mean`
+#' @return       A summarized matrix as defined by `from`, `to`
+summarize = function(x, from, to, along=1, FUN=mean) {
+    if (!is.matrix(x))
+        stop('currently only matrices supported')
+    if (along!=1)
+        stop('currently only rows supported')
+
+    if (length(from) != length(to)
+        stop("arguments from and to need to be of the same length")
+
+    index = data.frame(from=from, to=to)
+    # remove multi-mappings
+    index = b$omit$dups(index)
+    index = index[!b$duplicated(index[,1], all=T),]
+
+    # subset x to where 'from' available
+    x = x[dimnames(x)[[along]] %in% index$from,] #TODO: 2nd stop limit
+
+    # aggregate the rest using fun
+    names_idx = match(dimnames(x)[[along]], index$from)
+    newnames = index$to[names_idx]
+
+    ar$split(x, along=along, subsets=newnames) %>%
+        lapply(function(x) ar$map(x, along, FUN)) %>%
+        do.call(rbind, .)
+}
