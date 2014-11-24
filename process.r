@@ -270,18 +270,18 @@ mask = function(x) {
 #' Summarize a matrix analogous to a grouped df in dplyr
 #'
 #' @param x      A matrix
-#' @param from   Names that matche the dimension `along`
+#' @param from   Names that match the dimension `along`
 #' @param to     Names that this dimension should be summarized to
 #' @param along  Along which axis to summarize
 #' @param FUN    Which function to apply, default is `mean`
 #' @return       A summarized matrix as defined by `from`, `to`
-summarize = function(x, from, to, along=1, FUN=mean) {
+summarize = function(x, to, from=rownames(x), along=1, FUN=mean) {
     if (!is.matrix(x))
         stop('currently only matrices supported')
     if (along!=1)
         stop('currently only rows supported')
 
-    if (length(from) != length(to)
+    if (length(from) != length(to))
         stop("arguments from and to need to be of the same length")
 
     index = data.frame(from=from, to=to)
