@@ -107,19 +107,27 @@ filter = function(X, along, FUN, subsets=rep(1,dim(X)[along]), na.rm=F) {
 #' A wrapper around reshape2::acast using a more intuitive formula syntax
 #'
 #' @param X       A data frame
-#' @param formula A formula value ~ axis1 + axis2 [+ axis n]
+#' @param formula A formula: value [+ value2 ..] ~ axis1 [+ axis2 + axis n ..]
 #' @return        A structured array
 construct = function(X, formula, ...) {
     if (!is.data.frame(X) && is.list(X)) #TODO: check, names at level 1 = '.id'
         X = plyr::ldply(X, data.frame)
-#TODO: work for files as well?
 #TODO: convert nested list to data.frame first as well?
-#    if (is.character(formula))
-#        formula = as.formula(formula)
+    dep_str = as.character(formula)[[2]]
+    indep_str = as.character(formula)[[3]]
     vars = all.vars(formula)
-    value.var = vars[1]
-    form = as.formula(paste(vars[-1], collapse = "~"))
-    reshape2::acast(as.data.frame(X), formula=form, value.var=value.var, ...)
+
+    dep_vars = vars[sapply(vars, function(v) grepl(v, dep_str))]
+    indep_vars = vars[sapply(vars, function(v) grepl(v, indep_str))]
+
+    form = as.formula(paste(indep_vars, collapse = "~"))
+    res = sapply(dep_vars, function(v) reshape2::acast(
+        as.data.frame(X), formula=form, value.var=v, ...
+    ), simplify=FALSE)
+    if (length(res) == 1) #TODO: drop_list in base?
+        res[[1]]
+    else
+        res
 }
 
 #' Subsets an array using a list with indices or names
