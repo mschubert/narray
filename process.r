@@ -308,7 +308,7 @@ summarize = function(x, to, from=rownames(x), along=1, FUN=mean) {
     newnames = newnames[!is.na(newnames)]
 
     # aggregate the rest using fun
-    ar$split(x, along=along, subsets=newnames) %>%
-        lapply(function(x) ar$map(x, along, FUN)) %>%
+    split(x, along=along, subsets=newnames) %>%
+        lapply(function(x) map(x, along, FUN)) %>%
         do.call(rbind, .)
 }
