@@ -2,8 +2,9 @@
 # Some tools to handle R^n matrices and perform operations on them
 library(methods) # abind bug: relies on methods::Quote, which is not loaded from Rscript
 library(dplyr)
-b = import('base')
+.b = import('base')
 import('./util', attach=T)
+.check = import('./checks')
 
 #' Stacks arrays while respecting names in each dimension
 #'
@@ -87,6 +88,8 @@ bind = function(arrayList, along=length(dim(arrayList[[1]]))+1) {
 #' @param na.rm    Whether to omit columns and rows with \code{NA}s
 #' @return         An array where filtered values are \code{NA} or dropped
 filter = function(X, along, FUN, subsets=rep(1,dim(X)[along]), na.rm=F) {
+    .check$all(X, along, subsets)
+
     X = as.array(X)
     # apply the function to get a subset mask
     mask = map(X, along, function(x) FUN(x), subsets)
@@ -99,7 +102,7 @@ filter = function(X, along, FUN, subsets=rep(1,dim(X)[along]), na.rm=F) {
                 X[subsets==msub] = NA #FIXME: work for matrices as well
 
     if (na.rm)
-        b$omit$na.col(na.omit(X))
+        .b$omit$na.col(na.omit(X))
     else
         X
 }
@@ -176,9 +179,8 @@ map_simple = function(X, along, FUN) { #TODO: replace this by alply?
 #' @param subsets  Whether to apply \code{FUN} along the whole axis or subsets thereof
 #' @return         An array where \code{FUN} has been applied
 map = function(X, along, FUN, subsets=rep(1,dim(X)[along])) {
-    stopifnot(length(subsets) == dim(X)[along])
+    .check$all(X, along, subsets, x.to.array=TRUE)
 
-    X = as.array(X)
     subsets = as.factor(subsets)
     lsubsets = as.character(unique(subsets)) # levels(subsets) changes order!
     nsubsets = length(lsubsets)
@@ -211,12 +213,7 @@ map = function(X, along, FUN, subsets=rep(1,dim(X)[along])) {
 split = function(X, along, subsets=c(1:dim(X)[along])) {
     if (!is.array(X) && !is.vector(X))
         stop("X needs to be either vector, array or matrix")
-    X = as.array(X)
-#TODO: check if names unique, otherwise weird error
-    if (is.character(along))
-        along = which(names(dim(X)) == along)
-
-    stopifnot(length(subsets)==dim(X)[along])
+    .check$all(X, along, subsets, x.to.array=TRUE)
 
     usubsets = unique(subsets)
     lus = length(usubsets)
@@ -240,7 +237,7 @@ intersect = function(..., along=1) { #TODO: accept along=c(1,2,1,1...)
     l. = list(...)
     varnames = match.call(expand.dots=FALSE)$...
     namesalong = lapply(l., function(f) dimnames(as.array(f))[[along]])
-    common = do.call(b$intersect, namesalong)
+    common = do.call(.b$intersect, namesalong)
     for (i in seq_along(l.)) {
         dims = as.list(rep(T, length(dim(l.[[i]]))))
         dims[[along]] = common
@@ -258,7 +255,7 @@ intersect = function(..., along=1) { #TODO: accept along=c(1,2,1,1...)
 intersect_list = function(x, along=1) {
     re = list()
     namesalong = lapply(x, function(f) base::dimnames(as.array(f))[[along]])
-    common = do.call(b$intersect, namesalong)
+    common = do.call(.b$intersect, namesalong)
     for (i in seq_along(x)) {
         dims = as.list(rep(T, length(dim(x[[i]]))))
         dims[[along]] = common
@@ -298,16 +295,19 @@ summarize = function(x, to, from=rownames(x), along=1, FUN=mean) {
 
     index = data.frame(from=from, to=to)
     # remove multi-mappings
-    index = b$omit$dups(index)
-    index = index[!b$duplicated(index[,1], all=T),]
+    index = .b$omit$dups(index)
+    index = index[!.b$duplicated(index[,1], all=T),]
 
     # subset x to where 'from' available
     x = x[dimnames(x)[[along]] %in% index$from,] #TODO: 2nd stop limit
 
-    # aggregate the rest using fun
+    # subset object to where 'to' is available
     names_idx = match(dimnames(x)[[along]], index$from)
     newnames = index$to[names_idx]
+    x = x[!is.na(newnames),] #TODO: split/map should throw an error if NA in subsets
+    newnames = newnames[!is.na(newnames)]
 
+    # aggregate the rest using fun
     ar$split(x, along=along, subsets=newnames) %>%
         lapply(function(x) ar$map(x, along, FUN)) %>%
         do.call(rbind, .)
