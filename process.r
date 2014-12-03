@@ -167,7 +167,10 @@ map_simple = function(X, along, FUN) { #TODO: replace this by alply?
         }
         array(Y, dim=newdim, dimnames=newdimnames)
     } else {
-        aperm(Y, c(along, preserveAxes))
+        if (length(dim(Y)) < length(dim(X)))
+            Y
+        else
+            aperm(Y, c(along, preserveAxes))
     }
 }
 
