@@ -20,8 +20,8 @@ C = stack(list(A, B), along=2)
 #  a 1 3 6   # B is stacked correctly according to its names
 #  b 2 4 5
 
-D = stack(list(A, C), along=3)
-# , , 1          , , 2
+D = stack(list(m=A, n=C), along=3)
+# , , m          , , n
 #
 #   x y  z         x y z
 # a 1 3 NA       a 1 3 6
@@ -34,7 +34,11 @@ Like `apply`, but not modifying array dimensions and allowing to specify
 subsets that the function should be applied on; also keeps names.
 
 ```r
-map(D, along=1, function(x) sum(x, na.rm=TRUE)) #FIXME: error
+map(D, along=1, function(x) sum(x, na.rm=TRUE))
+#   m  n
+# x 3  3
+# y 7  7
+# z 0 11
 ```
 
 #### `split()`
@@ -61,7 +65,7 @@ E = C[,c(2,3,1)]
 # a 3 6 1
 # b 4 5 2
 
-ar$intersect(A, E, along=2)
+intersect(A, E, along=2)
 # > A         > E
 #   x y         x y   # along dimension 2, all arrays have same extent
 # a 1 3       a 1 3   # and same order of names; this function modifies
