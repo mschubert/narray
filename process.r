@@ -299,12 +299,12 @@ summarize = function(x, to, from=rownames(x), along=1, FUN=mean) {
     index = index[!.b$duplicated(index[,1], all=T),]
 
     # subset x to where 'from' available
-    x = x[dimnames(x)[[along]] %in% index$from,] #TODO: 2nd stop limit
+    x = x[dimnames(x)[[along]] %in% index$from,]
 
     # subset object to where 'to' is available
     names_idx = match(dimnames(x)[[along]], index$from)
     newnames = index$to[names_idx]
-    x = x[!is.na(newnames),] #TODO: split/map should throw an error if NA in subsets
+    x = x[!is.na(newnames),] #TODO: better to remove NAs when creating index?
     newnames = newnames[!is.na(newnames)]
 
     # aggregate the rest using fun
