@@ -67,3 +67,13 @@ like = function(X, like) {
     like[] = X
     like
 }
+
+#' Default function for aggregations: identity, or error if aggregation needed
+#'
+#' @param X  the input value(s)
+aggr_error = function(X) {
+    if (length(X) == 1)
+        X
+    else
+        stop("Got value that needs to be aggregated but no fun.aggregate provided")
+}

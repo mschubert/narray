@@ -115,7 +115,7 @@ filter = function(X, along, FUN, subsets=rep(1,dim(X)[along]), na.rm=F) {
 #' @param fun.aggregate  Function to aggregate multiple values for the same position
 #' @param ...            Additional arguments passed to reshape2::acast
 #' @return               A structured array
-construct = function(X, formula, fill=NULL, fun.aggregate=length, ...) {
+construct = function(X, formula, fill=NULL, fun.aggregate=aggr_error, ...) {
     if (!is.data.frame(X) && is.list(X)) #TODO: check, names at level 1 = '.id'
         X = plyr::ldply(X, data.frame)
 #TODO: convert nested list to data.frame first as well?
@@ -287,7 +287,7 @@ mask = function(x) {
 #' @param along  Along which axis to summarize
 #' @param FUN    Which function to apply, default is `mean`
 #' @return       A summarized matrix as defined by `from`, `to`
-summarize = function(x, to, from=rownames(x), along=1, FUN=mean) {
+summarize = function(x, to, from=rownames(x), along=1, FUN=aggr_error) {
     if (!is.matrix(x))
         stop('currently only matrices supported')
     if (along!=1)
