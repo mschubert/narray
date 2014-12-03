@@ -41,6 +41,11 @@ subsets that the function should be applied on; also keeps names.
 Splits an array along a given axis; can do each element or defined subsets.
 
 ```r
+split(C, along=2, subsets=c('s1','s1','s2'))
+# $s1          $s2
+#   x y        a b
+# a 1 3        5 6
+# b 2 4
 ```
 
 #### `intersect()`
