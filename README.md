@@ -21,17 +21,11 @@ C = stack(list(A, B), along=2)
 #  b 2 4 6
 
 D = stack(list(A, C), along=3)
-# , , 1
+# , , 1          , , 2
 #
-#   x y  z
-# a 1 3 NA
-# b 2 4 NA
-#
-# , , 2
-#
-#   x y z
-# a 1 3 5
-# b 2 4 6
+#   x y  z         x y z
+# a 1 3 NA       a 1 3 5
+# b 2 4 NA       b 2 4 6
 ```
 
 #### `map()`
