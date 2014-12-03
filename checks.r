@@ -1,5 +1,5 @@
 subsets = function(X, along, subsets) {
-    if (length(subsets) != dim(X)[along])
+    if (length(subsets) != dim(as.array(X))[along])
         stop("subset length must match X dimension on along axis")
 
     if (any(is.na(subsets)))
@@ -14,16 +14,16 @@ along = function(X, along) {
         assign('along', which(names(dim(X)) == along, envir=parent.frame()))
 }
 
-x = function(X, to.array, classes=NULL) {
+x = function(X, to.array, classes=NULL, envir=parent.frame()) {
     if (!is.null(classes) && !class(X) %in% classes)
         stop(paste("class of X not in classes:", classes))
 
     if (to.array)
-        assign('X', as.array(X), envir=parent.frame())
+        assign('X', as.array(X), envir=envir)
 }
 
-all = function(X, along, subsets, x.to.array) {
+all = function(X, along, subsets, x.to.array=FALSE, envir=parent.frame()) {
     along(X, along)
     subsets(X, along, subsets)
-    x(X, x.to.array)
+    x(X, x.to.array, envir=envir)
 }
