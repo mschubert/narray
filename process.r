@@ -92,7 +92,7 @@ filter = function(X, along, FUN, subsets=rep(1,dim(X)[along]), na.rm=F) {
 
     X = as.array(X)
     # apply the function to get a subset mask
-    mask = map(X, along, function(x) FUN(x), subsets)
+    mask = as.array(map(X, along, function(x) FUN(x), subsets)) #FIXME: map should have drop=T/F
     if (mode(mask) != 'logical' || dim(mask)[1] != length(unique(subsets)))
         stop("FUN needs to return a single logical value")
 
@@ -200,10 +200,10 @@ map = function(X, along, FUN, subsets=rep(1,dim(X)[along])) {
 
     # assemble results together
     Y = do.call(function(...) abind::abind(..., along=along), resultList)
-    if (dim(Y)[along] == dim(X)[along])
-        base::dimnames(Y)[[along]] = base::dimnames(X)[[along]]
-    else if (dim(Y)[along] == nsubsets)
+    if (dim(Y)[along] == nsubsets)
         base::dimnames(Y)[[along]] = lsubsets
+    else if (dim(Y)[along] == dim(X)[along])
+        base::dimnames(Y)[[along]] = base::dimnames(X)[[along]]
     drop(Y)
 }
 
@@ -225,10 +225,10 @@ split = function(X, along, subsets=c(1:dim(X)[along])) {
     for (i in 1:lus)
         idxList[[i]][[along]] = subsets==usubsets[i]
 
-    if (length(usubsets)==dim(X)[along])
-        lnames = base::dimnames(X)[[along]]
-    else
+    if (length(usubsets)!=dim(X)[along] || !is.numeric(subsets))
         lnames = usubsets
+    else
+        lnames = base::dimnames(X)[[along]]
     setNames(lapply(idxList, function(ll) subset(X, ll)), lnames)
 }
 
