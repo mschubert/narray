@@ -78,6 +78,12 @@ Takes either a factor or a list of vectors and creates a binary matrix
 specifying whether each element is present.
 
 ```r
+F = list(a=c('e1','e2'),b='e1',c='e2')
+mask(F)
+#      e1    e2
+# a  TRUE  TRUE
+# b  TRUE FALSE
+# c FALSE  TRUE
 ```
 
 #### `construct()`
@@ -86,6 +92,24 @@ Takes a data frame and a formula specifying dependent (values) and independent
 (axes) of the resulting array.
 
 ```r
+DF = data.frame(expand.grid(LETTERS[1:3], LETTERS[4:5])[-3,], value=1:5)
+G = construct(DF, value ~ Var1 + Var2, fun.aggregate=sum)
+#   D E
+# A 1 3
+# B 2 4
+# C 0 5
+```
+
+#### `summarize()`
+
+Summarizes the rows of an array as indicated by the mapping (`from`, `to`),
+and the function `FUN`, discarding multiple mappings.
+
+```r
+summarize(G, from=rownames(G), to=c('a','b','b'), along=1, FUN=mean)
+#   D   E
+# a 1 3.0
+# b 1 4.5
 ```
 
 ### Required libraries
