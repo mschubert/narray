@@ -142,8 +142,8 @@ construct = function(X, formula, fill=NULL, fun.aggregate=aggr_error, ...) {
 #' @param X   The array to subset
 #' @param ll  The list to use for subsetting
 #' @return    The subset of the array
-subset = function(X, ll) {
-    abind::asub(X, ll, drop=F)
+subset = function(X, ll, drop=F) {
+    abind::asub(X, ll, drop=drop)
 }
 
 #' Apply function that preserves order of dimensions
@@ -213,7 +213,7 @@ map = function(X, along, FUN, subsets=rep(1,dim(X)[along])) {
 #' @param along    Along which axis to split
 #' @param subsets  Whether to split each element or keep some together
 #' @return         A list of arrays that combined make up the input array
-split = function(X, along, subsets=c(1:dim(X)[along])) {
+split = function(X, along, subsets=c(1:dim(X)[along]), drop=F) {
     if (!is.array(X) && !is.vector(X))
         stop("X needs to be either vector, array or matrix")
     .check$all(X, along, subsets, x.to.array=TRUE)
@@ -229,7 +229,7 @@ split = function(X, along, subsets=c(1:dim(X)[along])) {
         lnames = usubsets
     else
         lnames = base::dimnames(X)[[along]]
-    setNames(lapply(idxList, function(ll) subset(X, ll)), lnames)
+    setNames(lapply(idxList, function(ll) subset(X, ll, drop=drop)), lnames)
 }
 
 #' Intersects all passed arrays along a give dimension, and modifies them in place
