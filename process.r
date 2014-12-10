@@ -296,9 +296,9 @@ summarize = function(x, to, from=rownames(x), along=1, FUN=aggr_error) {
     if (length(from) != length(to))
         stop("arguments from and to need to be of the same length")
 
-    index = data.frame(from=from, to=to)
-    # remove multi-mappings
-    index = .b$omit$dups(index)
+    index = data.frame(from=from, to=to) %>%
+        .b$omit$dups() %>%
+        .b$omit$empty()
     index = index[!.b$duplicated(index[,1], all=T),]
 
     # subset x to where 'from' available
