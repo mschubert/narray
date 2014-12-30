@@ -6,7 +6,7 @@ See the `roxygen2` annotation for a more detailed description using `?function`.
 
 A summary of the most important functions is listed below.
 
-#### `stack()`
+### `stack()`
 
 Like `cbind`/`rbind`, but along arbitrary axes, and taking care of (1) names 
 along each dimension and (2) padding partial matching arrays.
@@ -28,7 +28,7 @@ D = stack(list(m=A, n=C), along=3)
 # b 2 4 NA       b 2 4 5
 ```
 
-#### `map()`
+### `map()`
 
 Like `apply`, but not modifying array dimensions and allowing to specify 
 subsets that the function should be applied on; also keeps names.
@@ -41,7 +41,7 @@ map(D, along=1, function(x) sum(x, na.rm=TRUE))
 # z 0 11
 ```
 
-#### `split()`
+### `split()`
 
 Splits an array along a given axis; can do each element or defined subsets.
 
@@ -53,7 +53,7 @@ split(C, along=2, subsets=c('s1','s1','s2'))
 # b 2 4
 ```
 
-#### `intersect()`
+### `intersect()`
 
 Takes a number of arrays, intersects their names along a given dimension,
 and returns sub-arrays that match in their names; `intersect_list` takes 
@@ -72,7 +72,7 @@ intersect(A, E, along=2)
 # b 2 4       b 2 4   # values in-place
 ```
 
-#### `mask()`
+### `mask()`
 
 Takes either a factor or a list of vectors and creates a binary matrix 
 specifying whether each element is present.
@@ -86,7 +86,7 @@ mask(F)
 # c FALSE  TRUE
 ```
 
-#### `construct()`
+### `construct()`
 
 Takes a data frame and a formula specifying dependent (values) and independent
 (axes) of the resulting array.
@@ -100,7 +100,7 @@ G = construct(DF, value ~ Var1 + Var2, fun.aggregate=sum)
 # C 0 5
 ```
 
-#### `summarize()`
+### `summarize()`
 
 Summarizes the rows of an array as indicated by the mapping (`from`, `to`),
 and the function `FUN`, discarding multiple mappings.
@@ -111,9 +111,3 @@ summarize(G, from=rownames(G), to=c('a','b','b'), along=1, FUN=mean)
 # a 1 3.0
 # b 1 4.5
 ```
-
-### Required libraries
-
- * abind
- * dplyr
- * reshape2
