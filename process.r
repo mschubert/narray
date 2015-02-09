@@ -137,6 +137,24 @@ construct = function(X, formula, fill=NULL, fun.aggregate=aggr_error, ...) {
         res
 }
 
+#' Function to melt data.frame from one or multiple arrays
+#'
+#' @param ...       Array[s] or data.frame[s] to be melted
+#' @param dimnames  List of names along the dimensions (instead of `VarX`)
+#' @param na_rm     Remove rows with NAs
+melt = function(..., dimnames=NULL, na_rm=TRUE) {
+    l. = list(...)
+    l.names = as.character(substitute(list(...)))[-1L]
+
+    for (i in seq_along(l.)) {
+        if (!is.null(dimnames))
+            dimnames(l.[[i]]) = dimnames[[i]]
+        l.[[i]] = reshape2::melt(l.[[i]], value.name=l.names[i], na.rm=na_rm)
+    }
+
+    Reduce(function(a,b) merge(a,b,all=!na_rm), l.)
+}
+
 #' Subsets an array using a list with indices or names
 #'
 #' @param X   The array to subset
