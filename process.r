@@ -309,25 +309,11 @@ summarize = function(x, to, from=rownames(x), along=1, FUN=aggr_error) {
     if (along!=1)
         stop('currently only rows supported')
 
-    if (length(from) != length(to))
-        stop("arguments from and to need to be of the same length")
-
-    index = data.frame(from=from, to=to) %>% #TODO: use b$match here instead
-        .b$omit$dups() %>%
-        .b$omit$empty()
-    index = index[!.b$duplicated(index[,1], all=T),]
-
-    # subset x to where 'from' available
-    x = x[dimnames(x)[[along]] %in% index$from,]
-
-    # subset object to where 'to' is available
-    names_idx = base::match(dimnames(x)[[along]], index$from)
-    newnames = index$to[names_idx]
-    x = x[!is.na(newnames),] #TODO: better to remove NAs when creating index?
-    newnames = newnames[!is.na(newnames)]
-
+    lookup = b$match(rownames(x), from, to, na_rm=TRUE)
+    x = x[names(lookup),]
+    
     # aggregate the rest using fun
-    split(x, along=along, subsets=newnames) %>%
+    split(x, along=along, subsets=lookup) %>%
         lapply(function(x) map(x, along, FUN)) %>%
         do.call(rbind, .)
 }
