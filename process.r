@@ -252,7 +252,9 @@ split = function(X, along, subsets=c(1:dim(X)[along]), drop=F) {
 #'
 #' @param ...    Arrays that should be intersected
 #' @param along  The axis along which to intersect
-intersect = function(..., along=1) { #TODO: accept along=c(1,2,1,1...)
+#' @param data   A list or environment to act upon
+#TODO: accept along=c(1,2,1,1...)
+intersect = function(..., along=1, data=parent.frame()) {
     l. = list(...)
     varnames = match.call(expand.dots=FALSE)$...
     namesalong = lapply(l., function(f) dimnames(as.array(f))[[along]])
@@ -262,25 +264,8 @@ intersect = function(..., along=1) { #TODO: accept along=c(1,2,1,1...)
         dims[[along]] = common
         assign(as.character(varnames[[i]]),
                value = abind::asub(l.[[i]], dims),
-               envir = parent.frame())
+               envir = data)
     }
-}
-
-#' Intersects a list of arrays, orders them the same, and returns the new list
-#'
-#' @param x      A list of arrays
-#' @param along  The axis along which to intersect
-#' @return       A list of intersected arrays
-intersect_list = function(x, along=1) {
-    re = list()
-    namesalong = lapply(x, function(f) base::dimnames(as.array(f))[[along]])
-    common = do.call(.b$intersect, namesalong)
-    for (i in seq_along(x)) {
-        dims = as.list(rep(T, length(dim(x[[i]]))))
-        dims[[along]] = common
-        re[[names(x)[i]]] = abind::asub(x[[i]], dims)
-    }
-    re
 }
 
 #' Converts a list of character vectors to a logical matrix
