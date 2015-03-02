@@ -119,12 +119,8 @@ construct = function(X, formula, fill=NULL, fun.aggregate=aggr_error, ...) {
     if (!is.data.frame(X) && is.list(X)) #TODO: check, names at level 1 = '.id'
         X = plyr::ldply(X, data.frame)
 #TODO: convert nested list to data.frame first as well?
-    dep_str = as.character(formula)[[2]]
-    indep_str = as.character(formula)[[3]]
-    vars = all.vars(formula)
-
-    dep_vars = vars[sapply(vars, function(v) grepl(v, dep_str))]
-    indep_vars = vars[sapply(vars, function(v) grepl(v, indep_str))]
+    dep_vars = all.vars(formula[[2]])
+    indep_vars = all.vars(formula[[3]])
 
     form = as.formula(paste(indep_vars, collapse = "~"))
     res = sapply(dep_vars, function(v) reshape2::acast(
