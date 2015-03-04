@@ -7,8 +7,8 @@ subsets = function(X, along, subsets) {
 }
 
 along = function(X, along) {
-    if (any(duplicated(dimnames(X)[[along]])))
-        stop("duplicated names found along mapping axis, exiting")
+#    if (any(duplicated(dimnames(X)[[along]])))
+#        stop("duplicated names found along mapping axis, exiting")
 
     if (is.character(along))
         assign('along', which(names(dim(X)) == along, envir=parent.frame()))
