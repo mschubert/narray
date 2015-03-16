@@ -87,7 +87,7 @@ bind = function(arrayList, along=length(dim(arrayList[[1]]))+1) {
 #' @param subsets  Subsets that should be used when applying \code{FUN}
 #' @param na.rm    Whether to omit columns and rows with \code{NA}s
 #' @return         An array where filtered values are \code{NA} or dropped
-filter = function(X, along, FUN, subsets=rep(1,dim(X)[along]), na.rm=F) {
+filter = function(X, along, FUN, subsets=rep(1,dim(X)[along]), na.rm=FALSE) {
     .check$all(X, along, subsets)
 
     X = as.array(X)
@@ -151,11 +151,18 @@ melt = function(..., dimnames=NULL, na_rm=TRUE) {
 
 #' Subsets an array using a list with indices or names
 #'
-#' @param X   The array to subset
-#' @param ll  The list to use for subsetting
-#' @return    The subset of the array
-subset = function(X, ll, drop=F) {
-    abind::asub(X, ll, drop=drop)
+#' @param X      The array to subset
+#' @param index  A list of vector to use for subsetting
+#' @param along  Along which dimension to subset if index is a vector; default is last dimension
+#' @return       The subset of the array
+subset = function(X, index, along=NULL, drop=FALSE) {
+    if (is.list(index))
+        abind::asub(X, index, drop=drop)
+    else {
+        if (is.null(along))
+            along = length(dim(X))
+        plyr::take(X, along=along, indices=index, drop=drop)
+    }
 }
 
 #' Apply function that preserves order of dimensions
@@ -225,10 +232,10 @@ map = function(X, along, FUN, subsets=rep(1,dim(X)[along])) {
 #' @param along    Along which axis to split
 #' @param subsets  Whether to split each element or keep some together
 #' @return         A list of arrays that combined make up the input array
-split = function(X, along, subsets=c(1:dim(X)[along]), drop=F) {
-    if (!is.array(X) && !is.vector(X))
-        stop("X needs to be either vector, array or matrix")
-    .check$all(X, along, subsets, x.to.array=TRUE)
+split = function(X, along, subsets=c(1:dim(X)[along]), drop=FALSE) {
+    if (!is.array(X) && !is.vector(X) && !is.data.frame(X))
+        stop("X needs to be either vector, array or data.frame")
+#    .check$all(X, along, subsets, x.to.array=FALSE) # breaks data.frame
 
     usubsets = unique(subsets)
     lus = length(usubsets)
@@ -249,7 +256,7 @@ split = function(X, along, subsets=c(1:dim(X)[along]), drop=F) {
 #' @param ...    Arrays that should be intersected
 #' @param along  The axis along which to intersect
 #' @param data   A list or environment to act upon
-#TODO: accept along=c(1,2,1,1...)
+#TODO: accept along=c(1,2,1,1...) [maybe list w/ vectors as well?]
 intersect = function(..., along=1, data=parent.frame()) {
     l. = list(...)
     varnames = match.call(expand.dots=FALSE)$...
@@ -273,7 +280,7 @@ mask = function(x) {
         x = as.character(x)
 
     vectorList = lapply(x, function(xi) setNames(rep(T, length(xi)), xi))
-    t(stack(vectorList, fill=F))
+    t(stack(vectorList, fill=FALSE))
 }
 
 #' Summarize a matrix analogous to a grouped df in dplyr
