@@ -290,7 +290,7 @@ summarize = function(x, to, from=rownames(x), along=1, FUN=aggr_error) {
     if (along!=1)
         stop('currently only rows supported')
 
-    lookup = b$match(rownames(x), from, to, na_rm=TRUE)
+    lookup = .b$match(rownames(x), from, to, na_rm=TRUE)
     x = x[names(lookup),]
     
     # aggregate the rest using fun
