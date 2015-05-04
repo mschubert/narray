@@ -34,8 +34,9 @@ map_simple = function(X, along, FUN) { #TODO: replace this by alply?
 #' @param along    Along which axis to apply the function
 #' @param FUN      A function that maps a vector to the same length or a scalar
 #' @param subsets  Whether to apply \code{FUN} along the whole axis or subsets thereof
+#' @param drop     TBD
 #' @return         An array where \code{FUN} has been applied
-map = function(X, along, FUN, subsets=rep(1,dim(X)[along])) {
+map = function(X, along, FUN, subsets=rep(1,dim(X)[along]), drop=TRUE) {
 #    .check$all(X, along, subsets, x.to.array=TRUE)
 
     subsets = as.factor(subsets)
