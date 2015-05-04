@@ -19,6 +19,14 @@ which = function(A){
     }) + 1 )
 }
 
+#' base::dim, but returning 1 for vector
+dim = function(x) {
+    if (is.vector(x))
+        length(x)
+    else
+        base::dim(x)
+}
+
 #' Return \code{dimnames()} of an array respecting the number of dimensions
 #'
 #' @param X                An n-dimensional array
@@ -76,4 +84,34 @@ aggr_error = function(X) {
         X
     else
         stop("Got value that needs to be aggregated but no fun.aggregate provided")
+}
+
+check_subsets = function(X, along, subsets) {
+    if (length(subsets) != dim(as.array(X))[along])
+        stop("subset length must match X dimension on along axis")
+
+    if (any(is.na(subsets)))
+        stop("found NA in subsets, exiting")
+}
+
+check_along = function(X, along) {
+#    if (any(duplicated(dimnames(X)[[along]])))
+#        stop("duplicated names found along mapping axis, exiting")
+
+    if (is.character(along))
+        assign('along', which(names(dim(X)) == along, envir=parent.frame()))
+}
+
+check_x = function(X, to.array, classes=NULL, envir=parent.frame()) {
+    if (!is.null(classes) && !class(X) %in% classes)
+        stop(paste("class of X not in classes:", classes))
+
+    if (to.array)
+        assign('X', as.array(X), envir=envir)
+}
+
+check_all = function(X, along, subsets, x.to.array=FALSE, envir=parent.frame()) {
+    along(X, along)
+    subsets(X, along, subsets)
+    x(X, x.to.array, envir=envir)
 }
