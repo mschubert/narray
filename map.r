@@ -60,3 +60,19 @@ map = function(X, along, FUN, subsets=rep(1,dim(X)[along])) {
         base::dimnames(Y)[[along]] = base::dimnames(X)[[along]]
     drop(Y)
 }
+
+if (is.null(module_name())) {
+    D = structure(c(1L, 2L, 3L, 4L, NA, NA, 1L, 2L, 3L, 4L, 6L, 5L),
+                  .Dim = c(2L, 3L, 2L), .Dimnames = list(c("a", "b"),
+                  c("x", "y", "z"), c("m", "n")))
+
+    X = map(D, along=1, function(x) sum(x, na.rm=TRUE))
+    #   m  n
+    # x 3  3
+    # y 7  7
+    # z 0 11
+
+    Xref = structure(c(3L, 7L, 0L, 3L, 7L, 11L), .Dim = c(3L, 2L),
+                     .Dimnames = list(c("x", "y", "z"), c("m", "n")))
+    testthat::expect_equal(X, Xref)
+}

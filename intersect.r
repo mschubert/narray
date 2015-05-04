@@ -19,3 +19,23 @@ intersect = function(..., along=1, data=parent.frame()) {
                envir = data)
     }
 }
+
+if (is.null(module_name())) {
+    A = matrix(1:4, nrow=2, ncol=2, dimnames=list(c('a','b'),c('x','y')))
+    C = structure(c(1L, 2L, 3L, 4L, 6L, 5L), .Dim = 2:3,
+        .Dimnames = list(c("a", "b"), c("x", "y", "z")))
+    E = C[,c(2,3,1)]
+
+    intersect(A, E, along=2)
+
+    # > A         > E
+    #   x y         x y   # along dimension 2, all arrays have same extent
+    # a 1 3       a 1 3   # and same order of names; this function modifies
+    # b 2 4       b 2 4   # values in-place
+    
+    AEref = structure(1:4, .Dim = c(2L, 2L),
+                      .Dimnames = list(c("a", "b"), c("x", "y")))
+
+    testthat::expect_equal(A, AEref)
+    testthat::expect_equal(E, AEref)
+}

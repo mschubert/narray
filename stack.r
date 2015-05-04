@@ -61,3 +61,27 @@ stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, like=N
     }
     result
 }
+
+if (is.null(module_name())) {
+    A = matrix(1:4, nrow=2, ncol=2, dimnames=list(c('a','b'),c('x','y')))
+    B = matrix(5:6, nrow=2, ncol=1, dimnames=list(c('b','a'),'z'))
+
+    C = stack(list(A, B), along=2)
+    #    x y z
+    #  a 1 3 6   # B is stacked correctly according to its names
+    #  b 2 4 5
+    Cref = structure(c(1L, 2L, 3L, 4L, 6L, 5L), .Dim = 2:3,
+                     .Dimnames = list(  c("a", "b"), c("x", "y", "z")))
+    testthat::expect_equal(C, Cref)
+
+    D = stack(list(m=A, n=C), along=3)
+    # , , m          , , n
+    #
+    #   x y  z         x y z
+    # a 1 3 NA       a 1 3 6
+    # b 2 4 NA       b 2 4 5
+    Dref = structure(c(1L, 2L, 3L, 4L, NA, NA, 1L, 2L, 3L, 4L, 6L, 5L),
+                     .Dim = c(2L,3L, 2L), .Dimnames = list(c("a", "b"),
+                     c("x", "y", "z"), c("m", "n")))
+    testthat::expect_equal(D, Dref)
+}

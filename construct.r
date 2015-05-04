@@ -27,3 +27,17 @@ construct = function(X, formula, fill=NULL, fun.aggregate=aggr_error, ...) {
     else
         res
 }
+
+if (is.null(module_name())) {
+    DF = data.frame(expand.grid(LETTERS[1:3], LETTERS[4:5])[-3,], value=1:5)
+
+    G = construct(DF, value ~ Var1 + Var2, fun.aggregate=sum)
+    #   D E
+    # A 1 3
+    # B 2 4
+    # C 0 5
+
+    Gref = structure(c(1L, 2L, 0L, 3L, 4L, 5L), .Dim = c(3L, 2L),
+                     .Dimnames = list(c("A", "B", "C"), c("D", "E")))
+    testthat::expect_equal(G, Gref)
+}
