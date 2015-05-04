@@ -4,7 +4,10 @@
 #' @param along      Along which axis to bind them together
 #' @return           A joined array
 bind = function(arrayList, along=length(dim(arrayList[[1]]))+1) {
-#TODO: check names?, call bind when no stacking needed automatically?
-#TODO: data.table::rbindlist?
-    do.call(function(f) abind::abind(f, along=along), arrayList)
+    if (along == 1) # abind does not handle these cases well
+        do.call(rbind, arrayList)
+    else if (along == 2)
+        do.call(cbind, arrayList)
+    else
+        do.call(function(...) abind::abind(..., along=along), arrayList)
 }
