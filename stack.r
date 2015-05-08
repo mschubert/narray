@@ -5,11 +5,8 @@
 #' @param arrayList  A list of n-dimensional arrays
 #' @param along      Which axis arrays should be stacked on (default: new axis)
 #' @param fill       Value for unknown values (default: \code{NA})
-#' @param like       Array whose form/names the return value should take
 #' @return           A stacked array, either n or n+1 dimensional
-stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, like=NA) {
-#TODO: make sure there is no NA in the combined names
-#TODO:? would be faster if just call abind() when there is nothing to sort
+stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA) {
     if (!is.list(arrayList))
         stop(paste("arrayList needs to be a list, not a", class(arrayList)))
     arrayList = arrayList[!is.null(arrayList)]
@@ -17,46 +14,64 @@ stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, like=N
         stop("No element remaining after removing NULL entries")
     if (length(arrayList) == 1)
         return(arrayList[[1]])
+#TODO: for vectors: if along=1 row vecs, along=2 col vecs, etc.
 
-    # union set of dimnames along a list of arrays (TODO: better way?)
+    # union set of dimnames along a list of arrays (could align this as well?)
     arrayList = lapply(arrayList, function(x) as.array(x))
 
     newAxis = FALSE
     if (along > length(dim(arrayList[[1]])))
         newAxis = TRUE
 
-    if (identical(like, NA)) {
-        dn = lapply(arrayList, .u$dimnames)
-        dimNames = lapply(1:length(dn[[1]]), function(j) 
-            unique(c(unlist(sapply(1:length(dn), function(i) 
-                dn[[i]][[j]]
-            ))))
-        )
-        ndim = sapply(1:length(dimNames), function(i)
-            if (!is.null(dimNames[[i]]))
-                length(dimNames[[i]]) 
-            else
-                max(sapply(arrayList, function(j) dim(j)[i]))
-        )
+    # get dimensio names
+    dn = lapply(arrayList, .u$dimnames)
+    dimNames = lapply(1:length(dn[[1]]), function(j) 
+        unique(c(unlist(sapply(1:length(dn), function(i) 
+            dn[[i]][[j]]
+        ))))
+    )
 
-        # if creating new axis, amend ndim and dimNames
-        if (newAxis) {
-            dimNames = c(dimNames, list(names(arrayList)))
-            ndim = c(ndim, length(arrayList))
-        }
+    # get dimension extent
+    stack_offset = FALSE
+    ndim = sapply(dimNames, length)
+    if (along <= length(ndim) && ndim[along] == 0) {
+        ndim[along] = sum(sapply(arrayList, function(x) dim(x)[along]))
+        stack_offset = TRUE
+    }
+    if (any(ndim == 0))
+        stop("error")
 
-        result = array(fill, dim=ndim, dimnames=dimNames)
-    } else {
-        result = array(fill, dim=dim(like), dimnames=base::dimnames(like))
+    # if creating new axis, amend ndim and dimNames
+    if (newAxis) {
+        dimNames = c(dimNames, list(names(arrayList)))
+        ndim = c(ndim, length(arrayList))
     }
 
-    # create stack with fill=fill, replace each slice with matched values of arrayList
-    for (i in .u$dimnames(arrayList, null.as.integer=T)) {
-        dm = .u$dimnames(arrayList[[i]], null.as.integer=T)
+    # create an empty result matrix
+    result = array(fill, dim=ndim, dimnames=dimNames)
+
+    # fill each result matrix slice with matched values of arrayList
+    offset = 0
+    for (i in .u$dimnames(arrayList, null.as.integer=TRUE)) {
+        dm = .u$dimnames(arrayList[[i]], null.as.integer=TRUE)
+        if (stack_offset) {
+            dm[[along]] = dm[[along]] + offset
+            offset = offset + dim(arrayList[[i]])[along]
+        }
+
+        # make sure there are no NAs in names
         if (any(is.na(unlist(dm))))
             stop("NA found in array names, do not know how to stack those")
         if (newAxis)
             dm[[along]] = i
+        else {
+            # do not overwrite values unless empty or the same
+            slice = do.call("[", c(list(result), dm, drop=FALSE))
+            if (!all(slice==fill | is.na(slice) | slice==arrayList[[i]]))
+                stop("value aggregation not allowed, stack along new axis+summarize after")
+        }
+
+        # assign to the slice
         result = do.call("[<-", c(list(result), dm, list(arrayList[[i]])))
     }
     result
@@ -84,4 +99,11 @@ if (is.null(module_name())) {
                      .Dim = c(2L,3L, 2L), .Dimnames = list(c("a", "b"),
                      c("x", "y", "z"), c("m", "n")))
     testthat::expect_equal(D, Dref)
+
+    # same as first but without colnames
+    colnames(A) = NULL
+    colnames(B) = NULL
+    colnames(C) = NULL
+    Cnull = stack(list(A, B), along=2)
+    testthat::expect_equal(C, Cnull)
 }
