@@ -76,16 +76,6 @@ like = function(X, like) {
     like
 }
 
-#' Default function for aggregations: identity, or error if aggregation needed
-#'
-#' @param X  the input value(s)
-aggr_error = function(X) {
-    if (length(X) == 1)
-        X
-    else
-        stop("Got value that needs to be aggregated but no fun.aggregate provided")
-}
-
 check_subsets = function(X, along, subsets) {
     if (length(subsets) != dim(as.array(X))[along])
         stop("subset length must match X dimension on along axis")
