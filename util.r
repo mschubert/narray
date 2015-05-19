@@ -33,7 +33,7 @@ dim = function(x) {
 #' @param null.as.integer  Whether nameless dimensions should be \code{NULL} or numbered
 #' @return                 A list of dimension names with length \code{length(ndim(X))}
 dimnames = function(X, null.as.integer=FALSE) {
-    if (is.list(X)) {
+    if (is.list(X) && !is.data.frame(X)) {
         if (is.null(names(X))) {
             if (null.as.integer)
                 dn = c(1:length(X))
@@ -43,7 +43,8 @@ dimnames = function(X, null.as.integer=FALSE) {
         else
             dn = names(X)
     } else {
-        X = as.array(X)
+        if (!is.data.frame(X))
+            X = as.array(X)
         if (is.null(base::dimnames(X)))
             dn = rep(list(NULL), length(dim(X)))
         else
