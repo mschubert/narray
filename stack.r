@@ -6,7 +6,7 @@
 #' @param along      Which axis arrays should be stacked on (default: new axis)
 #' @param fill       Value for unknown values (default: \code{NA})
 #' @return           A stacked array, either n or n+1 dimensional
-stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA) {
+stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, drop=FALSE) {
     if (!is.list(arrayList))
         stop(paste("arrayList needs to be a list, not a", class(arrayList)))
     arrayList = arrayList[!is.null(arrayList)]
@@ -14,10 +14,22 @@ stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA) {
         stop("No element remaining after removing NULL entries")
     if (length(arrayList) == 1)
         return(arrayList[[1]])
-#TODO: for vectors: if along=1 row vecs, along=2 col vecs, etc.
 
-    # union set of dimnames along a list of arrays (could align this as well?)
-    arrayList = lapply(arrayList, function(x) as.array(x))
+    # for vectors: if along=1 row vecs, along=2 col vecs, etc.
+    if (all(is.null(unlist(lapply(arrayList, dim))))) {
+        if (along == 1)
+            arrayList = lapply(seq_along(arrayList), function(i) {
+                re = t(as.matrix(arrayList[[i]]))
+                rownames(re) = names(arrayList)[i]
+                re
+            })
+        else if (along == 2)
+            arrayList = lapply(seq_along(arrayList), function(i) {
+                re = as.matrix(arrayList[[i]])
+                colnames(re) = names(arrayList)[i]
+                re
+            })
+    }
 
     newAxis = FALSE
     if (along > length(dim(arrayList[[1]])))
@@ -31,7 +43,7 @@ stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA) {
         ))))
     )
 
-    # get dimension extent
+    # track the stacking dimension index if there are no names
     stack_offset = FALSE
     ndim = sapply(dimNames, length)
     if (along <= length(ndim) && ndim[along] == 0) {
@@ -39,7 +51,7 @@ stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA) {
         stack_offset = TRUE
     }
     if (any(ndim == 0))
-        stop("error")
+        stop("this should not happen - if it does, improve error msg")
 
     # if creating new axis, amend ndim and dimNames
     if (newAxis) {
@@ -71,10 +83,15 @@ stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA) {
                 stop("value aggregation not allowed, stack along new axis+summarize after")
         }
 
-        # assign to the slice
-        result = do.call("[<-", c(list(result), dm, list(arrayList[[i]])))
+        # assign to the slice if there are any values in it
+        if (length(arrayList[[i]]) > 0)
+            result = do.call("[<-", c(list(result), dm, list(arrayList[[i]])))
     }
-    result
+
+    if (drop)
+        drop(result)
+    else
+        result
 }
 
 if (is.null(module_name())) {
@@ -106,4 +123,10 @@ if (is.null(module_name())) {
     colnames(C) = NULL
     Cnull = stack(list(A, B), along=2)
     testthat::expect_equal(C, Cnull)
+
+    # vector stacking
+    a = b = setNames(1:5, LETTERS[1:5])
+    testthat::expect_equal(stack(list(a=a, b=b), along=1),
+                           t(stack(list(a=a, b=b), along=2)))
+    testthat::expect_equal(stack(list(a=a, a=b), along=1, drop=TRUE), a)
 }
