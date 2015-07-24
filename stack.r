@@ -9,7 +9,12 @@
 stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, drop=FALSE) {
     if (!is.list(arrayList))
         stop(paste("arrayList needs to be a list, not a", class(arrayList)))
-    arrayList = arrayList[!is.null(arrayList)]
+    length0 = sapply(arrayList, length) == 0
+    if (any(length0)) {
+        dnames = .u$dimnames(arrayList[length0], null.as.integer=TRUE)
+        warning("dropping empty elements: ", paste(dnames, collapse=", "))
+        arrayList = arrayList[!length0]
+    }
     if (length(arrayList) == 0)
         stop("No element remaining after removing NULL entries")
     if (length(arrayList) == 1)
@@ -84,8 +89,7 @@ stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, drop=F
         }
 
         # assign to the slice if there are any values in it
-        if (length(arrayList[[i]]) > 0)
-            result = do.call("[<-", c(list(result), dm, list(arrayList[[i]])))
+        result = do.call("[<-", c(list(result), dm, list(arrayList[[i]])))
     }
 
     if (drop)
