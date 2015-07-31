@@ -8,17 +8,21 @@
 #' @param data   A list or environment to act upon
 #TODO: accept along=c(1,2,1,1...) [maybe list w/ vectors as well?]
 intersect = function(..., along=1, data=parent.frame(), drop=FALSE) {
-    l. = list(...)
-    varnames = match.call(expand.dots=FALSE)$...
+    l. = setNames(list(...), unlist(match.call(expand.dots=FALSE)$...))
+    l. = intersect_list(l., along=along, drop=drop)
+    for (name in names(l.))
+        assign(name, l.[[name]], envir = data)
+}
+
+intersect_list = function(l., along=1, drop=FALSE) {
     namesalong = lapply(l., function(f) .u$dimnames(f)[[along]])
     common = do.call(.b$intersect, namesalong)
-    for (i in seq_along(l.)) {
-        dims = as.list(rep(T, length(dim(l.[[i]]))))
+
+    lapply(l., function(list_elm) {
+        dims = as.list(rep(TRUE, length(dim(list_elm))))
         dims[[along]] = common
-        assign(as.character(varnames[[i]]),
-               value = abind::asub(l.[[i]], dims, drop=drop),
-               envir = data)
-    }
+        abind::asub(list_elm, dims, drop=drop)
+    })
 }
 
 if (is.null(module_name())) {
@@ -29,6 +33,7 @@ if (is.null(module_name())) {
     DF = as.data.frame(E[1,,drop=FALSE])
     DFref = DF
 
+    AElist = intersect_list(list(A=A, E=E), along=2)
     intersect(A, E, along=2)
     # > A         > E
     #   x y         x y   # along dimension 2, all arrays have same extent
@@ -39,7 +44,10 @@ if (is.null(module_name())) {
                       .Dimnames = list(c("a", "b"), c("x", "y")))
     testthat::expect_equal(A, AEref)
     testthat::expect_equal(E, AEref)
+    testthat::expect_equal(AElist$A, AEref)
+    testthat::expect_equal(AElist$E, AEref)
 
+    ADFlist = intersect_list(list(A=A, DF=DF)) # note missing along=1 here
     intersect(A, DF, along=1)
     # > A        > DF
     #   x y        y z x
@@ -49,10 +57,15 @@ if (is.null(module_name())) {
     testthat::expect_is(DF, "data.frame")
     testthat::expect_equal(A, AEref[1,,drop=FALSE])
     testthat::expect_equal(DF, DFref)
+    testthat::expect_equal(ADFlist$A, A)
+    testthat::expect_equal(ADFlist$DF, DF)
 
+    ADFlist = intersect_list(list(A=A, DF=DF), along=2, drop=TRUE)
     intersect(A, DF, along=2, drop=TRUE)
     testthat::expect_is(A, "integer")
     testthat::expect_is(DF, "list")
     testthat::expect_equal(A, c(x=1, y=3))
     testthat::expect_equal(DF, list(x=1, y=3))
+    testthat::expect_equal(ADFlist$A, A)
+    testthat::expect_equal(ADFlist$DF, DF)
 }
