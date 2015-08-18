@@ -40,7 +40,7 @@ stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, drop=F
     if (along > length(dim(arrayList[[1]])))
         newAxis = TRUE
 
-    # get dimensio names
+    # get dimension names
     dn = lapply(arrayList, .u$dimnames)
     dimNames = lapply(1:length(dn[[1]]), function(j) 
         unique(c(unlist(sapply(1:length(dn), function(i) 
@@ -56,7 +56,8 @@ stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, drop=F
         stack_offset = TRUE
     }
     if (any(ndim == 0))
-        stop("this should not happen - if it does, improve error msg")
+        stop("Names are required for all dimensions except the one stacked along.
+  Use bind() if you want to just bind together arrays without names.")
 
     # if creating new axis, amend ndim and dimNames
     if (newAxis) {
