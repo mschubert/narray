@@ -34,7 +34,7 @@ map_simple = function(X, along, FUN) { #TODO: replace this by alply?
 #' @param along    Along which axis to apply the function
 #' @param FUN      A function that maps a vector to the same length or a scalar
 #' @param subsets  Whether to apply \code{FUN} along the whole axis or subsets thereof
-#' @param drop     TBD
+#' @param drop     Remove unused dimensions after mapping; default: TRUE
 #' @return         An array where \code{FUN} has been applied
 map = function(X, along, FUN, subsets=rep(1,dim(X)[along]), drop=TRUE) {
 #    .check$all(X, along, subsets, x.to.array=TRUE)
@@ -51,7 +51,7 @@ map = function(X, along, FUN, subsets=rep(1,dim(X)[along]), drop=TRUE) {
     # for each subset, call mymap
     resultList = lapply(subsetIndices, function(f)
         map_simple(.s$subset(X, f), along, FUN))
-#    resultList = lapply(subsetIndices, function(x) alply(subset(X, f), along, FUN)) FIXME:
+#    resultList = lapply(subsetIndices, function(x) alply(subset(X, f), along, FUN)) # TODO: replace map_simple by d/plyr function
 
     # assemble results together
     Y = do.call(function(...) abind::abind(..., along=along), resultList)
@@ -59,7 +59,11 @@ map = function(X, along, FUN, subsets=rep(1,dim(X)[along]), drop=TRUE) {
         base::dimnames(Y)[[along]] = lsubsets
     else if (dim(Y)[along] == dim(X)[along])
         base::dimnames(Y)[[along]] = base::dimnames(X)[[along]]
-    drop(Y)
+
+    if (drop)
+        drop(Y)
+    else
+        Y
 }
 
 if (is.null(module_name())) {
