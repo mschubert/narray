@@ -11,7 +11,7 @@ intersect = function(..., along=1, data=parent.frame(), drop=FALSE) {
     l. = setNames(list(...), unlist(match.call(expand.dots=FALSE)$...))
     l. = intersect_list(l., along=along, drop=drop)
     for (name in names(l.))
-        assign(name, l.[[name]], envir = data)
+        assign(name, l.[[name]], envir = as.environment(data))
 }
 
 intersect_list = function(l., along=1, drop=FALSE) {
@@ -46,6 +46,12 @@ if (is.null(module_name())) {
     testthat::expect_equal(E, AEref)
     testthat::expect_equal(AElist$A, AEref)
     testthat::expect_equal(AElist$E, AEref)
+
+    # intersect only some elements of a list
+    ll = list(A=A, E=E, some="thing")
+    intersect(A, E, along=2, data=ll)
+    testthat::expect_equal(AEref, ll$A)
+    testthat::expect_equal(AEref, ll$E)
 
     ADFlist = intersect_list(list(A=A, DF=DF)) # note missing along=1 here
     intersect(A, DF, along=1)
