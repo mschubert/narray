@@ -18,9 +18,15 @@ construct = function(formula, data, fill=NULL, fun.aggregate=NULL, ...) {
     indep_vars = all.vars(formula[[3]])
     form = as.formula(paste(indep_vars, collapse = "~"))
 
-    res = sapply(dep_vars, function(v) reshape2::acast(
-        as.data.frame(data), formula=form, value.var=v,
-        fill=fill, fun.aggregate=fun.aggregate, ...
+    data = as.data.frame(data)
+    axis_NA = apply(is.na(data[indep_vars]), 1, any)
+    if (any(axis_NA)) {
+        warning("Omitting ", sum(axis_NA), " rows where axis columns are NA")
+        data = data[!axis_NA,]
+    }
+
+    res = sapply(dep_vars, function(v) reshape2::acast(data, formula=form,
+        value.var=v, fill=fill, fun.aggregate=fun.aggregate, ...
     ), simplify=FALSE) %catchm% stop("Do not know how to aggregate")
 
     if (length(res) == 1) #TODO: drop_list in base?
@@ -42,6 +48,12 @@ if (is.null(module_name())) {
                      .Dimnames = list(c("A", "B", "C"), c("D", "E")))
     testthat::expect_equal(G, Gref)
 
-    DFa = rbind(DF, c("A","D",6)) # ambiguous row
+    # axis variable is NA, should be omitted + print warning
+    DFna = rbind(DF, NA)
+    Gna = construct(value ~ Var1 + Var2, data=DFna, fun.aggregate=sum)
+    testthat::expect_equal(Gna, Gref)
+
+    # ambiguous row
+    DFa = rbind(DF, c("A","D",6))
     testthat::expect_error(construct(value ~ Var1 + Var2, data=DFa))
 }
