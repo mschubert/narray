@@ -5,7 +5,7 @@
 #' @param X        An n-dimensional array
 #' @param along    Along which axis to apply the function
 #' @param FUN      A function that maps a vector to the same length or a scalar
-map_simple = function(X, along, FUN) { #TODO: replace this by alply?
+.map_simple = function(X, along, FUN) {
     if (is.vector(X) || length(dim(X))==1)
         return(FUN(X))
 
@@ -50,8 +50,7 @@ map = function(X, along, FUN, subsets=rep(1,dim(X)[along]), drop=TRUE) {
 
     # for each subset, call mymap
     resultList = lapply(subsetIndices, function(f)
-        map_simple(.s$subset(X, f), along, FUN))
-#    resultList = lapply(subsetIndices, function(x) alply(subset(X, f), along, FUN)) # TODO: replace map_simple by d/plyr function
+        .map_simple(.s$subset(X, f), along, FUN))
 
     # assemble results together
     Y = do.call(function(...) abind::abind(..., along=along), resultList)
@@ -72,12 +71,19 @@ if (is.null(module_name())) {
                   c("x", "y", "z"), c("m", "n")))
 
     X = map(D, along=1, function(x) sum(x, na.rm=TRUE))
-    #   m  n
-    # x 3  3
-    # y 7  7
-    # z 0 11
-
+    #    m  n
+    #  x 3  3
+    #  y 7  7
+    #  z 0 11
     Xref = structure(c(3L, 7L, 0L, 3L, 7L, 11L), .Dim = c(3L, 2L),
                      .Dimnames = list(c("x", "y", "z"), c("m", "n")))
     testthat::expect_equal(X, Xref)
+
+    X3 = map(D, along=3, sum)
+    #    x y  z
+    #  a 2 6 NA
+    #  b 4 8 NA
+    X3ref = structure(c(2L, 4L, 6L, 8L, NA, NA), .Dim = 2:3, .Dimnames = list(
+                      c("a", "b"), c("x", "y", "z")))
+    testthat::expect_equal(X3, X3ref)
 }
