@@ -9,8 +9,8 @@
 #TODO: accept along=c(1,2,1,1...) [maybe list w/ vectors as well?]
 intersect = function(..., along=1, data=parent.frame(), drop=FALSE) {
     dots = import_package('pryr')$named_dots(...)
-    data = as.environment(data)
 
+    # for `data.frame`s, replace the rownames by field that is referenced
     for (i in seq_along(dots)) {
         if (is.call(dots[[i]])) {
             if (along == 1 && is.data.frame(eval(dots[[i]][[2]], envir=data))) {
@@ -28,13 +28,20 @@ intersect = function(..., along=1, data=parent.frame(), drop=FALSE) {
 
     dots = intersect_list(dots, along=along, drop=drop)
 
-    for (name in names(dots)) {
+    # recover original rownames
+    for (name in names(dots))
         if (is.data.frame(dots[[name]])) {
             rownames(dots[[name]]) = dots[[name]]$.rownames
             dots[[name]]$.rownames = NULL
         }
-        assign(name, dots[[name]], envir=data)
-    }
+
+    # modify the list or environment with the intersected results
+    if (is.list(data))
+        assign(as.character(match.call()$data),
+               modifyList(data, dots), envir=parent.frame())
+    else
+        for (name in names(dots))
+            assign(name, dots[[name]], envir=data)
 }
 
 intersect_list = function(l., along=1, drop=FALSE) {
@@ -83,9 +90,16 @@ if (is.null(module_name())) {
     testthat::expect_equal(ADFlist$DF, DF2)
 
     DFref = DF[c(2,1),]
+    rownames(DFref) = as.character(rownames(DFref)) # why, R?
     intersect(A, DF$A, along=1)
     testthat::expect_is(A, "matrix")
     testthat::expect_is(DF, "data.frame")
-#    testthat::expect_equal(DF, DFref) # rownames: character+numeric, how?
+    testthat::expect_equal(DF, DFref)
     testthat::expect_true(all(DF == DFref))
+
+    ll = list(a=setNames(1:5, letters[1:5]), b=setNames(2:4, letters[2:4]))
+    lli = intersect_list(ll)
+    intersect(a,b,data=ll)
+    testthat::expect_equal(ll$a, lli$a)
+    testthat::expect_equal(ll$b, lli$b)
 }
