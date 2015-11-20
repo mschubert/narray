@@ -28,9 +28,9 @@ intersect = function(..., along=1, data=parent.frame(), drop=FALSE) {
 
     dots = intersect_list(dots, along=along, drop=drop)
 
-    # recover original rownames
+    # recover original rownames if we stored them separately
     for (name in names(dots))
-        if (is.data.frame(dots[[name]])) {
+        if (is.data.frame(dots[[name]]) && !is.null(dots[[name]]$.rownames)) {
             rownames(dots[[name]]) = dots[[name]]$.rownames
             dots[[name]]$.rownames = NULL
         }
