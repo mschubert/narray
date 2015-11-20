@@ -72,12 +72,19 @@ if (is.null(module_name())) {
                   c("x", "y", "z"), c("m", "n")))
 
     X = map(D, along=1, function(x) sum(x, na.rm=TRUE))
-    #   m  n
-    # x 3  3
-    # y 7  7
-    # z 0 11
-
+    #    m  n
+    #  x 3  3
+    #  y 7  7
+    #  z 0 11
     Xref = structure(c(3L, 7L, 0L, 3L, 7L, 11L), .Dim = c(3L, 2L),
                      .Dimnames = list(c("x", "y", "z"), c("m", "n")))
     testthat::expect_equal(X, Xref)
+
+    X3 = map(D, along=3, sum)
+    #    x y  z
+    #  a 2 6 NA
+    #  b 4 8 NA
+    X3ref = structure(c(2L, 4L, 6L, 8L, NA, NA), .Dim = 2:3, .Dimnames = list(
+                      c("a", "b"), c("x", "y", "z")))
+    testthat::expect_equal(X3, X3ref)
 }
