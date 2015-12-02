@@ -3,6 +3,7 @@ library(methods) # needed because of abind bug
 export_submodule('./util')
 export_submodule('./bind')
 export_submodule('./filter')
+export_submodule('./flatten')
 export_submodule('./map')
 export_submodule('./subset')
 export_submodule('./mask')
