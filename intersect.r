@@ -1,5 +1,6 @@
 .b = import('../base')
 .u = import('./util')
+.s = import('./subset')
 
 #' Intersects all passed arrays along a give dimension, and modifies them in place
 #'
@@ -47,12 +48,7 @@ intersect = function(..., along=1, data=parent.frame(), drop=FALSE) {
 intersect_list = function(l., along=1, drop=FALSE) {
     namesalong = lapply(l., function(f) .u$dimnames(f)[[along]])
     common = do.call(.b$intersect, namesalong)
-
-    lapply(l., function(list_elm) {
-        dims = as.list(rep(TRUE, length(dim(list_elm))))
-        dims[[along]] = common
-        abind::asub(list_elm, dims, drop=drop)
-    })
+    lapply(l.,  function(e) .s$subset(e, index=common, along=along, drop=drop))
 }
 
 if (is.null(module_name())) {
