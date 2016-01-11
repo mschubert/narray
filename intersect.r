@@ -9,7 +9,8 @@
 #' @param data   A list or environment to act upon
 #TODO: accept along=c(1,2,1,1...) [maybe list w/ vectors as well?]
 intersect = function(..., along=1, data=parent.frame(), drop=FALSE) {
-    dots = import_package('pryr')$named_dots(...)
+#    dots = import_package('pryr')$named_dots(...)
+    dots = pryr::named_dots(...) # workaround modules=0.9.2#71
 
     # for `data.frame`s, replace the rownames by field that is referenced
     for (i in seq_along(dots)) {
