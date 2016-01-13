@@ -9,7 +9,7 @@ mask = function(x) {
         x = as.character(x)
 
     vectorList = lapply(x, function(xi) setNames(rep(TRUE, length(xi)), xi))
-    t(.s$stack(vectorList, fill=FALSE))
+    .s$stack(vectorList, fill=FALSE)
 }
 
 if (is.null(module_name())) {
