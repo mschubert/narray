@@ -15,7 +15,7 @@ intersect = function(..., along=1, data=parent.frame(), drop=FALSE) {
     for (i in seq_along(dots)) {
         if (is.call(dots[[i]])) {
             if (along == 1 && is.data.frame(eval(dots[[i]][[2]], envir=data))) {
-                df = eval(dots[[i]][[2]], envir=data)
+                df = as.data.frame(eval(dots[[i]][[2]], envir=data)) # as.: need rownames, not dplyr's
                 field = eval(dots[[i]], envir=data)
                 df$.rownames = rownames(df)
                 rownames(df) = field
