@@ -1,5 +1,5 @@
-.b = import('../base')
-.m = import('./map')
+.b = import_('../base')
+.m = import_('./map')
 
 #' Function to discard subsets of an array (NA or drop)
 #'

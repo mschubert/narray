@@ -1,4 +1,4 @@
-.s = import('./stack')
+.s = import_('./stack')
 
 #' Converts a list of character vectors to a logical matrix
 #'

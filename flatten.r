@@ -1,5 +1,5 @@
-.split = import('./split')
-.stack = import('./stack')
+.split = import_('./split')
+.stack = import_('./stack')
 
 #' Flattens an array along an axis
 #'

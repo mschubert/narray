@@ -1,4 +1,4 @@
-.s = import('./subset')
+.s = import_('./subset')
 
 #' Splits and array along a given axis, either totally or only subsets
 #'

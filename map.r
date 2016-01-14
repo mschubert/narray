@@ -1,4 +1,4 @@
-.s = import('./subset')
+.s = import_('./subset')
 
 #' Apply function that preserves order of dimensions
 #'

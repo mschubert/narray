@@ -1,7 +1,7 @@
-.b = import('../base')
-.s = import('./split')
-.m = import('./map')
-.bi = import('./bind')
+.b = import_('../base')
+.s = import_('./split')
+.m = import_('./map')
+.bi = import_('./bind')
 
 #' Summarize a matrix analogous to a grouped df in dplyr
 #'

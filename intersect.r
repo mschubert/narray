@@ -1,6 +1,6 @@
-.b = import('../base')
-.u = import('./util')
-.s = import('./subset')
+.b = import_('../base')
+.u = import_('./util')
+.s = import_('./subset')
 
 #' Intersects all passed arrays along a give dimension, and modifies them in place
 #'
@@ -9,7 +9,7 @@
 #' @param data   A list or environment to act upon
 #TODO: accept along=c(1,2,1,1...) [maybe list w/ vectors as well?]
 intersect = function(..., along=1, data=parent.frame(), drop=FALSE) {
-    dots = import_package('pryr')$named_dots(...)
+    dots = import_package_('pryr')$named_dots(...)
 
     # for `data.frame`s, replace the rownames by field that is referenced
     for (i in seq_along(dots)) {

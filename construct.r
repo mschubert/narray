@@ -1,6 +1,6 @@
 # Array programming utility functions
 # Some tools to handle R^n matrices and perform operations on them
-import('../base/operators')
+import_('../base/operators')
 
 #' A wrapper around reshape2::acast using a more intuitive formula syntax
 #'

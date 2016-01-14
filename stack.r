@@ -1,4 +1,4 @@
-.u = import('./util')
+.u = import_('./util')
 
 #' Stacks arrays while respecting names in each dimension
 #'
