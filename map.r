@@ -1,4 +1,5 @@
 .s = import_('./subset')
+.b = import_('./bind')
 
 #' Apply function that preserves order of dimensions
 #'
@@ -53,7 +54,7 @@ map = function(X, along, FUN, subsets=rep(1,dim(X)[along]), drop=TRUE) {
         .map_simple(.s$subset(X, f), along, FUN))
 
     # assemble results together
-    Y = do.call(function(...) abind::abind(..., along=along), resultList)
+    Y = .b$bind(resultList, along=along)
     if (dim(Y)[along] == nsubsets)
         base::dimnames(Y)[[along]] = lsubsets
     else if (dim(Y)[along] == dim(X)[along])

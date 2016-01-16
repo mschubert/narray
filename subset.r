@@ -5,6 +5,10 @@
 #' @param along  Along which dimension to subset if index is a vector; default is last dimension
 #' @return       The subset of the array
 subset = function(X, index, along=NULL, drop=FALSE) {
+    # this import is required because package:abind references
+    # methods:Quote without importing it
+    library(methods)
+
     if (!is.list(index)) {
         if (is.data.frame(X))
             ldaX = length(dim(X))
