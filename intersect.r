@@ -51,7 +51,7 @@ intersect_list = function(l., along=1, drop=FALSE) {
 
     namesalong = lapply(l., function(f) .u$dimnames(f)[[along]])
     common = do.call(.b$intersect, namesalong)
-    lapply(l.,  function(e) .s$subset(e, index=common, along=along, drop=drop))
+    lapply(l., function(e) .s$subset(e, index=common, along=along, drop=drop))
 }
 
 if (is.null(module_name())) {

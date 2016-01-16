@@ -5,23 +5,25 @@
 #' @param along  Along which dimension to subset if index is a vector; default is last dimension
 #' @return       The subset of the array
 subset = function(X, index, along=NULL, drop=FALSE) {
-    # this import is required because package:abind references
-    # methods:Quote without importing it
-    library(methods)
-
     if (!is.list(index)) {
+        # this is required because as.array() will fail on dplyr:df
         if (is.data.frame(X))
-            ldaX = length(dim(X))
+            ndim_X = length(dim(X))
         else
-            ldaX = length(dim(as.array(X)))
-        tmp = rep(list(TRUE), ldaX)
+            ndim_X = length(dim(as.array(X)))
+
+        # create a subsetting list that covers the whole array first,
+        # then set the dimension we are working on to what is requested
+        tmp = rep(list(TRUE), ndim_X)
+
+        # by default, subset the last dimension
         if (is.null(along))
-            along = ldaX
+            along = ndim_X
         tmp[[along]] = index
         index = tmp
     }
 
-    abind::asub(X, index, drop=drop)
+    do.call(function(...) `[`(X, ..., drop=drop), index)
 }
 
 if (is.null(module_name())) {
