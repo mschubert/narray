@@ -13,6 +13,8 @@ mask = function(x) {
 }
 
 if (is.null(module_name())) {
+    library(testthat)
+
     F = list(a=c('e1','e2'),b='e1',c='e2')
 
     Z = mask(F)
@@ -23,5 +25,5 @@ if (is.null(module_name())) {
 
     Zref = structure(c(TRUE, TRUE, FALSE, TRUE, FALSE, TRUE), .Dim = c(3L,
     2L), .Dimnames = list(c("a", "b", "c"), c("e1", "e2")))
-    testthat::expect_equal(Z, Zref)
+    expect_equal(Z, Zref)
 }

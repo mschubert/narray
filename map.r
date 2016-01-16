@@ -67,6 +67,8 @@ map = function(X, along, FUN, subsets=rep(1,dim(X)[along]), drop=TRUE) {
 }
 
 if (is.null(module_name())) {
+    library(testthat)
+
     D = structure(c(1L, 2L, 3L, 4L, NA, NA, 1L, 2L, 3L, 4L, 6L, 5L),
                   .Dim = c(2L, 3L, 2L), .Dimnames = list(c("a", "b"),
                   c("x", "y", "z"), c("m", "n")))
@@ -78,7 +80,7 @@ if (is.null(module_name())) {
     #  z 0 11
     Xref = structure(c(3L, 7L, 0L, 3L, 7L, 11L), .Dim = c(3L, 2L),
                      .Dimnames = list(c("x", "y", "z"), c("m", "n")))
-    testthat::expect_equal(X, Xref)
+    expect_equal(X, Xref)
 
     X3 = map(D, along=3, sum)
     #    x y  z
@@ -86,5 +88,5 @@ if (is.null(module_name())) {
     #  b 4 8 NA
     X3ref = structure(c(2L, 4L, 6L, 8L, NA, NA), .Dim = 2:3, .Dimnames = list(
                       c("a", "b"), c("x", "y", "z")))
-    testthat::expect_equal(X3, X3ref)
+    expect_equal(X3, X3ref)
 }

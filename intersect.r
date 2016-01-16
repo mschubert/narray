@@ -55,6 +55,8 @@ intersect_list = function(l., along=1, drop=FALSE) {
 }
 
 if (is.null(module_name())) {
+    library(testthat)
+
     A = matrix(1:4, nrow=2, ncol=2, dimnames=list(c('a','b'),c('x','y')))
     C = structure(c(1L, 2L, 3L, 4L, 6L, 5L), .Dim = 2:3,
         .Dimnames = list(c("a", "b"), c("x", "y", "z")))
@@ -72,33 +74,33 @@ if (is.null(module_name())) {
     
     AEref = structure(1:4, .Dim = c(2L, 2L),
                       .Dimnames = list(c("a", "b"), c("x", "y")))
-    testthat::expect_equal(A, AEref)
-    testthat::expect_equal(E, AEref)
-    testthat::expect_equal(AElist$A, AEref)
-    testthat::expect_equal(AElist$E, AEref)
+    expect_equal(A, AEref)
+    expect_equal(E, AEref)
+    expect_equal(AElist$A, AEref)
+    expect_equal(AElist$E, AEref)
 
     ADFlist = intersect_list(list(A=A, DF=DF2))
-    testthat::expect_equal(ADFlist$A, AEref[1,,drop=FALSE])
-    testthat::expect_equal(ADFlist$DF, DF2)
+    expect_equal(ADFlist$A, AEref[1,,drop=FALSE])
+    expect_equal(ADFlist$DF, DF2)
 
     ADFlist = intersect_list(list(A=A, DF=DF2), along=2, drop=TRUE)
     intersect(A, DF2, along=2, drop=TRUE)
-    testthat::expect_equal(A, AEref)
-    testthat::expect_equal(DF2, list(x=1, y=3))
-    testthat::expect_equal(ADFlist$A, AEref)
-    testthat::expect_equal(ADFlist$DF, DF2)
+    expect_equal(A, AEref)
+    expect_equal(DF2, list(x=1, y=3))
+    expect_equal(ADFlist$A, AEref)
+    expect_equal(ADFlist$DF, DF2)
 
     DFref = DF[c(2,1),]
     rownames(DFref) = as.character(rownames(DFref)) # why, R?
     intersect(A, DF$A, along=1)
-    testthat::expect_is(A, "matrix")
-    testthat::expect_is(DF, "data.frame")
-    testthat::expect_equal(DF, DFref)
-    testthat::expect_true(all(DF == DFref))
+    expect_is(A, "matrix")
+    expect_is(DF, "data.frame")
+    expect_equal(DF, DFref)
+    expect_true(all(DF == DFref))
 
     ll = list(a=setNames(1:5, letters[1:5]), b=setNames(2:4, letters[2:4]))
     lli = intersect_list(ll)
     intersect(a,b,data=ll)
-    testthat::expect_equal(ll$a, lli$a)
-    testthat::expect_equal(ll$b, lli$b)
+    expect_equal(ll$a, lli$a)
+    expect_equal(ll$b, lli$b)
 }

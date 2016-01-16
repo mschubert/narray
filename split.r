@@ -27,6 +27,8 @@ split = function(X, along, subsets=c(1:dim(X)[along]), drop=FALSE) {
 }
 
 if (is.null(module_name())) {
+    library(testthat)
+
     C = structure(c(1L, 2L, 3L, 4L, 6L, 5L), .Dim = 2:3,
         .Dimnames = list(c("a", "b"), c("x", "y", "z")))
 
@@ -41,5 +43,5 @@ if (is.null(module_name())) {
         s2 = structure(c(6L, 5L), .Dim = c(2L,1L),
         .Dimnames = list(c("a", "b"), "z"))), .Names = c("s1", "s2"))
 
-    testthat::expect_equal(Y, Yref)
+    expect_equal(Y, Yref)
 }

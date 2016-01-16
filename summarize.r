@@ -23,6 +23,8 @@ summarize = function(x, along=1, to, from=dimnames(x)[[along]], ...,  FUN=aggr_e
 }
 
 if (is.null(module_name())) {
+    library(testthat)
+
     G = matrix(c(1,2,0,3,4,5), nrow=3,
                dimnames=list(c('A','B','C'), c('D','E')))
 
@@ -33,5 +35,5 @@ if (is.null(module_name())) {
 
     Wref = structure(c(1, 1, 3, 4.5), .Dim = c(2L, 2L),
                      .Dimnames = list(c("a", "b"), c("D", "E")))
-    testthat::expect_equal(W, Wref)
+    expect_equal(W, Wref)
 }
