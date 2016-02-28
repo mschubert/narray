@@ -18,7 +18,7 @@ summarize = function(x, along=1, to, from=dimnames(x)[[along]], ...,  FUN=aggr_e
     
     # aggregate the rest using fun
     .s$split(x, along=along, subsets=lookup) %>%
-        lapply(function(j) .m$map(j, along, FUN)) %>%
+        lapply(function(j) .m$map(j, along, FUN, drop=FALSE)) %>%
         .bi$bind(along=along)
 }
 

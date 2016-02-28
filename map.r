@@ -6,27 +6,20 @@
 #' @param X        An n-dimensional array
 #' @param along    Along which axis to apply the function
 #' @param FUN      A function that maps a vector to the same length or a scalar
-.map_simple = function(X, along, FUN) {
+.map_simple = function(X, along, FUN, drop=TRUE) {
     if (is.vector(X) || length(dim(X))==1)
         return(FUN(X))
 
     preserveAxes = c(1:length(dim(X)))[-along]
-    Y = apply(X, preserveAxes, FUN)
-    if (is.vector(Y)) {
-        if (along == 1) {
-            newdim = c(1, length(Y))
-            newdimnames = list(NULL, names(Y))
-        } else {
-            newdim = c(length(Y), 1)
-            newdimnames = list(names(Y), NULL)
-        }
-        array(Y, dim=newdim, dimnames=newdimnames)
-    } else {
-        if (length(dim(Y)) < length(dim(X)))
-            Y
-        else
-            aperm(Y, c(along, preserveAxes))
-    }
+    Y = as.array(apply(X, preserveAxes, FUN))
+    if (length(dim(Y)) < length(dim(X)))
+        Y = array(Y, dim=c(1, dim(Y)), dimnames=c(list(NULL), dimnames(Y)))
+
+    Y = aperm(Y, match(seq_along(dim(Y)), c(along, preserveAxes)))
+    if (drop)
+        drop(Y)
+    else
+        Y
 }
 
 #' Maps a function along an array preserving its structure
@@ -51,7 +44,7 @@ map = function(X, along, FUN, subsets=rep(1,dim(X)[along]), drop=TRUE) {
 
     # for each subset, call mymap
     resultList = lapply(subsetIndices, function(f)
-        .map_simple(.s$subset(X, f), along, FUN))
+        .map_simple(.s$subset(X, f), along, FUN, drop=FALSE))
 
     # assemble results together
     Y = .b$bind(resultList, along=along)
@@ -89,4 +82,47 @@ if (is.null(module_name())) {
     X3ref = structure(c(2L, 4L, 6L, 8L, NA, NA), .Dim = 2:3, .Dimnames = list(
                       c("a", "b"), c("x", "y", "z")))
     expect_equal(X3, X3ref)
+
+    l = letters
+    id = function(x) x
+    a = array(1:(2*3*4*5),
+              dim = c(2,3,4,5),
+              dimnames = list(l[1:2], l[3:5], l[6:9], l[10:14]))
+
+    expect_equal(dim(.map_simple(a, along=1, id)),
+                 dim(.map_simple(a, along=2, id)),
+                 dim(.map_simple(a, along=3, id)),
+                 dim(.map_simple(a, along=4, id)),
+                 dim(map(a, along=1, id)),
+                 dim(map(a, along=2, id)),
+                 dim(map(a, along=3, id)),
+                 dim(map(a, along=5, id)),
+                 dim(a))
+
+    fx = function(x) sum(x)
+
+    expect_equal(dim(.map_simple(a, along=1, fx, drop=FALSE)),
+                 dim(map(a, along=1, fx, drop=FALSE)),
+                 c(1,3,4,5))
+
+    expect_equal(dim(.map_simple(a, along=2, fx, drop=FALSE)),
+                 dim(map(a, along=2, fx, drop=FALSE)),
+                 c(2,1,4,5))
+
+    expect_equal(dim(.map_simple(a, along=3, fx, drop=FALSE)),
+                 dim(map(a, along=3, fx, drop=FALSE)),
+                 c(2,3,1,5))
+
+    expect_equal(dim(.map_simple(a, along=4, fx, drop=FALSE)),
+                 dim(map(a, along=4, fx, drop=FALSE)),
+                 c(2,3,4,1))
+
+    m = a[,,1,1] # 2 3
+    expect_equal(dim(.map_simple(m, along=1, fx, drop=FALSE)),
+                 dim(map(m, 1, fx, drop=FALSE)),
+                 c(1,3))
+
+    expect_equal(dim(.map_simple(m, along=2, fx, drop=FALSE)),
+                 dim(map(m, 1, fx, drop=FALSE)),
+                 c(2,1))
 }
