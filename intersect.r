@@ -22,7 +22,7 @@ intersect = function(..., along=1, data=parent.frame(), drop=FALSE) {
                 names(dots)[i] = as.character(dots[[i]][[2]])
                 dots[[i]] = df
             } else
-                stop("calls can only reference data.frames with along=1")
+                stop("calls can only reference `data.frame` fields with along=1")
         } else
             dots[[i]] = eval(dots[[i]], envir=data)
     }
