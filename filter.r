@@ -14,17 +14,22 @@ filter = function(X, along, FUN, subsets=rep(1,dim(X)[along]), na.rm=FALSE) {
 
     X = as.array(X)
     # apply the function to get a subset mask
-    mask = as.array(.m$map(X, along, function(x) FUN(x), subsets)) #FIXME: map should have drop=T/F
+    mask = as.array(.m$map(X, along, function(x) FUN(x), subsets, drop=FALSE))
     if (mode(mask) != 'logical' || dim(mask)[1] != length(unique(subsets)))
         stop("FUN needs to return a single logical value")
 
-#    for (mcol in seq_along(ncol(mask)))
+    for (mcol in seq_along(ncol(mask)))
         for (msub in rownames(mask))
-            if (!mask[msub])
-                X[subsets==msub] = NA #FIXME: work for matrices as well
+            if (!mask[msub, mcol])
+                X[subsets==msub, mcol] = NA #FIXME: work for matrices as well
 
     if (na.rm)
         .b$omit$na.col(na.omit(X))
     else
         X
+}
+
+if (is.null(module_name())) {
+    library(testthat)
+    #TODO: add tests
 }
