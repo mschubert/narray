@@ -4,19 +4,22 @@
 
 #' Intersects all passed arrays along a give dimension, and modifies them in place
 #'
+#' TODO: accept along=c(1,2,1,1...) [maybe list w/ vectors as well?]
+#' TODO: accept data=env/list arg? [sig-comb/drug-tissue/assocs.r#62-65]
+#'
 #' @param ...    Arrays that should be intersected
 #' @param along  The axis along which to intersect
-#' @param data   A list or environment to act upon
-#TODO: accept along=c(1,2,1,1...) [maybe list w/ vectors as well?]
-intersect = function(..., along=1, data=parent.frame(), drop=FALSE) {
+#' @param envir  A list or environment to act upon
+intersect = function(..., along=1, envir=parent.frame(), drop=FALSE) {
     dots = import_package_('pryr')$named_dots(...)
 
     # for `data.frame`s, replace the rownames by field that is referenced
     for (i in seq_along(dots)) {
         if (is.call(dots[[i]])) {
-            if (along == 1 && is.data.frame(eval(dots[[i]][[2]], envir=data))) {
-                df = as.data.frame(eval(dots[[i]][[2]], envir=data)) # as.: need rownames, not dplyr's
-                field = eval(dots[[i]], envir=data)
+            if (along == 1 && is.data.frame(eval(dots[[i]][[2]], envir=envir))) {
+                # as.data.frame: need rownames, not dplyr's
+                df = as.data.frame(eval(dots[[i]][[2]], envir=envir)) 
+                field = eval(dots[[i]], envir=envir)
                 df$.rownames = rownames(df)
                 rownames(df) = field
                 names(dots)[i] = as.character(dots[[i]][[2]])
@@ -24,7 +27,7 @@ intersect = function(..., along=1, data=parent.frame(), drop=FALSE) {
             } else
                 stop("calls can only reference `data.frame` fields with along=1")
         } else
-            dots[[i]] = eval(dots[[i]], envir=data)
+            dots[[i]] = eval(dots[[i]], envir=envir)
     }
 
     dots = intersect_list(dots, along=along, drop=drop)
@@ -37,12 +40,12 @@ intersect = function(..., along=1, data=parent.frame(), drop=FALSE) {
         }
 
     # modify the list or environment with the intersected results
-    if (is.list(data))
-        assign(as.character(match.call()$data),
-               modifyList(data, dots), envir=parent.frame())
+    if (is.list(envir))
+        assign(as.character(match.call()$envir),
+               modifyList(envir, dots), envir=parent.frame())
     else
         for (name in names(dots))
-            assign(name, dots[[name]], envir=data)
+            assign(name, dots[[name]], envir=envir)
 }
 
 intersect_list = function(l., along=1, drop=FALSE) {
@@ -66,6 +69,14 @@ if (is.null(module_name())) {
     DF2 = as.data.frame(E[1,,drop=FALSE])
 
     AElist = intersect_list(list(A=A, E=E), along=2)
+
+    # provided env should not change global vars or non-ref'd list elms
+    ll = list(A=A, E=E, DF=DF)
+    AEenv = intersect(A, E, along=2, envir=ll)
+    expect_equal(ll$A, A)
+    expect_equal(ll$E, AElist$E)
+    expect_equal(ll$DF, DF)
+
     intersect(A, E, along=2)
     # > A         > E
     #   x y         x y   # along dimension 2, all arrays have same extent
@@ -100,7 +111,7 @@ if (is.null(module_name())) {
 
     ll = list(a=setNames(1:5, letters[1:5]), b=setNames(2:4, letters[2:4]))
     lli = intersect_list(ll)
-    intersect(a,b,data=ll)
+    intersect(a,b,envir=ll)
     expect_equal(ll$a, lli$a)
     expect_equal(ll$b, lli$b)
 }
