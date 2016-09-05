@@ -15,7 +15,7 @@ construct = function(formula, data, fill=NULL, fun.aggregate=NULL, ...) {
         data = plyr::ldply(data, data.frame)
 
     dep_vars = all.vars(formula[[2]])
-    indep_vars = all.vars(formula[[3]])
+    indep_vars = all.vars(formula[[3]]) #TODO: if factor, include all levels in matrix
     form = as.formula(paste(indep_vars, collapse = "~"))
 
     data = as.data.frame(data)
