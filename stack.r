@@ -1,4 +1,4 @@
-.u = import_('./util')
+.dn = import_('./dimnames')
 
 #' Stacks arrays while respecting names in each dimension
 #'
@@ -11,8 +11,10 @@ stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, drop=F
         stop(paste("arrayList needs to be a list, not a", class(arrayList)))
     length0 = sapply(arrayList, length) == 0
     if (any(length0)) {
-        dnames = .u$dimnames(arrayList[length0], null.as.integer=TRUE)
-        warning("dropping empty elements: ", paste(dnames, collapse=", "))
+        drop_idx = names(arrayList)[length0]
+        if (is.null(drop_idx))
+            drop_idx = which(length0)
+        warning("dropping empty elements: ", paste(drop_idx, collapse=", "))
         arrayList = arrayList[!length0]
     }
     if (length(arrayList) == 0)
@@ -41,7 +43,7 @@ stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, drop=F
         newAxis = TRUE
 
     # get dimension names
-    dn = lapply(arrayList, .u$dimnames)
+    dn = .dn$dimnames(arrayList)
     dimNames = lapply(1:length(dn[[1]]), function(j) 
         unique(c(unlist(sapply(1:length(dn), function(i) 
             dn[[i]][[j]]
@@ -70,8 +72,8 @@ stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, drop=F
 
     # fill each result matrix slice with matched values of arrayList
     offset = 0
-    for (i in .u$dimnames(arrayList, null.as.integer=TRUE)) {
-        dm = .u$dimnames(arrayList[[i]], null.as.integer=TRUE)
+    for (i in seq_along(arrayList)) {
+        dm = .dn$dimnames(arrayList[[i]], null.as.integer=TRUE)
         if (stack_offset) {
             dm[[along]] = dm[[along]] + offset
             offset = offset + dim(arrayList[[i]])[along]

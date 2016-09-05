@@ -27,40 +27,6 @@ dim = function(x) {
         base::dim(x)
 }
 
-#' Return \code{dimnames()} of an array respecting the number of dimensions
-#'
-#' @param X      An n-dimensional array
-#' @param along  Limit to dimension (default: all)    
-#' @param null.as.integer  Whether nameless dimensions should be \code{NULL} or numbered
-#' @return       A list of dimension names with length \code{length(ndim(X))}
-dimnames = function(X, along=NULL, null.as.integer=FALSE) {
-    if (is.list(X) && !is.data.frame(X)) {
-        if (is.null(names(X))) {
-            if (null.as.integer)
-                dn = c(1:length(X))
-            else
-                dn = list(NULL)
-        }
-        else
-            dn = names(X)
-    } else {
-        if (!is.data.frame(X))
-            X = as.array(X)
-        if (is.null(base::dimnames(X)))
-            dn = rep(list(NULL), length(dim(X)))
-        else
-            dn = base::dimnames(X)
-        if (null.as.integer == TRUE)
-            dn = lapply(1:length(dn), function(i) 
-                if (is.null(dn[[i]])) 1:dim(X)[i] else dn[[i]])
-    }
-
-    if (is.null(along))
-        dn
-    else
-        dn[[along]]
-}
-
 #' Assigns matrix element names by row- and column names
 #'
 #' @param X    An n-dimensional array

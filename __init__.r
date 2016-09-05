@@ -1,4 +1,5 @@
 export_submodule('./util')
+export_submodule('./dimnames')
 export_submodule('./bind')
 export_submodule('./filter')
 export_submodule('./flatten')
