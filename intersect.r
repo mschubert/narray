@@ -52,7 +52,7 @@ intersect_list = function(l., along=1, drop=FALSE) {
     if (!is.list(l.))
         stop("`intersect_list()` expects a list as first argument, found: ", class(l.))
 
-    namesalong = lapply(l., function(f) .u$dimnames(f)[[along]])
+    namesalong = lapply(l., function(f) .u$dimnames(f, along=along))
     common = do.call(.b$intersect, namesalong)
     lapply(l., function(e) .s$subset(e, index=common, along=along, drop=drop))
 }

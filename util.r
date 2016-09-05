@@ -29,10 +29,11 @@ dim = function(x) {
 
 #' Return \code{dimnames()} of an array respecting the number of dimensions
 #'
-#' @param X                An n-dimensional array
+#' @param X      An n-dimensional array
+#' @param along  Limit to dimension (default: all)    
 #' @param null.as.integer  Whether nameless dimensions should be \code{NULL} or numbered
-#' @return                 A list of dimension names with length \code{length(ndim(X))}
-dimnames = function(X, null.as.integer=FALSE) {
+#' @return       A list of dimension names with length \code{length(ndim(X))}
+dimnames = function(X, along=NULL, null.as.integer=FALSE) {
     if (is.list(X) && !is.data.frame(X)) {
         if (is.null(names(X))) {
             if (null.as.integer)
@@ -54,7 +55,10 @@ dimnames = function(X, null.as.integer=FALSE) {
                 if (is.null(dn[[i]])) 1:dim(X)[i] else dn[[i]])
     }
 
-    dn
+    if (is.null(along))
+        dn
+    else
+        dn[[along]]
 }
 
 #' Assigns matrix element names by row- and column names
