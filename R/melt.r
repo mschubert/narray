@@ -3,6 +3,7 @@
 #' @param ...       Array[s] or data.frame[s] to be melted
 #' @param dimnames  List of names along the dimensions (instead of `VarX`)
 #' @param na_rm     Remove rows with NAs
+#' @export
 melt = function(..., dimnames=NULL, na_rm=TRUE) {
     l. = list(...)
     for (i in seq_along(l.)) {

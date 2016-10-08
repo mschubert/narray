@@ -4,6 +4,7 @@
 #'
 #' @param A  N-dimensional logical array
 #' @return   A matrix with indices where \code{A == TRUE}
+#' @export
 which = function(A){
     if ( is.vector(A) ) return(which(A))
     d = dim(A)
@@ -20,6 +21,8 @@ which = function(A){
 }
 
 #' base::dim, but returning 1 for vector
+#'
+#' @export
 dim = function(x) {
     if (is.vector(x))
         length(x)
@@ -32,6 +35,7 @@ dim = function(x) {
 #' @param X    An n-dimensional array
 #' @param sep  Character to use when assembling names for each element
 #' @return     A vector of name characters for each element of the array \code{X}
+#' @export
 elementnames = function(X, sep=":") {
     apply(expand.grid(dimnames(X, null.as.integer=T)), 1, 
           function(x) paste(x,collapse=sep))
@@ -42,6 +46,7 @@ elementnames = function(X, sep=":") {
 #' @param X     An n-dimensional array
 #' @param like  An n-dimensional array whose form \code{X} should inherit
 #' @return      An array with values of \code{X} and structure of \code{like}
+#' @export
 like = function(X, like) {
     like[] = X
     like
