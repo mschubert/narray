@@ -4,10 +4,13 @@ Version: 0.0.1
 Author: Michael Schubert <mschu.dev@gmail.com>
 Maintainer: Michael Schubert <mschu.dev@gmail.com>
 Description: Provides functions to query and manipulate arrays
-    of arbitrary dimensions
+    of arbitrary dimensions.
 Depends:
     R (>= 3.0.2)
 Imports:
+    abind,
+    plyr,
+    reshape2,
     tools,
     roxygen2
 License: Apache License (== 2.0) | file LICENSE
