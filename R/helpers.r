@@ -134,15 +134,3 @@ duplicated = function(x, ..., all=F, random=F) {
     else
         base::duplicated(x, ...)
 }
-
-#' intersect() function that takes an arbitrary number of elements
-#'
-#' @param ...  Arbitrary elements that `base::intersect` should be called on
-intersect = function(...) {
-    Reduce(base::intersect, list(...))
-}
-
-#' expand.grid() function not converting to factors
-expand_grid = function(..., KEEP.OUT.ATTRS=FALSE, stringsAsFactors=FALSE) {
-    base::expand.grid(..., KEEP.OUT.ATTRS=KEEP.OUT.ATTRS, stringsAsFactors=stringsAsFactors)
-}

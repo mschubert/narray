@@ -52,6 +52,10 @@ intersect_list = function(l., along=1, drop=FALSE) {
     if (!is.list(l.))
         stop("`intersect_list()` expects a list as first argument, found: ", class(l.))
 
-    common = do.call(function(x) Reduce(base::intersect, x), dimnames(l., along=along))
+    red_int = function(...) {
+        Reduce(base::intersect, list(...))
+    }
+
+    common = do.call(red_int, dimnames(l., along=along))
     lapply(l., function(e) subset(e, index=common, along=along, drop=drop))
 }
