@@ -12,7 +12,7 @@ map_simple = function(X, along, FUN, drop=TRUE) {
     if (length(dim(Y)) < length(dim(X)))
         Y = array(Y, dim=c(1, dim(Y)), dimnames=c(list(NULL), dimnames(Y)))
 
-    Y = aperm(Y, match(seq_along(dim(Y)), c(along, preserveAxes)))
+    Y = aperm(Y, base::match(seq_along(dim(Y)), c(along, preserveAxes)))
     if (drop)
         drop(Y)
     else

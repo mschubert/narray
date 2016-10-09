@@ -9,8 +9,6 @@
 #' @return       A summarized matrix as defined by `from`, `to`
 #' @export
 summarize = function(x, along=1, to, from=dimnames(x)[[along]], ...,  FUN=aggr_error) {
-    stop("missing implementation of match()")
-
     lookup = match(dimnames(x)[[along]], from=from, to=to, ..., na_rm=TRUE)
     x = subset(x, index=names(lookup), along=along)
     
