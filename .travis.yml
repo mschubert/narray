@@ -1,5 +1,7 @@
 language: R
 
+warnings_are_errors: false
+
 r_binary_packages:
     - abind
     - plyr
