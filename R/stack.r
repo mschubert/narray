@@ -22,7 +22,7 @@ stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, drop=F
         return(arrayList[[1]])
 
     # for vectors: if along=1 row vecs, along=2 col vecs, etc.
-    if (all(is.null(unlist(lapply(arrayList, dim))))) {
+    if (all(is.null(unlist(lapply(arrayList, base::dim))))) {
         if (along == 1)
             arrayList = lapply(seq_along(arrayList), function(i) {
                 re = t(as.matrix(arrayList[[i]]))
