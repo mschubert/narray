@@ -1,6 +1,8 @@
 Array and Matrix processing
 ===========================
 
+[![Build Status](https://travis-ci.org/mschubert/arraytools.svg?branch=master)](https://travis-ci.org/mschubert/arraytools)
+
 This modules provides some general utility functions for array programming.
 See the `roxygen2` annotation for a more detailed description using `?function`.
 
