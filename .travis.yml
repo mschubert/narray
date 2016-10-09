@@ -1,0 +1,8 @@
+language: R
+
+r_binary_packages:
+    - abind
+    - plyr
+    - reshape2
+    - roxygen2
+    - tools
