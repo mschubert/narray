@@ -22,12 +22,15 @@ construct = function(formula, data, fill=NULL, fun.aggregate=NULL, ...) {
         data = data[!axis_NA,]
     }
 
-    withCallingHandlers(
-        res = sapply(dep_vars, function(v) reshape2::acast(data, formula=form,
-            value.var=v, fill=fill, fun.aggregate=fun.aggregate, ...
-        ), simplify=FALSE),
-        message = stop("Do not know how to aggregate")
-    )
+	`%catchm%` = function(a, b) {
+		withCallingHandlers(
+			a,
+			message = function(w) b
+		)
+	}
+	res = sapply(dep_vars, function(v) reshape2::acast(data, formula=form,
+		value.var=v, fill=fill, fun.aggregate=fun.aggregate, ...
+	), simplify=FALSE) %catchm% stop("Do not know how to aggregate")
 
     if (length(res) == 1) #TODO: drop_list in base?
         res[[1]]
