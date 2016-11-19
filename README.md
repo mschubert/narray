@@ -8,10 +8,13 @@ See the `roxygen2` annotation for a more detailed description using `?function`.
 
 A summary of the most important functions is listed below.
 
-### `stack()`
+Stacking and splitting
+----------------------
 
-Like `cbind`/`rbind`, but along arbitrary axes, and taking care of (1) names 
+`stack()` is like `cbind`/`rbind`, but along arbitrary axes, and taking care of (1) names 
 along each dimension and (2) padding partial matching arrays.
+
+![stack-schema](inst/extdata/stack.png)
 
 ```r
 A = matrix(1:4, nrow=2, ncol=2, dimnames=list(c('a','b'),c('x','y')))
@@ -30,22 +33,9 @@ D = stack(list(m=A, n=C), along=3)
 # b 2 4 NA       b 2 4 5
 ```
 
-### `map()`
+`split()` splits an array along a given axis; can do each element or defined subsets.
 
-Like `apply`, but not modifying array dimensions and allowing to specify 
-subsets that the function should be applied on; also keeps names.
-
-```r
-map(D, along=1, function(x) sum(x, na.rm=TRUE))
-#   m  n
-# x 3  3
-# y 7  7
-# z 0 11
-```
-
-### `split()`
-
-Splits an array along a given axis; can do each element or defined subsets.
+![split](inst/extdata/split.png)
 
 ```r
 split(C, along=2, subsets=c('s1','s1','s2'))
@@ -55,7 +45,26 @@ split(C, along=2, subsets=c('s1','s1','s2'))
 # b 2 4
 ```
 
-### `intersect()`
+Mapping functions on arrays
+---------------------------
+
+Like `apply`, but not modifying array dimensions and allowing to specify 
+subsets that the function should be applied on; also keeps names.
+
+![map-schema](inst/extdata/map.png)
+
+```r
+map(D, along=1, function(x) sum(x, na.rm=TRUE))
+#   m  n
+# x 3  3
+# y 7  7
+# z 0 11
+```
+
+Intersecting
+------------
+
+![intersect-schema](inst/extdata/intersect.png)
 
 Takes a number of arrays, intersects their names along a given dimension,
 and returns sub-arrays that match in their names; `intersect_list` takes 
@@ -74,7 +83,27 @@ intersect(A, E, along=2)
 # b 2 4       b 2 4   # values in-place
 ```
 
-### `mask()`
+Converting to and from `data.frame`s
+------------------------------------
+
+`construct()` takes a data frame and a formula specifying dependent (values) and independent
+(axes) of the resulting array.
+
+![construct-schema](inst/extdata/construct.png)
+
+```r
+DF = data.frame(expand.grid(LETTERS[1:3], LETTERS[4:5])[-3,], value=1:5)
+G = construct(DF, value ~ Var1 + Var2, fun.aggregate=sum)
+#   D E
+# A 1 3
+# B 2 4
+# C 0 5
+```
+
+Masks from factors and lists
+----------------------------
+
+![mask-schema](inst/extdata/mask.png)
 
 Takes either a factor or a list of vectors and creates a binary matrix 
 specifying whether each element is present.
@@ -86,30 +115,4 @@ mask(F)
 # a  TRUE  TRUE
 # b  TRUE FALSE
 # c FALSE  TRUE
-```
-
-### `construct()`
-
-Takes a data frame and a formula specifying dependent (values) and independent
-(axes) of the resulting array.
-
-```r
-DF = data.frame(expand.grid(LETTERS[1:3], LETTERS[4:5])[-3,], value=1:5)
-G = construct(DF, value ~ Var1 + Var2, fun.aggregate=sum)
-#   D E
-# A 1 3
-# B 2 4
-# C 0 5
-```
-
-### `summarize()`
-
-Summarizes the rows of an array as indicated by the mapping (`from`, `to`),
-and the function `FUN`, discarding multiple mappings.
-
-```r
-summarize(G, from=rownames(G), to=c('a','b','b'), along=1, FUN=mean)
-#   D   E
-# a 1 3.0
-# b 1 4.5
 ```
