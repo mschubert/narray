@@ -3,6 +3,8 @@
 #' @param X        An n-dimensional array
 #' @param along    Along which axis to apply the function
 #' @param FUN      A function that maps a vector to the same length or a scalar
+#' @param drop     Remove unused dimensions after mapping; default: TRUE
+#' @return         An array where \code{FUN} has been applied
 map_simple = function(X, along, FUN, drop=TRUE) {
     if (is.vector(X) || length(dim(X))==1)
         return(FUN(X))

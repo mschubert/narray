@@ -1,4 +1,8 @@
 #' operator for array-like logical ops
+#'
+#' @param a  First vector
+#' @param b  Second vector
+#' @return   TRUE/FALSE for each element
 `%or%` = function(a, b) {
     cmp = function(a,b) if (identical(a, FALSE) ||
                             is.null(a) ||
@@ -27,6 +31,8 @@
 #' @param fuzzy_level  0 for exact, 1 punctuation, and 2 closest character
 #' @param table        Return a matching table instead of just the matches
 #' @param na_rm        Flag to remove items that can not be mapped
+#' @param warn         Display warning for all fuzzy matches
+#' @return             Mapped values
 match = function(x, from, to, filter_from=NULL, filter_to=NULL, data=parent.frame(),
                  fuzzy_level=0, table=FALSE, na_rm=FALSE, warn=!table && fuzzy_level>0) {
 
@@ -46,8 +52,7 @@ match = function(x, from, to, filter_from=NULL, filter_to=NULL, data=parent.fram
 
     # remove identical mappings, then map ambivalent to NA
     df = data.frame(from=from, to=to)
-	df = df[!duplicated(df),]
-    df$to[duplicated(df$from) | rev(duplicated(rev(df$from)))] = NA
+	df = df[!duplicated(df$from) | rev(duplicated(rev(df$from)))] = NA
 	df = df[!duplicated(df),]
     from = df$from
     to = df$to
@@ -67,7 +72,7 @@ match = function(x, from, to, filter_from=NULL, filter_to=NULL, data=parent.fram
 
     # 3rd iteration: closest string matches w/o punctuation
     if (fuzzy_level > 1) {
-        distances = adist(FROM, x_match)
+        distances = utils::adist(FROM, x_match)
         mind = apply(distances, 2, min)
         nmin = sapply(1:length(mind), function(i) sum(mind[i]==distances[,i]))
         mind[nmin>1] = NA # no non-unique matches
@@ -82,7 +87,7 @@ match = function(x, from, to, filter_from=NULL, filter_to=NULL, data=parent.fram
 
     if (warn) {
         warning("Non-exact matches detected")
-        print(na.omit(data.frame(x=x, from=from)[x!=from,]))
+        print(stats::na.omit(data.frame(x=x, from=from)[x!=from,]))
     }
 
 #    if (table && fuzzy_level == 0)
@@ -90,18 +95,19 @@ match = function(x, from, to, filter_from=NULL, filter_to=NULL, data=parent.fram
 #    else if (table && fuzzy_level > 0)
 #        .omit$na(data_frame(x=x, from=from, to=to), cols=c('x','to'), omit=na_rm)
 #    else
-#        .omit$na(setNames(to, x), omit=na_rm)
+#        .omit$na(stats::setNames(to, x), omit=na_rm)
 
     if (table && fuzzy_level == 0)
-        data_frame(x=x, to=to)
+        data.frame(x=x, to=to)
     else if (table && fuzzy_level > 0)
-        data_frame(x=x, from=from, to=to)
+        data.frame(x=x, from=from, to=to)
     else
-        setNames(to, x)
+        stats::setNames(to, x)
 }
 
 #' duplicated() function with extended functionality
 #'
+#' @param x       Object to check for duplicates on
 #' @param ...     Arguments to be passed to R's `duplicated()`
 #' @param all     Return all instances of duplicated entries
 #' @param random  Randomly select with entry is marked as duplicate

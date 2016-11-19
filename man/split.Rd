@@ -12,6 +12,8 @@ split(X, along, subsets = c(1:dim(X)[along]), drop = FALSE)
 \item{along}{Along which axis to split; use -1 for highest dimension}
 
 \item{subsets}{Whether to split each element or keep some together}
+
+\item{drop}{Remove unused dimensions after mapping; default: TRUE}
 }
 \value{
 A list of arrays that combined make up the input array

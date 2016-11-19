@@ -8,12 +8,12 @@
 #' @param FUN    Which function to apply, default is throwing error on aggregation
 #' @return       A summarized matrix as defined by `from`, `to`
 #' @export
-summarize = function(x, along=1, to, from=dimnames(x)[[along]], ...,  FUN=aggr_error) {
+summarize = function(x, along=1, to, from=dimnames(x)[[along]], ...,  FUN) {
     lookup = match(dimnames(x)[[along]], from=from, to=to, ..., na_rm=TRUE)
     x = subset(x, index=names(lookup), along=along)
     
     # aggregate the rest using fun
-    split(x, along=along, subsets=lookup) %>%
-        lapply(function(j) map(j, along, FUN, drop=FALSE)) %>%
-        bind(along=along)
+    re = split(x, along=along, subsets=lookup)
+    re = lapply(re, function(j) map(j, along, FUN, drop=FALSE))
+    bind(re, along=along)
 }

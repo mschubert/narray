@@ -13,7 +13,7 @@ construct = function(formula, data, fill=NULL, fun.aggregate=NULL, ...) {
 
     dep_vars = all.vars(formula[[2]])
     indep_vars = all.vars(formula[[3]]) #TODO: if factor, include all levels in matrix
-    form = as.formula(paste(indep_vars, collapse = "~"))
+    form = stats::as.formula(paste(indep_vars, collapse = "~"))
 
     data = as.data.frame(data)
     axis_NA = apply(is.na(data[indep_vars]), 1, any)

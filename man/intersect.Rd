@@ -12,6 +12,8 @@ intersect(..., along = 1, envir = parent.frame(), drop = FALSE)
 \item{along}{The axis along which to intersect}
 
 \item{envir}{A list or environment to act upon}
+
+\item{drop}{Drop unused dimensions on result}
 }
 \description{
 TODO: accept along=c(1,2,1,1...) [maybe list w/ vectors as well?]

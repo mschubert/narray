@@ -7,6 +7,6 @@ mask = function(x) {
     if (is.factor(x))
         x = as.character(x)
 
-    vectorList = lapply(x, function(xi) setNames(rep(TRUE, length(xi)), xi))
+    vectorList = lapply(x, function(xi) stats::setNames(rep(TRUE, length(xi)), xi))
     stack(vectorList, fill=FALSE)
 }

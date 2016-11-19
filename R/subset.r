@@ -3,6 +3,7 @@
 #' @param X      The array to subset
 #' @param index  A list of vectors to use for subsetting, or vector if along is given
 #' @param along  Along which dimension to subset if index is a vector; default is last dimension
+#' @param drop   Remove unused dimensions after mapping; default: TRUE
 #' @return       The subset of the array
 #' @export
 subset = function(X, index, along=NULL, drop=FALSE) {

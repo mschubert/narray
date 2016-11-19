@@ -6,6 +6,9 @@
 \usage{
 dim(x)
 }
+\arguments{
+\item{x}{Object to get dimensions on}
+}
 \description{
 base::dim, but returning 1 for vector
 }

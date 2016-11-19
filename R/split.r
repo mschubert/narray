@@ -3,6 +3,7 @@
 #' @param X        An array that should be split
 #' @param along    Along which axis to split; use -1 for highest dimension
 #' @param subsets  Whether to split each element or keep some together
+#' @param drop     Remove unused dimensions after mapping; default: TRUE
 #' @return         A list of arrays that combined make up the input array
 #' @export
 split = function(X, along, subsets=c(1:dim(X)[along]), drop=FALSE) {
@@ -22,5 +23,5 @@ split = function(X, along, subsets=c(1:dim(X)[along]), drop=FALSE) {
         lnames = usubsets
     else
         lnames = base::dimnames(X)[[along]]
-    setNames(lapply(idxList, function(ll) subset(X, ll, drop=drop)), lnames)
+    stats::setNames(lapply(idxList, function(ll) subset(X, ll, drop=drop)), lnames)
 }

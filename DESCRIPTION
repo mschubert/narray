@@ -10,9 +10,11 @@ Depends:
 Imports:
     abind,
     plyr,
+    pryr,
     reshape2,
-    tools,
-    roxygen2
+    stats,
+    stringr,
+    utils
 License: Apache License (== 2.0) | file LICENSE
 LazyData: true
 Encoding: UTF-8

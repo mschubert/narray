@@ -4,8 +4,7 @@
 \alias{summarize}
 \title{Summarize a matrix analogous to a grouped df in dplyr}
 \usage{
-summarize(x, along = 1, to, from = dimnames(x)[[along]], ...,
-  FUN = aggr_error)
+summarize(x, along = 1, to, from = dimnames(x)[[along]], ..., FUN)
 }
 \arguments{
 \item{x}{A matrix}

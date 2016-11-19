@@ -7,6 +7,8 @@
 duplicated(x, ..., all = F, random = F)
 }
 \arguments{
+\item{x}{Object to check for duplicates on}
+
 \item{...}{Arguments to be passed to R's `duplicated()`}
 
 \item{all}{Return all instances of duplicated entries}

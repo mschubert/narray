@@ -6,9 +6,10 @@
 #' @param ...    Arrays that should be intersected
 #' @param along  The axis along which to intersect
 #' @param envir  A list or environment to act upon
+#' @param drop   Drop unused dimensions on result
 #' @export
 intersect = function(..., along=1, envir=parent.frame(), drop=FALSE) {
-    dots = import_package_('pryr')$named_dots(...)
+    dots = pryr::named_dots(...)
 
     # for `data.frame`s, replace the rownames by field that is referenced
     for (i in seq_along(dots)) {
@@ -39,7 +40,7 @@ intersect = function(..., along=1, envir=parent.frame(), drop=FALSE) {
     # modify the list or environment with the intersected results
     if (is.list(envir))
         assign(as.character(match.call()$envir),
-               modifyList(envir, dots), envir=parent.frame())
+               utils::modifyList(envir, dots), envir=parent.frame())
     else
         for (name in names(dots))
             assign(name, dots[[name]], envir=envir)
@@ -47,6 +48,9 @@ intersect = function(..., along=1, envir=parent.frame(), drop=FALSE) {
 
 #' Intersects a lits of arrays for common dimension names
 #'
+#' @param l.     List of arrays to perform operations on
+#' @param along  The axis along which to intersect
+#' @param drop   Drop unused dimensions on result
 #' @export
 intersect_list = function(l., along=1, drop=FALSE) {
     if (!is.list(l.))

@@ -22,7 +22,7 @@ filter = function(X, along, FUN, subsets=rep(1,dim(X)[along]), na.rm=FALSE) {
                 X[subsets==msub, mcol] = NA #FIXME: work for matrices as well
 
     if (na.rm)
-        t(na.omit(t(na.omit(X))))
+        t(stats::na.omit(t(stats::na.omit(X))))
     else
         X
 }

@@ -26,6 +26,11 @@ match(x, from, to, filter_from = NULL, filter_to = NULL,
 \item{table}{Return a matching table instead of just the matches}
 
 \item{na_rm}{Flag to remove items that can not be mapped}
+
+\item{warn}{Display warning for all fuzzy matches}
+}
+\value{
+Mapped values
 }
 \description{
 match() function with extended functionality

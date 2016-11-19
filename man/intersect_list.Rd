@@ -6,6 +6,13 @@
 \usage{
 intersect_list(l., along = 1, drop = FALSE)
 }
+\arguments{
+\item{l.}{List of arrays to perform operations on}
+
+\item{along}{The axis along which to intersect}
+
+\item{drop}{Drop unused dimensions on result}
+}
 \description{
 Intersects a lits of arrays for common dimension names
 }

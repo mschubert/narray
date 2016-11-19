@@ -3,6 +3,7 @@
 #' @param arrayList  A list of n-dimensional arrays
 #' @param along      Which axis arrays should be stacked on (default: new axis)
 #' @param fill       Value for unknown values (default: \code{NA})
+#' @param drop     Remove unused dimensions after mapping; default: TRUE
 #' @return           A stacked array, either n or n+1 dimensional
 #' @export
 stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, drop=FALSE) {

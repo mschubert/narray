@@ -12,6 +12,11 @@ map_simple(X, along, FUN, drop = TRUE)
 \item{along}{Along which axis to apply the function}
 
 \item{FUN}{A function that maps a vector to the same length or a scalar}
+
+\item{drop}{Remove unused dimensions after mapping; default: TRUE}
+}
+\value{
+An array where \code{FUN} has been applied
 }
 \description{
 Apply function that preserves order of dimensions

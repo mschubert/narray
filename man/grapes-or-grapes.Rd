@@ -6,6 +6,14 @@
 \usage{
 a \%or\% b
 }
+\arguments{
+\item{a}{First vector}
+
+\item{b}{Second vector}
+}
+\value{
+TRUE/FALSE for each element
+}
 \description{
 operator for array-like logical ops
 }
