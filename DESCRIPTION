@@ -1,6 +1,6 @@
-Package: arraytools
+Package: narray
 Title: R package for handling arrays in a consistent manner
-Version: 0.0.1
+Version: 0.0.2
 Author: Michael Schubert <mschu.dev@gmail.com>
 Maintainer: Michael Schubert <mschu.dev@gmail.com>
 Description: Provides functions to query and manipulate arrays
