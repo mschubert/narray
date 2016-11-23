@@ -3,10 +3,18 @@ Array and Matrix processing
 
 [![Build Status](https://travis-ci.org/mschubert/narray.svg?branch=master)](https://travis-ci.org/mschubert/narray)
 
-This modules provides some general utility functions for array programming.
-See the `roxygen2` annotation for a more detailed description using `?function`.
+This package provides consistent utility functions for array programming with
+arbitrary dimensions (summary below).
 
-A summary of the most important functions is listed below.
+We recommend to load this package in its own namespace to not shadow base R
+functions using [modules](https://github.com/klmr/modules) or
+[import](https://github.com/smbache/import).
+
+```r
+# example using `modules`
+ar = modules::import_package(narray)
+ar$myfunction(...)
+```
 
 Stacking and splitting
 ----------------------
