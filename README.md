@@ -25,7 +25,7 @@ C = stack(list(A, B), along=2)
 #  a 1 3 6   # B is stacked correctly according to its names
 #  b 2 4 5
 
-D = stack(list(m=A, n=C), along=3)
+D = stack(list(m=A, n=C), along=3) # we can also introduce new dimensions
 # , , m          , , n
 #
 #   x y  z         x y z
@@ -40,25 +40,31 @@ D = stack(list(m=A, n=C), along=3)
 ```r
 split(C, along=2, subsets=c('s1','s1','s2'))
 # $s1          $s2
-#   x y        a b   # each subset is split into a separate array
-# a 1 3        5 6
-# b 2 4
+#   x y          z   # each subset is split into a separate array
+# a 1 3        a 6   # use drop=TRUE to get a vector for s2
+# b 2 4        b 5
 ```
 
 Mapping functions on arrays
 ---------------------------
 
-Like `apply`, but not modifying array dimensions and allowing to specify 
-subsets that the function should be applied on; also keeps names.
+Like `apply`, but not reordering array dimensions and allowing to specify 
+subsets that the function should be applied on. The function must either return
+a vector of the same length as the input (returns matrix of same dimension) or
+of length 1 (drops current dimension or returns subsets).
 
 ![map-schema](inst/extdata/map.png)
 
 ```r
-map(D, along=1, function(x) sum(x, na.rm=TRUE))
-#   m  n
-# x 3  3
-# y 7  7
-# z 0 11
+map(C, along=2, function(x) x*2) # return same length vector
+#   x y  z
+# a 2 6 12
+# b 4 8 10
+
+map(C, along=2, mean, subsets=c('s1', 's1', 's2')) # summarize each subset to scalar
+#   s1 s2
+# a  2  6
+# b  3  5
 ```
 
 Intersecting
@@ -71,16 +77,14 @@ a list of arrays and returns a list of subsets.
 ![intersect-schema](inst/extdata/intersect.png)
 
 ```r
-E = C[,c(2,3,1)]
-#   y z x
-# a 3 6 1
-# b 4 5 2
+E = matrix(1:6, nrow=3, dimnames=list(c('a','b','d'), c('x','y')))
+F = matrix(7:9, nrow=3, dimnames=list(c('b','a','c'), 'z'))
 
-intersect(A, E, along=2)
-# > A         > E
-#   x y         x y   # along dimension 2, all arrays have same extent
-# a 1 3       a 1 3   # and same order of names; this function modifies
-# b 2 4       b 2 4   # values in-place
+intersect(E, F, along=1)
+# > E        > F
+#   x y        z
+# a 1 4      a 8
+# b 2 5      b 7
 ```
 
 Converting to and from `data.frame`s
@@ -92,12 +96,12 @@ Converting to and from `data.frame`s
 ![construct-schema](inst/extdata/construct.png)
 
 ```r
-DF = data.frame(expand.grid(LETTERS[1:3], LETTERS[4:5])[-3,], value=1:5)
-G = construct(DF, value ~ Var1 + Var2, fun.aggregate=sum)
-#   D E
-# A 1 3
-# B 2 4
-# C 0 5
+DF = data.frame(k1=rep(letters[1:3],2), k2=rep(letters[24:25],3), v=1:6)[-6,]
+construct(v ~ k1 + k2, DF)
+#   x  y
+# a 1  4
+# b 5  2
+# c 3 NA
 ```
 
 Masks from factors and lists
@@ -109,10 +113,10 @@ specifying whether each element is present.
 ![mask-schema](inst/extdata/mask.png)
 
 ```r
-F = list(a=c('e1','e2'),b='e1',c='e2')
-mask(F)
+G = list(a='e1', b=c('e1','e2'), c='e2')
+mask(G)
 #      e1    e2
-# a  TRUE  TRUE
-# b  TRUE FALSE
+# a  TRUE FALSE
+# b  TRUE  TRUE
 # c FALSE  TRUE
 ```
