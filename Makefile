@@ -1,5 +1,5 @@
 .PHONY: all
-all: documentation #vignettes
+all: documentation vignettes
 
 .PHONY: vignettes
 # Additionally build the *.md file, and copy all files
@@ -11,7 +11,7 @@ knit_results=$(patsubst vignettes/%.rmd,inst/doc/%.md,${rmd_files})
 
 .PHONY: knit_all
 knit_all: inst/doc ${knit_results}
-	cp -r vignettes/* inst/doc/
+	cp -r vignettes/narray* inst/doc/
 
 inst/doc:
 	mkdir -p $@
