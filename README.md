@@ -22,7 +22,7 @@ Stacking and splitting
 `stack()` is like `cbind`/`rbind`, but along arbitrary axes, and taking care of (1) names 
 along each dimension and (2) padding partial matching arrays.
 
-![stack-schema](inst/extdata/stack.png)
+![stack-schema](vignettes/stack.png)
 
 ```r
 A = matrix(1:4, nrow=2, ncol=2, dimnames=list(c('a','b'),c('x','y')))
@@ -43,7 +43,7 @@ D = stack(list(m=A, n=C), along=3) # we can also introduce new dimensions
 
 `split()` splits an array along a given axis; can do each element or defined subsets.
 
-![split](inst/extdata/split.png)
+![split](vignettes/split.png)
 
 ```r
 split(C, along=2, subsets=c('s1','s1','s2'))
@@ -61,7 +61,7 @@ subsets that the function should be applied on. The function must either return
 a vector of the same length as the input (returns matrix of same dimension) or
 of length 1 (drops current dimension or returns subsets).
 
-![map-schema](inst/extdata/map.png)
+![map-schema](vignettes/map.png)
 
 ```r
 map(C, along=2, function(x) x*2) # return same length vector
@@ -82,7 +82,7 @@ Takes a number of arrays, intersects their names along a given dimension,
 and returns sub-arrays that match in their names; `intersect_list` takes 
 a list of arrays and returns a list of subsets.
 
-![intersect-schema](inst/extdata/intersect.png)
+![intersect-schema](vignettes/intersect.png)
 
 ```r
 E = matrix(1:6, nrow=3, dimnames=list(c('a','b','d'), c('x','y')))
@@ -101,7 +101,7 @@ Converting to and from `data.frame`s
 `construct()` takes a data frame and a formula specifying dependent (values) and independent
 (axes) of the resulting array.
 
-![construct-schema](inst/extdata/construct.png)
+![construct-schema](vignettes/construct.png)
 
 ```r
 DF = data.frame(k1=rep(letters[1:3],2), k2=rep(letters[24:25],3), v=1:6)[-6,]
@@ -118,7 +118,7 @@ Masks from factors and lists
 Takes either a factor or a list of vectors and creates a binary matrix 
 specifying whether each element is present.
 
-![mask-schema](inst/extdata/mask.png)
+![mask-schema](vignettes/mask.png)
 
 ```r
 G = list(a='e1', b=c('e1','e2'), c='e2')
