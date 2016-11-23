@@ -7,8 +7,8 @@ This package provides consistent utility functions for array programming with
 arbitrary dimensions (summary below).
 
 We recommend to load this package in its own namespace to not shadow base R
-functions using [modules](https://github.com/klmr/modules) or
-[import](https://github.com/smbache/import).
+functions using [`modules`](https://github.com/klmr/modules) or
+[`import`](https://github.com/smbache/import).
 
 ```r
 # example using `modules`
