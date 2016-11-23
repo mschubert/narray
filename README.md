@@ -1,7 +1,7 @@
 Array and Matrix processing
 ===========================
 
-[![Build Status](https://travis-ci.org/mschubert/arraytools.svg?branch=master)](https://travis-ci.org/mschubert/arraytools)
+[![Build Status](https://travis-ci.org/mschubert/narray.svg?branch=master)](https://travis-ci.org/mschubert/narray)
 
 This modules provides some general utility functions for array programming.
 See the `roxygen2` annotation for a more detailed description using `?function`.
@@ -64,11 +64,11 @@ map(D, along=1, function(x) sum(x, na.rm=TRUE))
 Intersecting
 ------------
 
-![intersect-schema](inst/extdata/intersect.png)
-
 Takes a number of arrays, intersects their names along a given dimension,
 and returns sub-arrays that match in their names; `intersect_list` takes 
 a list of arrays and returns a list of subsets.
+
+![intersect-schema](inst/extdata/intersect.png)
 
 ```r
 E = C[,c(2,3,1)]
@@ -103,10 +103,10 @@ G = construct(DF, value ~ Var1 + Var2, fun.aggregate=sum)
 Masks from factors and lists
 ----------------------------
 
-![mask-schema](inst/extdata/mask.png)
-
 Takes either a factor or a list of vectors and creates a binary matrix 
 specifying whether each element is present.
+
+![mask-schema](inst/extdata/mask.png)
 
 ```r
 F = list(a=c('e1','e2'),b='e1',c='e2')
