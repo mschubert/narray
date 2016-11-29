@@ -4,14 +4,14 @@
 \alias{dimnames}
 \title{Return dimension names of an array respecting the number of dimensions}
 \usage{
-dimnames(x, along = TRUE, null.as.integer = FALSE, drop = TRUE)
+dimnames(x, along = TRUE, null_as_integer = FALSE, drop = TRUE)
 }
 \arguments{
 \item{x}{An n-dimensional array}
 
 \item{along}{Limit to dimension (default: all)}
 
-\item{null.as.integer}{Whether nameless dimensions should be \code{NULL} or numbered}
+\item{null_as_integer}{Whether nameless dimensions should be \code{NULL} or numbered}
 
 \item{drop}{Drop list of only one axis requested (default: TRUE)}
 }

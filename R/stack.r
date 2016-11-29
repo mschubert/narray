@@ -73,7 +73,7 @@ stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, drop=F
     # fill each result matrix slice with matched values of arrayList
     offset = 0
     for (i in seq_along(arrayList)) {
-        dm = dimnames(arrayList[[i]], null.as.integer=TRUE)
+        dm = dimnames(arrayList[[i]], null_as_integer=TRUE)
         if (stack_offset) {
             dm[[along]] = dm[[along]] + offset
             offset = offset + dim(arrayList[[i]])[along]
