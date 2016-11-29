@@ -8,5 +8,5 @@ mask = function(x) {
         x = as.character(x)
 
     vectorList = lapply(x, function(xi) stats::setNames(rep(TRUE, length(xi)), xi))
-    stack(vectorList, fill=FALSE)
+    t(stack(vectorList, fill=FALSE))
 }

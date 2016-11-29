@@ -3,7 +3,7 @@ context("mask")
 test_that("mask", {
     F = list(a=c('e1','e2'),b='e1',c='e2')
 
-    Z = t(mask(F))
+    Z = mask(F)
     #      e1    e2
     # a  TRUE  TRUE
     # b  TRUE FALSE

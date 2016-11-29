@@ -2,7 +2,8 @@
 title: "narray Usage Examples"
 author: "Michael Schubert"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{narray Usage Examples}
   %\VignetteEngine{knitr::rmarkdown}
