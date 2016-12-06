@@ -11,6 +11,12 @@
 #' @return               A structured array
 #' @export
 construct = function(data, formula, fill=NULL, fun.aggregate=NULL, ...) {
+    if (inherits(data, "formula")) {
+        swap = data
+        data = formula
+        formula = swap
+    }
+
     if (!is.data.frame(data))
         stop("`data` needs to reference a data.frame")
 
