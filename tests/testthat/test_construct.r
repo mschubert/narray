@@ -28,3 +28,7 @@ test_that("ambiguous row", {
     expect_error(construct(value ~ Var1 + Var2, data=DFa))
     expect_error(construct(DFa, value ~ Var1 + Var2))
 })
+
+test_that("only one dependent variable", {
+    expect_error(construct(value + other ~ Var1 + Var2, data=DF))
+})
