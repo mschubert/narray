@@ -1,13 +1,16 @@
 #' A wrapper around reshape2::acast using a more intuitive formula syntax
 #'
-#' @param formula        A formula: value [+ value2 ..] ~ axis1 [+ axis2 + axis n ..]
+#' The construct() function can be called either with the data.frame as the
+#' first argument or the formula and then specify `data=<data.frame>`
+#'
 #' @param data           A data frame (TODO: handle envs, NULL, etc.)
+#' @param formula        A formula: value [+ value2 ..] ~ axis1 [+ axis2 + axis n ..]
 #' @param fill           Value to fill array with if undefined
 #' @param fun.aggregate  Function to aggregate multiple values for the same position; default: error
 #' @param ...            Additional arguments passed to reshape2::acast
 #' @return               A structured array
 #' @export
-construct = function(formula, data, fill=NULL, fun.aggregate=NULL, ...) {
+construct = function(data, formula, fill=NULL, fun.aggregate=NULL, ...) {
     if (!is.data.frame(data) && is.list(data)) #TODO: check, names at level 1 = '.id'
         data = plyr::ldply(data, data.frame)
 

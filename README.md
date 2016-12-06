@@ -105,7 +105,7 @@ Converting to and from `data.frame`s
 
 ```r
 DF = data.frame(k1=rep(letters[1:3],2), k2=rep(letters[24:25],3), v=1:6)[-6,]
-construct(v ~ k1 + k2, DF)
+construct(v ~ k1 + k2, data=DF)
 #   x  y
 # a 1  4
 # b 5  2
