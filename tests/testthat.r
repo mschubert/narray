@@ -1,4 +1,4 @@
 library(testthat)
-library(arraytools)
+library(narray)
 
-test_check("arraytools")
+test_check("narray")
