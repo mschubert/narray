@@ -8,7 +8,7 @@ which = function(x, drop=TRUE) {
     if (!drop)
         x = as.array(x)
 
-    re = which(x, arr.ind=TRUE)
+    re = base::which(x, arr.ind=TRUE)
     colnames(re) = names(dimnames(x))
     re
 }
