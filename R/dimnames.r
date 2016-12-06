@@ -9,23 +9,10 @@
 #' @return       A list of dimension names with length \code{length(ndim(X))}
 #' @export
 dimnames = function(x, along=TRUE, null_as_integer=FALSE, drop=TRUE) {
-    UseMethod("dimnames")
-}
-
-#' @export
-dimnames.data.frame = function(x, along=TRUE, null_as_integer=FALSE, drop=TRUE) {
-    dimnames(as.matrix(x), along=along, null_as_integer=null_as_integer, drop=drop)
-}
-
-#' @export
-dimnames.list = function(x, along=TRUE, null_as_integer=FALSE, drop=TRUE) {
-    lapply(x, function(x) dimnames(x, along=along, null_as_integer=null_as_integer, drop=drop))
-}
-
-#' @export
-dimnames.default = function(x, along=TRUE, null_as_integer=FALSE, drop=TRUE) {
-#    if (!is.data.frame(x))
-        x = as.array(x)
+    if (is.list(x) && !is.data.frame(x))
+        return(lapply(x, dimnames))
+    if (is.data.frame(x))
+        x = as.matrix(x)
 
     dn = base::dimnames(x)
     if (is.null(dn))
