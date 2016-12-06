@@ -4,7 +4,8 @@ warnings_are_errors: false
 
 r_binary_packages:
     - abind
-    - plyr
+    - pryr
     - reshape2
     - roxygen2
+    - stringr
     - tools
