@@ -4,12 +4,12 @@
 \alias{construct}
 \title{A wrapper around reshape2::acast using a more intuitive formula syntax}
 \usage{
-construct(formula, data, fill = NULL, fun.aggregate = NULL, ...)
+construct(data, formula, fill = NULL, fun.aggregate = NULL, ...)
 }
 \arguments{
-\item{formula}{A formula: value [+ value2 ..] ~ axis1 [+ axis2 + axis n ..]}
+\item{data}{A data frame}
 
-\item{data}{A data frame (TODO: handle envs, NULL, etc.)}
+\item{formula}{A formula: value ~ axis1 [+ axis2 + axis n ..]}
 
 \item{fill}{Value to fill array with if undefined}
 
@@ -21,6 +21,7 @@ construct(formula, data, fill = NULL, fun.aggregate = NULL, ...)
 A structured array
 }
 \description{
-A wrapper around reshape2::acast using a more intuitive formula syntax
+The construct() function can be called either with the data.frame as the
+first argument or the formula and then specify `data=<data.frame>`
 }
 
