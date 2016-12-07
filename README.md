@@ -2,6 +2,7 @@ Array and Matrix processing
 ===========================
 
 [![Build Status](https://travis-ci.org/mschubert/narray.svg?branch=master)](https://travis-ci.org/mschubert/narray)
+[![CRAN version](http://www.r-pkg.org/badges/version/narray)](https://cran.r-project.org/package=narray)
 
 This package provides consistent utility functions for array programming with
 arbitrary dimensions (summary below).
