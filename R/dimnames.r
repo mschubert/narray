@@ -10,11 +10,15 @@
 #' @export
 dimnames = function(x, along=TRUE, null_as_integer=FALSE, drop=TRUE) {
     if (is.list(x) && !is.data.frame(x))
-        return(lapply(x, dimnames))
+        return(lapply(x, function(x1) dimnames(x1, along=along,
+                    null_as_integer=null_as_integer, drop=drop)))
     if (is.data.frame(x))
         x = as.matrix(x)
+    if (is.vector(x))
+        x = as.array(x)
 
     dn = base::dimnames(x)
+
     if (is.null(dn))
         dn = rep(list(NULL), length(dim(x)))
 
