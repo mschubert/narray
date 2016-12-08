@@ -5,6 +5,7 @@ Author: Michael Schubert <mschu.dev@gmail.com>
 Maintainer: Michael Schubert <mschu.dev@gmail.com>
 Description: Provides functions to query and manipulate arrays
     of arbitrary dimensions.
+URL: https://github.com/mschubert/narray
 Depends:
     R (>= 3.0.2)
 Imports:
