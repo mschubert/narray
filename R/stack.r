@@ -42,13 +42,19 @@ stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, drop=F
     if (along > length(dim(arrayList[[1]])))
         newAxis = TRUE
 
-    # get dimension names
+    # get dimension names; dimNames is set of all elements in list
     dn = dimnames(arrayList)
     dimNames = lapply(1:length(dn[[1]]), function(j) 
         unique(c(unlist(sapply(1:length(dn), function(i) 
             dn[[i]][[j]]
         ))))
     )
+    # check if names are valid
+    all_names = unlist(dimNames)
+    if (any(is.na(all_names)))
+        stop("NA found in list dimension names")
+    if (any(nchar(all_names) == 0))
+        stop("Empty dimension name found in list")
 
     # track the stacking dimension index if there are no names
     stack_offset = FALSE
@@ -79,9 +85,6 @@ stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, drop=F
             offset = offset + dim(arrayList[[i]])[along]
         }
 
-        # make sure there are no NAs in names
-        if (any(is.na(unlist(dm))))
-            stop("NA found in array names, do not know how to stack those")
         if (newAxis)
             dm[[along]] = i
         else {
