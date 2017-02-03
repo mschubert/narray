@@ -14,7 +14,7 @@ functions using [`modules`](https://github.com/klmr/modules) or
 
 ```r
 # example using `modules`
-ar = modules::import_package(narray)
+ar = modules::import_package('narray')
 ar$myfunction(...)
 ```
 
