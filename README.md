@@ -8,14 +8,18 @@ narray :: Array and Matrix processing
 This package provides consistent utility functions for array programming with
 arbitrary dimensions (summary below).
 
-We recommend to load this package in its own namespace to not shadow base R
-functions using [`modules`](https://github.com/klmr/modules) or
+We recommend to reference functions using the package namespace or
+loading the package into its own namespace to not shadow base R
+functions. The latter can be done using [`modules`](https://github.com/klmr/modules) or
 [`import`](https://github.com/smbache/import).
 
 ```r
+# example referencing the package namespace
+narray::stack(...)
+
 # example using `modules`
 ar = modules::import_package('narray')
-ar$myfunction(...)
+ar$stack(...)
 ```
 
 Stacking and splitting
