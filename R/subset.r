@@ -25,5 +25,8 @@ subset = function(X, index, along=NULL, drop=FALSE) {
         index = tmp
     }
 
+    if (any(is.na(unlist(index))))
+        stop("trying to subset with NA in index")
+
     do.call(function(...) `[`(X, ..., drop=drop), index)
 }

@@ -28,3 +28,7 @@ test_that("everything", {
                 subset(C, LETTERS[3], along=2, drop=FALSE),
                 subset(C, c(FALSE, FALSE, TRUE, FALSE, along=2, drop=FALSE)))
 })
+
+test_that("subset with NA", {
+    expect_error(subset(1:5, index=c(rep(FALSE, 4), NA)))
+})

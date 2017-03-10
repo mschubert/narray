@@ -12,12 +12,18 @@ split = function(X, along, subsets=c(1:dim(X)[along]), drop=FALSE) {
     if (along == -1)
         along = length(dim(X))
 
-    usubsets = unique(subsets)
+    if (any(is.na(subsets)))
+        warning("'subsets' contains NA, dropping those values")
+
+    usubsets = stats::na.omit(unique(subsets))
     lus = length(usubsets)
     idxList = base::rep(list(base::rep(list(TRUE), length(dim(X)))), lus)
 
-    for (i in 1:lus)
-        idxList[[i]][[along]] = subsets==usubsets[i]
+    for (i in 1:lus) {
+        cur = subsets==usubsets[i]
+        cur[is.na(cur)] = FALSE
+        idxList[[i]][[along]] = cur
+    }
 
     if (length(usubsets)!=dim(X)[along] || !is.numeric(subsets))
         lnames = usubsets

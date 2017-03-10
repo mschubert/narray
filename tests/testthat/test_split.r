@@ -17,3 +17,11 @@ test_that("3-dimensional array", {
 
     expect_equal(Y, Yref)
 })
+
+test_that("NA in subsets", {
+    C = structure(c(1L, 2L, 3L, 4L, 6L, 5L), .Dim = 2:3,
+        .Dimnames = list(c("a", "b"), c("x", "y", "z")))
+
+    expect_warning(x <- split(C, along=2, subsets=c(1,1,NA)))
+    expect_equal(x, list(`1`=C[,c(1:2)]))
+})
