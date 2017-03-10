@@ -7,7 +7,7 @@
 #' @param na.rm    Whether to omit columns and rows with \code{NA}s
 #' @return         An array where filtered values are \code{NA} or dropped
 #' @export
-filter = function(X, along, FUN, subsets=rep(1,dim(X)[along]), na.rm=FALSE) {
+filter = function(X, along, FUN, subsets=base::rep(1,dim(X)[along]), na.rm=FALSE) {
 #    .check$all(X, along, subsets)
 
     X = as.array(X)

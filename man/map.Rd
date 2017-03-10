@@ -4,7 +4,7 @@
 \alias{map}
 \title{Maps a function along an array preserving its structure}
 \usage{
-map(X, along, FUN, subsets = rep(1, dim(X)[along]), drop = TRUE)
+map(X, along, FUN, subsets = base::rep(1, dim(X)[along]), drop = TRUE)
 }
 \arguments{
 \item{X}{An n-dimensional array}

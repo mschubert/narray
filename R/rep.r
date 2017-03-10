@@ -4,8 +4,9 @@
 #' @param n      Integer, how often to repeat
 #' @param along  Along which axis to repeat (default: 1)
 #' @return       An array that is repeated `n` times on axis `along`
+#' @export
 rep = function(x, n, along=1) {
-    xl = rep(list(x), n)
+    xl = base::rep(list(x), n)
     bind(xl, along=along)
 }
 

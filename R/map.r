@@ -30,7 +30,7 @@ map_simple = function(X, along, FUN, drop=TRUE) {
 #' @param drop     Remove unused dimensions after mapping; default: TRUE
 #' @return         An array where \code{FUN} has been applied
 #' @export
-map = function(X, along, FUN, subsets=rep(1,dim(X)[along]), drop=TRUE) {
+map = function(X, along, FUN, subsets=base::rep(1,dim(X)[along]), drop=TRUE) {
 #    .check$all(X, along, subsets, x.to.array=TRUE)
 
     subsets = as.factor(subsets)
@@ -38,7 +38,7 @@ map = function(X, along, FUN, subsets=rep(1,dim(X)[along]), drop=TRUE) {
     nsubsets = length(lsubsets)
 
     # create a list to index X with each subset
-    subsetIndices = rep(list(rep(list(TRUE), length(dim(X)))), nsubsets)
+    subsetIndices = base::rep(list(base::rep(list(TRUE), length(dim(X)))), nsubsets)
     for (i in 1:nsubsets)
         subsetIndices[[i]][[along]] = (subsets==lsubsets[i])
 

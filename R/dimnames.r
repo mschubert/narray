@@ -20,7 +20,7 @@ dimnames = function(x, along=TRUE, null_as_integer=FALSE, drop=TRUE) {
     dn = base::dimnames(x)
 
     if (is.null(dn))
-        dn = rep(list(NULL), length(dim(x)))
+        dn = base::rep(list(NULL), length(dim(x)))
 
     if (null_as_integer == TRUE)
         dn = lapply(1:length(dn), function(i) {

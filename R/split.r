@@ -14,7 +14,7 @@ split = function(X, along, subsets=c(1:dim(X)[along]), drop=FALSE) {
 
     usubsets = unique(subsets)
     lus = length(usubsets)
-    idxList = rep(list(rep(list(TRUE), length(dim(X)))), lus)
+    idxList = base::rep(list(base::rep(list(TRUE), length(dim(X)))), lus)
 
     for (i in 1:lus)
         idxList[[i]][[along]] = subsets==usubsets[i]

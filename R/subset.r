@@ -16,7 +16,7 @@ subset = function(X, index, along=NULL, drop=FALSE) {
 
         # create a subsetting list that covers the whole array first,
         # then set the dimension we are working on to what is requested
-        tmp = rep(list(TRUE), ndim_X)
+        tmp = base::rep(list(TRUE), ndim_X)
 
         # by default, subset the last dimension
         if (is.null(along))
