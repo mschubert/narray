@@ -1,10 +1,12 @@
 Package: narray
-Title: R Package for Handling Arrays in a Consistent Manner
+Title: Subset- and Name-aware Array Utility Functions
 Version: 0.2.2
 Author: Michael Schubert <mschu.dev@gmail.com>
 Maintainer: Michael Schubert <mschu.dev@gmail.com>
-Description: Provides functions to query and manipulate arrays
-    of arbitrary dimensions.
+Description: Stacking arrays according to dimension names, subset-aware
+    splitting and mapping of functions, intersecting along arbitrary
+    dimensions, converting to and from data.frames, and many other helper
+    functions.
 URL: https://github.com/mschubert/narray
 BugReports: https://github.com/mschubert/narray/issues
 Depends:
