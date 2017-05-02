@@ -19,8 +19,6 @@ stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, drop=F
     }
     if (length(arrayList) == 0)
         stop("No element remaining after removing NULL entries")
-    if (length(arrayList) == 1)
-        return(arrayList[[1]])
 
     # for vectors: if along=1 row vecs, along=2 col vecs, etc.
     if (all(is.null(unlist(lapply(arrayList, base::dim))))) {
