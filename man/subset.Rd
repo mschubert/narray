@@ -11,7 +11,8 @@ subset(X, index, along = NULL, drop = FALSE)
 
 \item{index}{A list of vectors to use for subsetting, or vector if along is given}
 
-\item{along}{Along which dimension to subset if index is a vector; default is last dimension}
+\item{along}{Along which dimension to subset if index is a vector; default
+is last dimension; argument is ignored if X is a vector}
 
 \item{drop}{Remove unused dimensions after mapping; default: TRUE}
 }

@@ -8,7 +8,7 @@ DF = structure(list(y=3:4, z=c(6,5), x=1:2, A=c("b", "a")),
                .Names=c("y","z","x","A"), row.names=1:2, class="data.frame")
 DF2 = as.data.frame(E[1,,drop=FALSE])
 
-test_that("provided env should not change global vars or non-ref'd list elms", {
+test_that("intersect_list vs intersect with env list", {
     AElist = intersect_list(list(A=A, E=E), along=2)
 
     ll = list(A=A, E=E, DF=DF)
@@ -24,13 +24,18 @@ test_that("provided env should not change global vars or non-ref'd list elms", {
     # b 2 4       b 2 4   # values in-place
 
     AEref = structure(1:4, .Dim = c(2L, 2L),
-                      .Dimnames = list(c("a", "b"), c("x", "y")))
+        .Dimnames = list(c("a", "b"), c("x", "y")))
     expect_equal(A, AEref)
     expect_equal(E, AEref)
     expect_equal(AElist$A, AEref)
     expect_equal(AElist$E, AEref)
+})
 
+test_that("matrix, df on columns", {
+    AEref = structure(1:4, .Dim = c(2L, 2L),
+        .Dimnames = list(c("a", "b"), c("x", "y")))
     ADFlist = intersect_list(list(A=A, DF=DF2))
+
     expect_equal(ADFlist$A, AEref[1,,drop=FALSE])
     expect_equal(ADFlist$DF, DF2)
 
@@ -40,18 +45,19 @@ test_that("provided env should not change global vars or non-ref'd list elms", {
     expect_equal(DF2, list(x=1, y=3))
     expect_equal(ADFlist$A, AEref)
     expect_equal(ADFlist$DF, DF2)
+})
 
+test_that("data.frame fields", {
+    At = t(A)
+    DF3 = DF
     DFref = DF[c(2,1),]
-    rownames(DFref) = as.character(rownames(DFref)) # why, R?
+
     intersect(A, DF$A, along=1)
+    intersect(At, DF3$A, along=2)
+
     expect_is(A, "matrix")
     expect_is(DF, "data.frame")
-    expect_equal(DF, DFref)
-    expect_true(all(DF == DFref))
+    expect_equal(DF, DF3, DFref, tolerance=1e-5, scale=1)
+    expect_true(all(DF == DFref, DF3 == DFref))
 
-    ll = list(a=setNames(1:5, letters[1:5]), b=setNames(2:4, letters[2:4]))
-    lli = intersect_list(ll)
-    intersect(a,b,envir=ll)
-    expect_equal(ll$a, lli$a)
-    expect_equal(ll$b, lli$b)
 })

@@ -7,16 +7,22 @@ DF = structure(list(y=3:4, z=c(6,5), x=1:2, A=c("b", "a")),
         .Names=c("y","z","x","A"), row.names=1:2, class="data.frame")
 ll = list(a=a, A=A, DF=DF)
 
-test_that("vector", {
-    expect_equal(dimnames(a), dn[1])
+test_that("vector and dropping rules", {
+    expect_equal(dimnames(a), dimnames(a, drop=FALSE), dn[1])
+    expect_equal(dimnames(a, drop=TRUE), dn[[1]])
     expect_equal(dimnames(a, along=1), dn[[1]])
     expect_equal(dimnames(a, along=1, drop=FALSE), dn[1])
-    expect_error(dimnames(a, along=2))
+})
+
+test_that("ignore along for vector, not array", {
+    expect_equal(dimnames(a, along=2), dn[[1]])
+    expect_error(dimnmaes(as.array(a), along=2))
 })
 
 test_that("matrix", {
     expect_equal(dimnames(A), dn)
     expect_equal(dimnames(A, along=2), dn[[2]])
+    expect_error(dimnames(A, along=3))
 })
 
 test_that("data.frame", {
