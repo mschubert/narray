@@ -9,8 +9,8 @@
 split = function(X, along, subsets=c(1:dim(X)[along]), drop=FALSE) {
     if (!is.array(X) && !is.vector(X) && !is.data.frame(X))
         stop("X needs to be either vector, array or data.frame")
-    if (along == -1)
-        along = length(dim(X))
+    if (along < 0)
+        along = length(dim(X)) - along + 1
 
     if (any(is.na(subsets)))
         warning("'subsets' contains NA, dropping those values")
