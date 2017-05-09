@@ -2,12 +2,17 @@
 #'
 #' @param X      The array to subset
 #' @param index  A list of vectors to use for subsetting, or vector if along is given
-#' @param along  Along which dimension to subset if index is a vector; default is last dimension
+#' @param along  Along which dimension to subset if index is a vector; default
+#'               is last dimension; argument is ignored if X is a vector
 #' @param drop   Remove unused dimensions after mapping; default: TRUE
 #' @return       The subset of the array
 #' @export
 subset = function(X, index, along=NULL, drop=FALSE) {
     if (!is.list(index)) {
+        # ignore along for vectors
+        if (is.atomic(X) && is.vector(X))
+            along = 1
+
         # this is required because as.array() will fail on dplyr:df
         if (is.data.frame(X))
             ndim_X = length(dim(X))
