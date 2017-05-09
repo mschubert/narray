@@ -8,10 +8,11 @@ DF = structure(list(y=3:4, z=c(6,5), x=1:2, A=c("b", "a")),
 ll = list(a=a, A=A, DF=DF)
 
 test_that("vector", {
-    expect_equal(dimnames(a), dn[1])
+    expect_equal(dimnames(a), dimnames(a, drop=FALSE), dn[1])
+    expect_equal(dimnames(a, drop=TRUE), dn[[1]])
     expect_equal(dimnames(a, along=1), dn[[1]])
     expect_equal(dimnames(a, along=1, drop=FALSE), dn[1])
-    expect_error(dimnames(a, along=2))
+    expect_equal(dimnames(a, along=2), dn[[1]])
 })
 
 test_that("matrix", {
