@@ -27,10 +27,10 @@ dimnames = function(x, along=TRUE, null_as_integer=FALSE, drop=!identical(along,
     if (is.null(dn))
         dn = base::rep(list(NULL), length(dim(x)))
 
-    if (null_as_integer == TRUE)
+    if (null_as_integer == TRUE && length(dn) > 0)
         dn = lapply(1:length(dn), function(i) {
             if (is.null(dn[[i]]))
-                1:dim(x)[i]
+                seq_len(dim(x)[i])
             else
                 dn[[i]]
         })

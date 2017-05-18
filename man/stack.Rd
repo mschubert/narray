@@ -14,7 +14,7 @@ stack(arrayList, along = length(dim(arrayList[[1]])) + 1, fill = NA,
 
 \item{fill}{Value for unknown values (default: \code{NA})}
 
-\item{drop}{Remove unused dimensions after mapping; default: TRUE}
+\item{drop}{Drop empty elements when stacking (default: FALSE)}
 }
 \value{
 A stacked array, either n or n+1 dimensional

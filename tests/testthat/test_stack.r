@@ -39,12 +39,9 @@ test_that("vector stacking", {
     a = b = setNames(1:5, LETTERS[1:5])
     expect_equal(stack(list(a=a, b=b), along=1),
                  t(stack(list(a=a, b=b), along=2)))
-    expect_equal(stack(list(a=a, a=b), along=1, drop=TRUE), a)
 
     amat = as.matrix(a)
     colnames(amat) = "a"
     expect_equal(stack(list(a=a), along=2), amat)
-    expect_equal(stack(list(a=a), along=2, drop=TRUE), a)
     expect_equal(stack(list(a=a), along=1), t(amat))
-    expect_equal(stack(list(a=a), along=1, drop=TRUE), a)
 })

@@ -36,3 +36,11 @@ test_that("list", {
     dnl1 = dimnames(ll, along=1)
     expect_equal(dnl1$a, dnl1$A, dn[[1]])
 })
+
+test_that("zero-length", {
+    expect_equal(dimnames(c()), list(NULL)) #TODO: this should give integer()
+    expect_equal(dimnames(c(), null_as_integer=TRUE), list(integer()))
+
+    expect_null(dimnames(c(), drop=TRUE))
+    expect_equal(dimnames(c(), null_as_integer=TRUE, drop=TRUE), integer())
+})
