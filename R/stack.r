@@ -3,10 +3,10 @@
 #' @param arrayList  A list of n-dimensional arrays
 #' @param along      Which axis arrays should be stacked on (default: new axis)
 #' @param fill       Value for unknown values (default: \code{NA})
-#' @param drop       Drop empty elements when stacking (default: FALSE)
+#' @param drop       Drop empty elements when stacking (default: TRUE)
 #' @return           A stacked array, either n or n+1 dimensional
 #' @export
-stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, drop=FALSE) {
+stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, drop=TRUE) {
     if (!is.list(arrayList))
         stop(paste("arrayList needs to be a list, not a", class(arrayList)))
     length0 = sapply(arrayList, length) == 0
