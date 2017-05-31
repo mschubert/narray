@@ -7,8 +7,11 @@
 #' @param along  The axis along which to intersect
 #' @param envir  A list or environment to act upon
 #' @param drop   Drop unused dimensions on result
+#' @param fail_if_empty  Stop if intersection yields empty set
 #' @export
-intersect = function(..., along=1, envir=parent.frame(), drop=FALSE) {
+intersect = function(..., along=1, envir=parent.frame(), drop=FALSE,
+                     fail_if_empty=TRUE) {
+
     dots = pryr::named_dots(...)
     df_store = list()
 
@@ -20,7 +23,8 @@ intersect = function(..., along=1, envir=parent.frame(), drop=FALSE) {
                 # replace dots element with index that we can intersect
                 df_name = as.character(dots[[i]][[2]])
                 df_store[[df_name]] = mydf
-                dots[[i]] = stats::setNames(1:nrow(mydf), eval(dots[[i]], envir=envir))
+                dots[[i]] = stats::setNames(1:nrow(mydf),
+                                            eval(dots[[i]], envir=envir))
                 names(dots)[i] = df_name
             }
             else
@@ -29,7 +33,8 @@ intersect = function(..., along=1, envir=parent.frame(), drop=FALSE) {
             dots[[i]] = eval(dots[[i]], envir=envir)
     }
 
-    dots = intersect_list(dots, along=along, drop=drop)
+    dots = intersect_list(dots, along=along, drop=drop,
+                          fail_if_empty=fail_if_empty)
 
     # recover original rownames if we stored them separately
     for (name in names(df_store))
@@ -50,12 +55,16 @@ intersect = function(..., along=1, envir=parent.frame(), drop=FALSE) {
 #' @param along  The axis along which to intersect
 #' @param drop   Drop unused dimensions on result
 #' @export
-intersect_list = function(l., along=1, drop=FALSE) {
+intersect_list = function(l., along=1, drop=FALSE, fail_if_empty=TRUE) {
     if (!is.list(l.))
-        stop("`intersect_list()` expects a list as first argument, found: ", class(l.))
+        stop("`intersect_list()` expects a list as first argument, found: ",
+             class(l.))
 
     red_int = function(...) Reduce(base::intersect, list(...))
 
     common = do.call(red_int, dimnames(l., along=along))
+    if (length(common) == 0 && fail_if_empty)
+        stop("Intersection is empty and fail_if_empty is TRUE")
+
     lapply(l., function(e) subset(e, index=common, along=along, drop=drop))
 }

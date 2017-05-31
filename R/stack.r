@@ -4,9 +4,12 @@
 #' @param along      Which axis arrays should be stacked on (default: new axis)
 #' @param fill       Value for unknown values (default: \code{NA})
 #' @param drop       Drop empty elements when stacking (default: TRUE)
+#' @param fail_if_empty  Stop if no arrays left after removing empty elements
 #' @return           A stacked array, either n or n+1 dimensional
 #' @export
-stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, drop=TRUE) {
+stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA,
+                 drop=TRUE, fail_if_empty=TRUE) {
+
     if (!is.list(arrayList))
         stop(paste("arrayList needs to be a list, not a", class(arrayList)))
     length0 = sapply(arrayList, length) == 0
@@ -16,8 +19,12 @@ stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, drop=T
             drop_idx = which(length0)
         arrayList = arrayList[!length0]
     }
-    if (length(arrayList) == 0)
-        stop("No element remaining after removing NULL entries")
+    if (length(arrayList) == 0) {
+        if (fail_if_empty)
+            stop("No element remaining after removing NULL entries")
+        else
+            return(NULL)
+    }
 
     # for vectors: if along=1 row vecs, along=2 col vecs, etc.
     if (all(is.null(unlist(lapply(arrayList, base::dim))))) {

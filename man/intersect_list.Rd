@@ -4,7 +4,7 @@
 \alias{intersect_list}
 \title{Intersects a lits of arrays for common dimension names}
 \usage{
-intersect_list(l., along = 1, drop = FALSE)
+intersect_list(l., along = 1, drop = FALSE, fail_if_empty = TRUE)
 }
 \arguments{
 \item{l.}{List of arrays to perform operations on}

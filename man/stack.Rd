@@ -5,7 +5,7 @@
 \title{Stacks arrays while respecting names in each dimension}
 \usage{
 stack(arrayList, along = length(dim(arrayList[[1]])) + 1, fill = NA,
-  drop = TRUE)
+  drop = TRUE, fail_if_empty = TRUE)
 }
 \arguments{
 \item{arrayList}{A list of n-dimensional arrays}
@@ -15,6 +15,8 @@ stack(arrayList, along = length(dim(arrayList[[1]])) + 1, fill = NA,
 \item{fill}{Value for unknown values (default: \code{NA})}
 
 \item{drop}{Drop empty elements when stacking (default: TRUE)}
+
+\item{fail_if_empty}{Stop if no arrays left after removing empty elements}
 }
 \value{
 A stacked array, either n or n+1 dimensional
