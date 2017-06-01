@@ -54,6 +54,7 @@ intersect = function(..., along=1, envir=parent.frame(), drop=FALSE,
 #' @param l.     List of arrays to perform operations on
 #' @param along  The axis along which to intersect
 #' @param drop   Drop unused dimensions on result
+#' @param fail_if_empty  Stop if intersection yields empty set
 #' @export
 intersect_list = function(l., along=1, drop=FALSE, fail_if_empty=TRUE) {
     if (!is.list(l.))

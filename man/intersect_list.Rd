@@ -12,6 +12,8 @@ intersect_list(l., along = 1, drop = FALSE, fail_if_empty = TRUE)
 \item{along}{The axis along which to intersect}
 
 \item{drop}{Drop unused dimensions on result}
+
+\item{fail_if_empty}{Stop if intersection yields empty set}
 }
 \description{
 Intersects a lits of arrays for common dimension names
