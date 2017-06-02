@@ -4,10 +4,11 @@
 #' @param along    Along which axis to apply the function
 #' @param FUN      A function that maps a vector to the same length or a scalar
 #' @param drop     Remove unused dimensions after mapping; default: TRUE
+#' @param ...      Arguments passed to the function
 #' @return         An array where \code{FUN} has been applied
-map_simple = function(X, along, FUN, drop=TRUE) {
+map_simple = function(X, along, FUN, drop=TRUE, ...) {
     if (is.vector(X) || length(dim(X))==1)
-        return(FUN(X))
+        return(FUN(X, ...))
 
     preserveAxes = c(1:length(dim(X)))[-along]
     Y = as.array(apply(X, preserveAxes, FUN))
@@ -28,9 +29,10 @@ map_simple = function(X, along, FUN, drop=TRUE) {
 #' @param FUN      A function that maps a vector to the same length or a scalar
 #' @param subsets  Whether to apply \code{FUN} along the whole axis or subsets thereof
 #' @param drop     Remove unused dimensions after mapping; default: TRUE
+#' @param ...      Arguments passed to the function
 #' @return         An array where \code{FUN} has been applied
 #' @export
-map = function(X, along, FUN, subsets=base::rep(1,dim(X)[along]), drop=TRUE) {
+map = function(X, along, FUN, subsets=base::rep(1,dim(X)[along]), drop=TRUE, ...) {
 #    .check$all(X, along, subsets, x.to.array=TRUE)
 
     subsets = as.factor(subsets)
@@ -44,7 +46,7 @@ map = function(X, along, FUN, subsets=base::rep(1,dim(X)[along]), drop=TRUE) {
 
     # for each subset, call mymap
     resultList = lapply(subsetIndices, function(f)
-        map_simple(subset(X, f), along, FUN, drop=FALSE))
+        map_simple(subset(X, f), along, FUN, drop=FALSE, ...))
 
     # assemble results together
     Y = bind(resultList, along=along)
