@@ -9,6 +9,9 @@
 #' @return       A summarized matrix as defined by `from`, `to`
 #' @export
 summarize = function(x, along=1, to, from=dimnames(x)[[along]], ...,  FUN) {
+    warning("summarize() is deprecated and will be removed in 0.4.0. ",
+            "Use map() with subsets instead.")
+
     lookup = match(dimnames(x)[[along]], from=from, to=to, ..., na_rm=TRUE)
     x = subset(x, index=names(lookup), along=along)
     
