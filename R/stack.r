@@ -1,19 +1,20 @@
 #' Stacks arrays while respecting names in each dimension
 #'
-#' @param arrayList  A list of n-dimensional arrays
-#' @param along      Which axis arrays should be stacked on (default: new axis)
-#' @param fill       Value for unknown values (default: \code{NA})
-#' @param drop       Drop empty elements when stacking (default: TRUE)
+#' @param arrayList   A list of n-dimensional arrays
+#' @param along       Which axis arrays should be stacked on (default: new axis)
+#' @param fill        Value for unknown values (default: \code{NA})
+#' @param keep_empty  Keep empty elements when stacking (default: FALSE)
+#' @param drop        Drop unused dimensions (default: FALSE)
 #' @param fail_if_empty  Stop if no arrays left after removing empty elements
-#' @return           A stacked array, either n or n+1 dimensional
+#' @return            A stacked array, either n or n+1 dimensional
 #' @export
 stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA,
-                 drop=TRUE, fail_if_empty=TRUE) {
+                 drop=FALSE, keep_empty=FALSE, fail_if_empty=TRUE) {
 
     if (!is.list(arrayList))
         stop(paste("arrayList needs to be a list, not a", class(arrayList)))
     length0 = sapply(arrayList, length) == 0
-    if (drop==TRUE && any(length0)) {
+    if (!keep_empty && any(length0)) {
         drop_idx = names(arrayList)[length0]
         if (is.null(drop_idx))
             drop_idx = which(length0)
@@ -102,5 +103,8 @@ stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA,
         result = do.call("[<-", c(list(result), dm, list(arrayList[[i]])))
     }
 
-    result
+    if (drop)
+        drop(result)
+    else
+        result
 }

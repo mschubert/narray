@@ -45,3 +45,12 @@ test_that("vector stacking", {
     expect_equal(stack(list(a=a), along=2), amat)
     expect_equal(stack(list(a=a), along=1), t(amat))
 })
+
+test_that("keep_empty arg", {
+    a = setNames(1:3, letters[1:3])
+    b = numeric()
+    re1 = stack(list(a=a, b=b), keep_empty=TRUE)
+    expect_equal(re1,
+          structure(c(1, 2, 3, NA, NA, NA), .Dim = c(3L, 2L),
+                    .Dimnames = list(c("a", "b", "c"), c("a", "b"))))
+})
