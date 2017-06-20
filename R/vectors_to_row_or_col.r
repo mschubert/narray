@@ -8,12 +8,18 @@ vectors_to_row_or_col = function(xlist, along) {
     if (all(is.null(unlist(lapply(xlist, base::dim))))) {
         if (along == 1)
             xlist = lapply(seq_along(xlist), function(i) {
+                if (is.null(xlist[[i]]))
+                    xlist[[i]] = numeric()
+
                 re = t(as.matrix(xlist[[i]]))
                 rownames(re) = names(xlist)[i]
                 re
             })
         else if (along == 2)
             xlist = lapply(seq_along(xlist), function(i) {
+                if (is.null(xlist[[i]]))
+                    xlist[[i]] = numeric()
+
                 re = as.matrix(xlist[[i]])
                 colnames(re) = names(xlist)[i]
                 re

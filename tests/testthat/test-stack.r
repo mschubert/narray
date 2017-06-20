@@ -46,11 +46,17 @@ test_that("vector stacking", {
     expect_equal(stack(list(a=a), along=1), t(amat))
 })
 
-test_that("keep_empty arg", {
+test_that("keep_empty arg when stacking zero-length vectors", {
     a = setNames(1:3, letters[1:3])
     b = numeric()
     re1 = stack(list(a=a, b=b), keep_empty=TRUE)
     expect_equal(re1,
           structure(c(1, 2, 3, NA, NA, NA), .Dim = c(3L, 2L),
                     .Dimnames = list(c("a", "b", "c"), c("a", "b"))))
+
+    re2 = stack(list(a, b), along=1, keep_empty=TRUE)
+    re3 = stack(list(a, b), along=2, keep_empty=TRUE)
+    expect_equal(re3, structure(c(1, 2, 3, NA, NA, NA), .Dim = c(3L, 2L),
+                    .Dimnames = list(c("a", "b", "c"), NULL)))
+    expect_equal(re2, t(re3))
 })
