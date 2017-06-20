@@ -27,21 +27,7 @@ stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA,
             return(NULL)
     }
 
-    # for vectors: if along=1 row vecs, along=2 col vecs, etc.
-    if (all(is.null(unlist(lapply(arrayList, base::dim))))) {
-        if (along == 1)
-            arrayList = lapply(seq_along(arrayList), function(i) {
-                re = t(as.matrix(arrayList[[i]]))
-                rownames(re) = names(arrayList)[i]
-                re
-            })
-        else if (along == 2)
-            arrayList = lapply(seq_along(arrayList), function(i) {
-                re = as.matrix(arrayList[[i]])
-                colnames(re) = names(arrayList)[i]
-                re
-            })
-    }
+    arrayList = vectors_to_row_or_col(arrayList, along=along)
 
     newAxis = FALSE
     if (along > length(dim(arrayList[[1]])))

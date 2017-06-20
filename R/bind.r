@@ -5,24 +5,7 @@
 #' @return           A joined array
 #' @export
 bind = function(arrayList, along=length(dim(arrayList[[1]]))+1) {
-    #TODO: this is borrowed from stack, refactor
-    # for vectors: if along=1 row vecs, along=2 col vecs, etc.
-    if (all(is.null(unlist(lapply(arrayList, base::dim))))) {
-        if (along == 1)
-            arrayList = lapply(seq_along(arrayList), function(i) {
-                re = t(as.matrix(arrayList[[i]]))
-                rownames(re) = names(arrayList)[i]
-                re
-            })
-        else if (along == 2)
-            arrayList = lapply(seq_along(arrayList), function(i) {
-                re = as.matrix(arrayList[[i]])
-                colnames(re) = names(arrayList)[i]
-                re
-            })
-    }
-    # end TODO:
-
+    arrayList = vectors_to_row_or_col(arrayList, along=along)
     re = do.call(function(...) abind::abind(..., along=along), arrayList)
 
     # is.null(...) required because R is stupid
