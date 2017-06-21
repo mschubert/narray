@@ -24,5 +24,6 @@ vectors_to_row_or_col = function(xlist, along) {
                 colnames(re) = names(xlist)[i]
                 re
             })
-    }
+    } else
+        xlist
 }
