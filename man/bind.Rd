@@ -17,4 +17,3 @@ A joined array
 \description{
 Binds arrays together disregarding names
 }
-

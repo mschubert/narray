@@ -24,4 +24,3 @@ A list of dimension names with length \code{length(ndim(X))}
 \description{
 Act on each element if 'x' is a list
 }
-

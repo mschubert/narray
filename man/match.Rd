@@ -35,4 +35,3 @@ Mapped values
 \description{
 match() function with extended functionality
 }
-

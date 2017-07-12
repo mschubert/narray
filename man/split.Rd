@@ -22,4 +22,3 @@ A list of arrays that combined make up the input array
 \description{
 Splits and array along a given axis, either totally or only subsets
 }
-

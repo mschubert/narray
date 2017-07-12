@@ -22,4 +22,3 @@ The subset of the array
 \description{
 Subsets an array using a list with indices or names
 }
-

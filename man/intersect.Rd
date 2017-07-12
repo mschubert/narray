@@ -22,4 +22,3 @@ intersect(..., along = 1, envir = parent.frame(), drop = FALSE,
 TODO: accept along=c(1,2,1,1...) [maybe list w/ vectors as well?]
 TODO: accept data=env/list arg? [sig-comb/drug-tissue/assocs.r#62-65]
 }
-

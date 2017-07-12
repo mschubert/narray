@@ -17,4 +17,3 @@ A logical occurrence matrix
 \description{
 Converts a list of character vectors to a logical matrix
 }
-

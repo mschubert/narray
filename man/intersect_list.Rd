@@ -18,4 +18,3 @@ intersect_list(l., along = 1, drop = FALSE, fail_if_empty = TRUE)
 \description{
 Intersects a lits of arrays for common dimension names
 }
-

@@ -16,4 +16,3 @@ melt(..., dimnames = NULL, na_rm = TRUE)
 \description{
 Function to melt data.frame from one or multiple arrays
 }
-

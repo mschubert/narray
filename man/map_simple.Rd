@@ -23,4 +23,3 @@ An array where \code{FUN} has been applied
 \description{
 Apply function that preserves order of dimensions
 }
-

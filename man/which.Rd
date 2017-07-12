@@ -17,4 +17,3 @@ A matrix with indices where \code{A == TRUE}
 \description{
 A multidimensional \code{which} function
 }
-

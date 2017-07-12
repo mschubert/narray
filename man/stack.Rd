@@ -26,4 +26,3 @@ A stacked array, either n or n+1 dimensional
 \description{
 Stacks arrays while respecting names in each dimension
 }
-

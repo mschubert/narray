@@ -17,4 +17,3 @@ List where vectors are replaced by row- or col vectors (2d)
 \description{
 Converts vectors in a list to row- or column vectors
 }
-

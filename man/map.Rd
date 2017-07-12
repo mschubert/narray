@@ -25,4 +25,3 @@ An array where \code{FUN} has been applied
 \description{
 Maps a function along an array preserving its structure
 }
-

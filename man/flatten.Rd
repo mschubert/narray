@@ -19,4 +19,3 @@ An array with n-1 dimensions
 \description{
 Flattens an array along an axis
 }
-

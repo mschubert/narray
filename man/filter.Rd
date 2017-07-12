@@ -23,4 +23,3 @@ An array where filtered values are \code{NA} or dropped
 \description{
 Function to discard subsets of an array (NA or drop)
 }
-
