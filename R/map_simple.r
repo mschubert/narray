@@ -11,7 +11,7 @@ map_simple = function(X, along, FUN, drop=TRUE, ...) {
         return(FUN(X, ...))
 
     preserveAxes = c(1:length(dim(X)))[-along]
-    Y = as.array(apply(X, preserveAxes, FUN))
+    Y = as.array(apply(X, preserveAxes, FUN, ...))
     if (length(dim(Y)) < length(dim(X)))
         Y = array(Y, dim=c(1, dim(Y)), dimnames=c(list(NULL), dimnames(Y)))
 
