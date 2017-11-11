@@ -7,35 +7,38 @@
 #' @param along  The axis along which to intersect
 #' @param envir  A list or environment to act upon
 #' @param drop   Drop unused dimensions on result
+#' @param fail_if_empty  Stop if intersection yields empty set
 #' @export
-intersect = function(..., along=1, envir=parent.frame(), drop=FALSE) {
+intersect = function(..., along=1, envir=parent.frame(), drop=FALSE,
+                     fail_if_empty=TRUE) {
+
     dots = pryr::named_dots(...)
+    df_store = list()
 
     # for `data.frame`s, replace the rownames by field that is referenced
     for (i in seq_along(dots)) {
         if (is.call(dots[[i]])) {
-            if (along == 1 && is.data.frame(eval(dots[[i]][[2]], envir=envir))) {
-                # as.data.frame: need rownames, not dplyr's
-                df = as.data.frame(eval(dots[[i]][[2]], envir=envir)) 
-                field = eval(dots[[i]], envir=envir)
-                df$.rownames = rownames(df)
-                rownames(df) = field
-                names(dots)[i] = as.character(dots[[i]][[2]])
-                dots[[i]] = df
-            } else
-                stop("calls can only reference `data.frame` fields with along=1")
+            mydf = eval(dots[[i]][[2]], envir=envir)
+            if (is.data.frame(mydf)) {
+                # replace dots element with index that we can intersect
+                df_name = as.character(dots[[i]][[2]])
+                df_store[[df_name]] = mydf
+                dots[[i]] = stats::setNames(1:nrow(mydf),
+                                            eval(dots[[i]], envir=envir))
+                names(dots)[i] = df_name
+            }
+            else
+                stop("calls can only reference `data.frame` fields")
         } else
             dots[[i]] = eval(dots[[i]], envir=envir)
     }
 
-    dots = intersect_list(dots, along=along, drop=drop)
+    dots = intersect_list(dots, along=along, drop=drop,
+                          fail_if_empty=fail_if_empty)
 
     # recover original rownames if we stored them separately
-    for (name in names(dots))
-        if (is.data.frame(dots[[name]]) && !is.null(dots[[name]]$.rownames)) {
-            rownames(dots[[name]]) = dots[[name]]$.rownames
-            dots[[name]]$.rownames = NULL
-        }
+    for (name in names(df_store))
+        dots[[name]] = df_store[[name]][dots[[name]],]
 
     # modify the list or environment with the intersected results
     if (is.list(envir))
@@ -44,22 +47,4 @@ intersect = function(..., along=1, envir=parent.frame(), drop=FALSE) {
     else
         for (name in names(dots))
             assign(name, dots[[name]], envir=envir)
-}
-
-#' Intersects a lits of arrays for common dimension names
-#'
-#' @param l.     List of arrays to perform operations on
-#' @param along  The axis along which to intersect
-#' @param drop   Drop unused dimensions on result
-#' @export
-intersect_list = function(l., along=1, drop=FALSE) {
-    if (!is.list(l.))
-        stop("`intersect_list()` expects a list as first argument, found: ", class(l.))
-
-    red_int = function(...) {
-        Reduce(base::intersect, list(...))
-    }
-
-    common = do.call(red_int, dimnames(l., along=along))
-    lapply(l., function(e) subset(e, index=common, along=along, drop=drop))
 }

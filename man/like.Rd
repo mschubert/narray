@@ -17,4 +17,3 @@ An array with values of \code{X} and structure of \code{like}
 \description{
 Reshapes \code{x} to be like \code{like}, including dimension names
 }
-

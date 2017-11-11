@@ -5,6 +5,7 @@
 #' @return           A joined array
 #' @export
 bind = function(arrayList, along=length(dim(arrayList[[1]]))+1) {
+    arrayList = vectors_to_row_or_col(arrayList, along=along)
     re = do.call(function(...) abind::abind(..., along=along), arrayList)
 
     # is.null(...) required because R is stupid

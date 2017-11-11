@@ -4,7 +4,7 @@
 \alias{map}
 \title{Maps a function along an array preserving its structure}
 \usage{
-map(X, along, FUN, subsets = rep(1, dim(X)[along]), drop = TRUE)
+map(X, along, FUN, subsets = base::rep(1, dim(X)[along]), drop = TRUE, ...)
 }
 \arguments{
 \item{X}{An n-dimensional array}
@@ -16,6 +16,8 @@ map(X, along, FUN, subsets = rep(1, dim(X)[along]), drop = TRUE)
 \item{subsets}{Whether to apply \code{FUN} along the whole axis or subsets thereof}
 
 \item{drop}{Remove unused dimensions after mapping; default: TRUE}
+
+\item{...}{Arguments passed to the function}
 }
 \value{
 An array where \code{FUN} has been applied
@@ -23,4 +25,3 @@ An array where \code{FUN} has been applied
 \description{
 Maps a function along an array preserving its structure
 }
-

@@ -4,7 +4,8 @@
 \alias{intersect}
 \title{Intersects all passed arrays along a give dimension, and modifies them in place}
 \usage{
-intersect(..., along = 1, envir = parent.frame(), drop = FALSE)
+intersect(..., along = 1, envir = parent.frame(), drop = FALSE,
+  fail_if_empty = TRUE)
 }
 \arguments{
 \item{...}{Arrays that should be intersected}
@@ -14,9 +15,10 @@ intersect(..., along = 1, envir = parent.frame(), drop = FALSE)
 \item{envir}{A list or environment to act upon}
 
 \item{drop}{Drop unused dimensions on result}
+
+\item{fail_if_empty}{Stop if intersection yields empty set}
 }
 \description{
 TODO: accept along=c(1,2,1,1...) [maybe list w/ vectors as well?]
 TODO: accept data=env/list arg? [sig-comb/drug-tissue/assocs.r#62-65]
 }
-

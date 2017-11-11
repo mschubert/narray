@@ -1,42 +1,33 @@
 #' Stacks arrays while respecting names in each dimension
 #'
-#' @param arrayList  A list of n-dimensional arrays
-#' @param along      Which axis arrays should be stacked on (default: new axis)
-#' @param fill       Value for unknown values (default: \code{NA})
-#' @param drop     Remove unused dimensions after mapping; default: TRUE
-#' @return           A stacked array, either n or n+1 dimensional
+#' @param arrayList   A list of n-dimensional arrays
+#' @param along       Which axis arrays should be stacked on (default: new axis)
+#' @param fill        Value for unknown values (default: \code{NA})
+#' @param keep_empty  Keep empty elements when stacking (default: FALSE)
+#' @param drop        Drop unused dimensions (default: FALSE)
+#' @param fail_if_empty  Stop if no arrays left after removing empty elements
+#' @return            A stacked array, either n or n+1 dimensional
 #' @export
-stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA, drop=FALSE) {
+stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA,
+                 drop=FALSE, keep_empty=FALSE, fail_if_empty=TRUE) {
+
     if (!is.list(arrayList))
         stop(paste("arrayList needs to be a list, not a", class(arrayList)))
     length0 = sapply(arrayList, length) == 0
-    if (any(length0)) {
+    if (!keep_empty && any(length0)) {
         drop_idx = names(arrayList)[length0]
         if (is.null(drop_idx))
             drop_idx = which(length0)
-        warning("dropping empty elements: ", paste(drop_idx, collapse=", "))
         arrayList = arrayList[!length0]
     }
-    if (length(arrayList) == 0)
-        stop("No element remaining after removing NULL entries")
-    if (length(arrayList) == 1)
-        return(arrayList[[1]])
-
-    # for vectors: if along=1 row vecs, along=2 col vecs, etc.
-    if (all(is.null(unlist(lapply(arrayList, base::dim))))) {
-        if (along == 1)
-            arrayList = lapply(seq_along(arrayList), function(i) {
-                re = t(as.matrix(arrayList[[i]]))
-                rownames(re) = names(arrayList)[i]
-                re
-            })
-        else if (along == 2)
-            arrayList = lapply(seq_along(arrayList), function(i) {
-                re = as.matrix(arrayList[[i]])
-                colnames(re) = names(arrayList)[i]
-                re
-            })
+    if (length(arrayList) == 0) {
+        if (fail_if_empty)
+            stop("No element remaining after removing NULL entries")
+        else
+            return(NULL)
     }
+
+    arrayList = vectors_to_row_or_col(arrayList, along=along)
 
     newAxis = FALSE
     if (along > length(dim(arrayList[[1]])))

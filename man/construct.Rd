@@ -24,4 +24,3 @@ A structured array
 The construct() function can be called either with the data.frame as the
 first argument or the formula and then specify `data=<data.frame>`
 }
-

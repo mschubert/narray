@@ -17,4 +17,3 @@ TRUE/FALSE for each element
 \description{
 operator for array-like logical ops
 }
-

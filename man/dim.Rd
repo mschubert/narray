@@ -12,4 +12,3 @@ dim(x)
 \description{
 base::dim, but returning 1 for vector
 }
-

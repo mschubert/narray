@@ -4,7 +4,7 @@
 \alias{split}
 \title{Splits and array along a given axis, either totally or only subsets}
 \usage{
-split(X, along, subsets = c(1:dim(X)[along]), drop = FALSE)
+split(X, along, subsets = c(1:dim(X)[along]), drop = NULL)
 }
 \arguments{
 \item{X}{An array that should be split}
@@ -13,7 +13,8 @@ split(X, along, subsets = c(1:dim(X)[along]), drop = FALSE)
 
 \item{subsets}{Whether to split each element or keep some together}
 
-\item{drop}{Remove unused dimensions after mapping; default: TRUE}
+\item{drop}{Remove unused dimensions after mapping
+default: drop if all resulting arrays have same number of dimensions}
 }
 \value{
 A list of arrays that combined make up the input array
@@ -21,4 +22,3 @@ A list of arrays that combined make up the input array
 \description{
 Splits and array along a given axis, either totally or only subsets
 }
-

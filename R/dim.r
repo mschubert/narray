@@ -3,7 +3,7 @@
 #' @param x  Object to get dimensions on
 #' @export
 dim = function(x) {
-    if (is.vector(x))
+    if (is.null(x) || is.vector(x))
         length(x)
     else
         base::dim(x)

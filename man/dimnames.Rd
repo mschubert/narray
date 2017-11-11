@@ -4,16 +4,19 @@
 \alias{dimnames}
 \title{Return dimension names of an array respecting the number of dimensions}
 \usage{
-dimnames(x, along = TRUE, null_as_integer = FALSE, drop = TRUE)
+dimnames(x, along = TRUE, null_as_integer = FALSE,
+  drop = !identical(along, TRUE))
 }
 \arguments{
 \item{x}{An n-dimensional array}
 
 \item{along}{Limit to dimension (default: all)}
 
-\item{null_as_integer}{Whether nameless dimensions should be \code{NULL} or numbered}
+\item{null_as_integer}{Whether nameless dimensions should be \code{NULL} or
+numbered}
 
-\item{drop}{Drop list of only one axis requested (default: TRUE)}
+\item{drop}{Drop list of only one axis requested (default: if not
+returning all dimensions)}
 }
 \value{
 A list of dimension names with length \code{length(ndim(X))}
@@ -21,4 +24,3 @@ A list of dimension names with length \code{length(ndim(X))}
 \description{
 Act on each element if 'x' is a list
 }
-

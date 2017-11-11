@@ -25,4 +25,3 @@ A summarized matrix as defined by `from`, `to`
 \description{
 Summarize a matrix analogous to a grouped df in dplyr
 }
-
