@@ -8,9 +8,12 @@ bind = function(arrayList, along=length(dim(arrayList[[1]]))+1) {
     arrayList = vectors_to_row_or_col(arrayList, along=along)
     re = do.call(function(...) abind::abind(..., along=along), arrayList)
 
-    # is.null(...) required because R is stupid
     if (dim(re)[along] == length(arrayList) && !is.null(names(arrayList)))
         dimnames(re)[[along]] = names(arrayList)
+
+    # replace list of NULLs to one NULL to be consistent with base R
+    if (all(sapply(dimnames(re), is.null)))
+        dimnames(re) = NULL
 
     re
 }
