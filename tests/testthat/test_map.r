@@ -28,40 +28,33 @@ test_that("summarizing elements", {
               dim = c(2,3,4,5),
               dimnames = list(l[1:2], l[3:5], l[6:9], l[10:14]))
 
-    expect_equal(dim(map_simple(a, along=1, id)),
-                 dim(map_simple(a, along=2, id)),
-                 dim(map_simple(a, along=3, id)),
-                 dim(map_simple(a, along=4, id)),
-                 dim(map(a, along=1, id)),
-                 dim(map(a, along=2, id)),
-                 dim(map(a, along=3, id)),
-                 dim(map(a, along=5, id)),
-                 dim(a))
+    expect_equal(dim(a), dim(map_simple(a, along=1, id)))
+    expect_equal(dim(a), dim(map_simple(a, along=2, id)))
+    expect_equal(dim(a), dim(map_simple(a, along=3, id)))
+    expect_equal(dim(a), dim(map_simple(a, along=4, id)))
+    expect_equal(dim(a), dim(map(a, along=1, id)))
+    expect_equal(dim(a), dim(map(a, along=2, id)))
+    expect_equal(dim(a), dim(map(a, along=3, id)))
+    expect_equal(dim(a), dim(map(a, along=4, id)))
 
     fx = function(x) sum(x)
 
-    expect_equal(dim(map_simple(a, along=1, fx, drop=FALSE)),
-                 dim(map(a, along=1, fx, drop=FALSE)),
-                 c(1,3,4,5))
+    expect_equal(c(1,3,4,5), dim(map_simple(a, along=1, fx, drop=FALSE)))
+    expect_equal(c(1,3,4,5), dim(map(a, along=1, fx, drop=FALSE)))
 
-    expect_equal(dim(map_simple(a, along=2, fx, drop=FALSE)),
-                 dim(map(a, along=2, fx, drop=FALSE)),
-                 c(2,1,4,5))
+    expect_equal(c(2,1,4,5), dim(map_simple(a, along=2, fx, drop=FALSE)))
+    expect_equal(c(2,1,4,5), dim(map(a, along=2, fx, drop=FALSE)))
 
-    expect_equal(dim(map_simple(a, along=3, fx, drop=FALSE)),
-                 dim(map(a, along=3, fx, drop=FALSE)),
-                 c(2,3,1,5))
+    expect_equal(c(2,3,1,5), dim(map_simple(a, along=3, fx, drop=FALSE)))
+    expect_equal(c(2,3,1,5), dim(map(a, along=3, fx, drop=FALSE)))
 
-    expect_equal(dim(map_simple(a, along=4, fx, drop=FALSE)),
-                 dim(map(a, along=4, fx, drop=FALSE)),
-                 c(2,3,4,1))
+    expect_equal(c(2,3,4,1), dim(map_simple(a, along=4, fx, drop=FALSE)))
+    expect_equal(c(2,3,4,1), dim(map(a, along=4, fx, drop=FALSE)))
 
     m = a[,,1,1] # 2 3
-    expect_equal(dim(map_simple(m, along=1, fx, drop=FALSE)),
-                 dim(map(m, 1, fx, drop=FALSE)),
-                 c(1,3))
+    expect_equal(c(1,3), dim(map_simple(m, along=1, fx, drop=FALSE)))
+    expect_equal(c(1,3), dim(map(m, 1, fx, drop=FALSE)))
 
-    expect_equal(dim(map_simple(m, along=2, fx, drop=FALSE)),
-                 dim(map(m, 1, fx, drop=FALSE)),
-                 c(2,1))
+    expect_equal(c(2,1), dim(map_simple(m, along=2, fx, drop=FALSE)))
+    expect_equal(c(2,1), dim(map(m, 2, fx, drop=FALSE)))
 })

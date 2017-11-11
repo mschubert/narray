@@ -15,16 +15,14 @@ test_that("everything", {
     expect_equal(subset(DF, c(1,2), along=1), DF[1:2,])
     expect_equal(subset(DF, c(1,2), along=2), DF)
 
-    expect_equal(C[,2:3],
-                subset(C, 2:3, along=2, drop=TRUE),
-                subset(C, 2:3, along=2, drop=FALSE),
-                subset(C, LETTERS[2:3], along=2, drop=TRUE),
-                subset(C, LETTERS[2:3], along=2, drop=FALSE),
-                subset(C, c(FALSE, TRUE, TRUE, FALSE, drop=TRUE)),
-                subset(C, c(FALSE, TRUE, TRUE, FALSE, drop=FALSE)))
+    expect_equal(C[,2:3], subset(C, 2:3, along=2, drop=TRUE))
+    expect_equal(C[,2:3], subset(C, 2:3, along=2, drop=FALSE))
+    expect_equal(C[,2:3], subset(C, LETTERS[2:3], along=2, drop=TRUE))
+    expect_equal(C[,2:3], subset(C, LETTERS[2:3], along=2, drop=FALSE))
+    expect_equal(C[,2:3], subset(C, c(FALSE, TRUE, TRUE, FALSE), drop=TRUE))
+    expect_equal(C[,2:3], subset(C, c(FALSE, TRUE, TRUE, FALSE), drop=FALSE))
 
-    expect_equal(C[,3,drop=FALSE],
-                subset(C, 3, along=2, drop=FALSE),
-                subset(C, LETTERS[3], along=2, drop=FALSE),
-                subset(C, c(FALSE, FALSE, TRUE, FALSE, along=2, drop=FALSE)))
+    expect_equal(C[,3,drop=FALSE], subset(C, 3, along=2, drop=FALSE))
+    expect_equal(C[,3,drop=FALSE], subset(C, LETTERS[3], along=2, drop=FALSE))
+    expect_equal(C[,3,drop=FALSE], subset(C, c(FALSE, FALSE, TRUE, FALSE), along=2, drop=FALSE))
 })
