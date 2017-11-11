@@ -1,4 +1,6 @@
 * 0.3.2
+  * add `collect` function as opposite to `mask`
+  * deprecate `summarize` in favor of `map`
   * adjust tests for `testthat>=2`
 
 * 0.2.2
