@@ -18,9 +18,8 @@ test_that("summing elements from data.frame to array", {
 
 test_that("axis variable is NA, should be omitted + print warning", {
     DFna = rbind(DF, NA)
-    sw = suppressWarnings
-    Gna = sw(construct(value ~ Var1 + Var2, data=DFna, fun.aggregate=sum))
-    Gna2 = sw(construct(DFna, value ~ Var1 + Var2, fun.aggregate=sum))
+    expect_warning(Gna <- construct(value ~ Var1 + Var2, data=DFna, fun.aggregate=sum))
+    expect_warning(Gna2 <- construct(DFna, value ~ Var1 + Var2, fun.aggregate=sum))
     expect_equal(Gna, Gref)
     expect_equal(Gna2, Gref)
 })

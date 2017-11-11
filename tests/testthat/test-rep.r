@@ -1,11 +1,11 @@
 context("rep")
 
 test_that("vector", {
-    expect_equal(rep(1:2, 2, along=1),
-                 t(rep(1:2, 2, along=2)),
-                 rrep(1:2, 2),
-                 t(crep(1:2, 2)),
-                 cbind(1:2, 1:2))
+    ref = rbind(1:2, 1:2)
+    expect_equal(ref, rep(1:2, 2, along=1))
+    expect_equal(ref, t(rep(1:2, 2, along=2)))
+    expect_equal(ref, rrep(1:2, 2))
+    expect_equal(ref, t(crep(1:2, 2)))
 })
 
 test_that("keep names", {

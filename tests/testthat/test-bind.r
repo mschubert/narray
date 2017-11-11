@@ -1,9 +1,9 @@
 context("bind")
 
 test_that("vector", {
-    expect_equal(bind(list(1:2, 3:4), along=1),
-                 t(bind(list(1:2, 3:4), along=2)),
-                 cbind(1:2, 3:4))
+    ref = cbind(1:2, 3:4)
+    expect_equal(ref, bind(list(1:2, 3:4), along=1))
+    expect_equal(ref, t(bind(list(1:2, 3:4), along=2)))
 })
 
 test_that("keep names", {
