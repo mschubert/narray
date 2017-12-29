@@ -50,6 +50,22 @@ vectors_to_row_or_col = function(xlist, along) {
         xlist
 }
 
+#' Infer array structure from data.frame
+#'
+#' @param df       A data.frame with ordered axes, value field last
+#' @param verbose  Print message with inferred structure (default: TRUE)
+#' @return         A formula describing this structure
+guess_structure = function(df, verbose=TRUE) {
+    value_var = colnames(df)[ncol(df)]
+    axes = setdiff(colnames(df), value_var)
+    struct = paste(value_var, "~", paste(axes, collapse=" + "))
+    fml = as.formula(struct)
+    environment(fml) = .GlobalEnv
+    if (verbose)
+        message("Using structure: ", struct)
+    fml
+}
+
 #' Operator for array-like logical operations
 #'
 #' @param a  First vector
