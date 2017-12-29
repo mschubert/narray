@@ -1,3 +1,9 @@
+* 0.4.0
+  * `summarize` is kept as `translate`
+  * `NA` subsets in `map` are dropped with a warning (#13)
+  * `map` subsets throw error if not same length as array axis
+  * new lambda syntax (#14)
+
 * 0.3.2
   * add `collect` function as opposite to `mask`
   * deprecate `summarize` in favor of `map`

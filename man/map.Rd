@@ -17,7 +17,7 @@ map(X, along, FUN, subsets = base::rep(1, dim(X)[along]), drop = TRUE, ...)
 
 \item{drop}{Remove unused dimensions after mapping; default: TRUE}
 
-\item{...}{Arguments passed to the function}
+\item{...}{Other arguments passed to \code{FUN}}
 }
 \value{
 An array where \code{FUN} has been applied
