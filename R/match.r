@@ -1,25 +1,3 @@
-#' operator for array-like logical ops
-#'
-#' @param a  First vector
-#' @param b  Second vector
-#' @return   TRUE/FALSE for each element
-`%or%` = function(a, b) {
-    cmp = function(a,b) if (identical(a, FALSE) ||
-                            is.null(a) ||
-                            is.na(a) ||
-                            is.nan(a) ||
-                            length(a) == 0 ||
-                            nchar(a) == 0) b else a
-
-    if (is.list(a))
-        lapply(1:length(a), function(i) cmp(a[[i]], b[[i]]))
-    else if (length(a) > 1) #TODO: does that do what we want?
-        mapply(cmp, a, b)
-    else
-        cmp(a, b)
-}
-
-
 #' match() function with extended functionality
 #'
 #' @param x            Vector of identifiers that should be mapped

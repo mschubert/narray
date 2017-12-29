@@ -11,9 +11,5 @@ bind = function(arrayList, along=length(dim(arrayList[[1]]))+1) {
     if (dim(re)[along] == length(arrayList) && !is.null(names(arrayList)))
         dimnames(re)[[along]] = names(arrayList)
 
-    # replace list of NULLs to one NULL to be consistent with base R
-    if (all(sapply(dimnames(re), is.null)))
-        dimnames(re) = NULL
-
-    re
+    restore_null_dimnames(re)
 }

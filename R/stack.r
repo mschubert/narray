@@ -89,8 +89,5 @@ stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA,
         result = do.call("[<-", c(list(result), dm, list(arrayList[[i]])))
     }
 
-    if (drop)
-        drop(result)
-    else
-        result
+    drop_if(result, drop)
 }
