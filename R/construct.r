@@ -40,16 +40,9 @@ construct.formula = function(formula, data, fill=NULL, fun.aggregate=NULL, ...) 
         data = data[!axis_NA,]
     }
 
-	`%catchm%` = function(a, b) {
-		withCallingHandlers(
-			a,
-			message = function(w) b
-		)
-	}
-
     reshape2::acast(data,
                     formula = form,
-		            value.var = dep_var,
+                    value.var = dep_var,
                     fill = fill,
                     fun.aggregate = fun.aggregate,
                     ...) %catchm% stop("Do not know how to aggregate")
