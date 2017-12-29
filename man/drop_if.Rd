@@ -6,6 +6,14 @@
 \usage{
 drop_if(x, flag)
 }
+\arguments{
+\item{x}{An array object}
+
+\item{flag}{Whether to drop unused dimensions}
+}
+\value{
+The object in full or with dropped dimensions
+}
 \description{
 Drop unused dims if flag is TRUE
 }

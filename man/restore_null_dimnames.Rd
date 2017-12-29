@@ -6,6 +6,12 @@
 \usage{
 restore_null_dimnames(x)
 }
+\arguments{
+\item{x}{An array object}
+}
+\value{
+The object with NULL if no dimnames
+}
 \description{
 If no dimnames, return NULL and not list of NULLs
 }

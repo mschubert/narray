@@ -1,4 +1,7 @@
 #' If no dimnames, return NULL and not list of NULLs
+#'
+#' @param x  An array object
+#' @return   The object with NULL if no dimnames
 restore_null_dimnames = function(x) {
     if (all(sapply(dimnames(x), is.null)))
         dimnames(x) = NULL
@@ -6,6 +9,10 @@ restore_null_dimnames = function(x) {
 }
 
 #' Drop unused dims if flag is TRUE
+#'
+#' @param x     An array object
+#' @param flag  Whether to drop unused dimensions
+#' @return      The object in full or with dropped dimensions
 drop_if = function(x, flag) {
     if (flag)
         drop(x)
