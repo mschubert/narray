@@ -63,10 +63,10 @@ along each dimension and (2) padding partial matching arrays.
 A = matrix(1:4, nrow=2, ncol=2, dimnames=list(c('a','b'),c('x','y')))
 B = matrix(5:6, nrow=2, ncol=1, dimnames=list(c('b','a'),'z'))
 
-C = stack(list(A, B), along=2)
+C = stack(A, B, along=2)
 C
 
-D = stack(list(m=A, n=C), along=3) # we can also introduce new dimensions
+D = stack(m=A, n=C, along=3) # we can also introduce new dimensions
 D
 ```
 

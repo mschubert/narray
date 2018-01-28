@@ -10,12 +10,21 @@ C = stack(list(A, B), along=2)
 
 test_that("match names, not extent", {
     Cref = structure(c(1L, 2L, 3L, 4L, 6L, 5L), .Dim = 2:3,
-                     .Dimnames = list(  c("a", "b"), c("x", "y", "z")))
+                     .Dimnames = list(c("a", "b"), c("x", "y", "z")))
     expect_equal(C, Cref)
+})
+
+test_that("supply objects instead of list", {
+    Cobj = stack(A, B, along=2)
+    expect_equal(Cobj, C)
+
+    Cobj2 = stack(b=B, a=A, along=2)
+    expect_equal(Cobj2, C[c(2,1),c(3,1,2)])
 })
 
 test_that("fill empty elements", {
     D = stack(list(m=A, n=C), along=3)
+    D2 = stack(m=A, n=C, along=3)
     # , , m          , , n
     #
     #   x y  z         x y z
@@ -25,6 +34,7 @@ test_that("fill empty elements", {
                      .Dim = c(2L,3L, 2L), .Dimnames = list(c("a", "b"),
                      c("x", "y", "z"), c("m", "n")))
     expect_equal(D, Dref)
+    expect_equal(D2, Dref)
 })
 
 test_that("same as first but without colnames", {

@@ -4,11 +4,11 @@
 \alias{stack}
 \title{Stacks arrays while respecting names in each dimension}
 \usage{
-stack(arrayList, along = length(dim(arrayList[[1]])) + 1, fill = NA,
+stack(..., along = length(dim(arrayList[[1]])) + 1, fill = NA,
   drop = FALSE, keep_empty = FALSE, fail_if_empty = TRUE)
 }
 \arguments{
-\item{arrayList}{A list of n-dimensional arrays}
+\item{...}{N-dimensional arrays, or a list thereof}
 
 \item{along}{Which axis arrays should be stacked on (default: new axis)}
 

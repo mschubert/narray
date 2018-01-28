@@ -1,4 +1,5 @@
 * 0.4.0
+  * `stack` now also accepts multiple arrays as arguments
   * `summarize` is kept as `translate`
   * `NA` subsets in `map` are dropped with a warning (#13)
   * `map` subsets throw error if not same length as array axis

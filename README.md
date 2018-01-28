@@ -34,12 +34,12 @@ along each dimension and (2) padding partial matching arrays.
 A = matrix(1:4, nrow=2, ncol=2, dimnames=list(c('a','b'),c('x','y')))
 B = matrix(5:6, nrow=2, ncol=1, dimnames=list(c('b','a'),'z'))
 
-C = stack(list(A, B), along=2)
+C = stack(A, B, along=2)
 #    x y z
 #  a 1 3 6   # B is stacked correctly according to its names
 #  b 2 4 5
 
-D = stack(list(m=A, n=C), along=3) # we can also introduce new dimensions
+D = stack(m=A, n=C, along=3) # we can also introduce new dimensions
 # , , m          , , n
 #
 #   x y  z         x y z

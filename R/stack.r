@@ -1,6 +1,6 @@
 #' Stacks arrays while respecting names in each dimension
 #'
-#' @param arrayList   A list of n-dimensional arrays
+#' @param ...         N-dimensional arrays, or a list thereof
 #' @param along       Which axis arrays should be stacked on (default: new axis)
 #' @param fill        Value for unknown values (default: \code{NA})
 #' @param keep_empty  Keep empty elements when stacking (default: FALSE)
@@ -8,8 +8,12 @@
 #' @param fail_if_empty  Stop if no arrays left after removing empty elements
 #' @return            A stacked array, either n or n+1 dimensional
 #' @export
-stack = function(arrayList, along=length(dim(arrayList[[1]]))+1, fill=NA,
+stack = function(..., along=length(dim(arrayList[[1]]))+1, fill=NA,
                  drop=FALSE, keep_empty=FALSE, fail_if_empty=TRUE) {
+
+    arrayList = list(...)
+    if (length(arrayList) == 1 && is.list(arrayList[[1]]))
+        arrayList = arrayList[[1]]
 
     if (!is.list(arrayList))
         stop(paste("arrayList needs to be a list, not a", class(arrayList)))
