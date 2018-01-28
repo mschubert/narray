@@ -79,6 +79,13 @@ map(C, along=2, mean, subsets=c('s1', 's1', 's2')) # summarize each subset to sc
 #   s1 s2
 # a  2  6
 # b  3  5
+
+# we can also index multiple arrays using the `lambda` function
+dot = function(x, y) sum(x * y)
+lambda(~ dot(A, B), along=c(A=1, B=2))
+#    z
+# a 23   # the same as A %*% B
+# b 34
 ```
 
 Intersecting

@@ -93,6 +93,15 @@ map(C, along=2, function(x) x*2) # return same length vector
 map(C, along=2, mean, subsets=c('s1', 's1', 's2')) # summarize each subset to scalar
 ```
 
+We can also index multiple arrays using the `lambda` function. If the result
+is a scalar we will get back an array, and an index with result column otherwise.
+
+```{r lambda}
+dot = function(x, y) sum(x * y)
+lambda(~ dot(A, B), along=c(A=1, B=2))
+lambda(~ dot(A, B), along=c(A=1, B=2), simplify=FALSE)
+```
+
 Intersecting
 ------------
 
