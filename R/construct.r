@@ -10,19 +10,8 @@
 #' @param ...            Additional arguments passed to reshape2::acast
 #' @return               A structured array
 #' @export
-construct = function(data, formula=guess_structure(data), fill=NULL, fun.aggregate=NULL, ...) {
-    UseMethod("construct")
-}
-
-#' @rdname construct
-#' @export
-construct.data.frame = function(data, formula=guess_structure(data), ...) {
-    construct.formula(formula, data, ...)
-}
-
-#' @rdname construct
-#' @export
-construct.formula = function(formula, data, fill=NULL, fun.aggregate=NULL, ...) {
+construct = function(data, formula=guess_structure(data), fill=NULL,
+                     fun.aggregate=NULL, ...) {
     if (!is.data.frame(data))
         stop("`data` needs to reference a data.frame")
 

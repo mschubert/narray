@@ -2,16 +2,9 @@
 % Please edit documentation in R/construct.r
 \name{construct}
 \alias{construct}
-\alias{construct.data.frame}
-\alias{construct.formula}
 \title{A wrapper around reshape2::acast using a more intuitive formula syntax}
 \usage{
 construct(data, formula = guess_structure(data), fill = NULL,
-  fun.aggregate = NULL, ...)
-
-\method{construct}{data.frame}(data, formula = guess_structure(data), ...)
-
-\method{construct}{formula}(formula, data, fill = NULL,
   fun.aggregate = NULL, ...)
 }
 \arguments{
