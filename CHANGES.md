@@ -1,4 +1,5 @@
 * 0.4.0
+  * Package no longer depends on `abind`, `pryr`
   * `along=-1` uses last dimension in `flatten`, `subset` (#6)
   * `stack` now also accepts multiple arrays as arguments
   * `summarize` is kept as `translate`

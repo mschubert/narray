@@ -86,3 +86,17 @@ guess_structure = function(df, verbose=TRUE) {
     else
         cmp(a, b)
 }
+
+#' Return a list of named dot-arguments
+named_dots = function(...) {
+    dots = eval(substitute(alist(...)))
+    dnames = names(dots) %or% rep("", length(dots))
+    noname = dnames == ""
+    if (any(noname)) {
+        deparse2 = function(x) paste(deparse(x, 500L), collapse = "")
+        defaults = vapply(dots[noname], deparse2,
+                          character(1), USE.NAMES=FALSE)
+        names(dots)[noname] = defaults
+    }
+    dots
+}

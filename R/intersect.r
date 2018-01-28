@@ -12,7 +12,7 @@
 intersect = function(..., along=1, envir=parent.frame(), drop=FALSE,
                      fail_if_empty=TRUE) {
 
-    dots = pryr::named_dots(...)
+    dots = named_dots(...)
     df_store = list()
 
     # for `data.frame`s, replace the rownames by field that is referenced
