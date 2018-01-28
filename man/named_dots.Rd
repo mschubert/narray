@@ -6,6 +6,12 @@
 \usage{
 named_dots(...)
 }
+\arguments{
+\item{...}{Function arguments}
+}
+\value{
+Named function arguments
+}
 \description{
 Return a list of named dot-arguments
 }

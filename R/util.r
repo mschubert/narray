@@ -88,6 +88,9 @@ guess_structure = function(df, verbose=TRUE) {
 }
 
 #' Return a list of named dot-arguments
+#'
+#' @param ...  Function arguments
+#' @return     Named function arguments
 named_dots = function(...) {
     dots = eval(substitute(alist(...)))
     dnames = names(dots) %or% rep("", length(dots))
