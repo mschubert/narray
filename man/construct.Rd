@@ -4,8 +4,8 @@
 \alias{construct}
 \title{A wrapper around reshape2::acast using a more intuitive formula syntax}
 \usage{
-construct(data, formula = guess_structure(data), fill = NULL,
-  fun.aggregate = NULL, ...)
+construct(data, formula = guess_structure(data), fill = NA,
+  name_axes = TRUE)
 }
 \arguments{
 \item{data}{A data frame}
@@ -14,9 +14,7 @@ construct(data, formula = guess_structure(data), fill = NULL,
 
 \item{fill}{Value to fill array with if undefined}
 
-\item{fun.aggregate}{Function to aggregate multiple values for the same position; default: error}
-
-\item{...}{Additional arguments passed to reshape2::acast}
+\item{name_axes}{Keep column names of `data` as axis names}
 }
 \value{
 A structured array
