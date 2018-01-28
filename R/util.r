@@ -86,14 +86,3 @@ guess_structure = function(df, verbose=TRUE) {
     else
         cmp(a, b)
 }
-
-#' Catch messages
-#'
-#' @param a  Expression
-#' @param b  Return value if a throws a message
-`%catchm%` = function(a, b) {
-    withCallingHandlers(
-        a,
-        message = function(w) b
-    )
-}
