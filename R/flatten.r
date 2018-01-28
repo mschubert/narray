@@ -1,11 +1,14 @@
 #' Flattens an array along an axis
 #'
 #' @param X         Array
-#' @param along     Along which axis to bind them together
+#' @param along     Along which axis to bind them together (default: last)
 #' @param name_sep  Which character to use for naming new arrays [default: NA, do not touch names]
 #' @return          An array with n-1 dimensions
 #' @export
-flatten = function(X, along, name_sep=NA) {
+flatten = function(X, along=-1, name_sep=NA) {
+    if (along == -1)
+        along = length(dim(x))
+
     re = split(X, along=along, drop=TRUE)
 
     if (!is.na(name_sep))

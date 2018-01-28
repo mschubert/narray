@@ -1,4 +1,5 @@
 * 0.4.0
+  * `along=-1` uses last dimension in `flatten`, `subset` (#6)
   * `stack` now also accepts multiple arrays as arguments
   * `summarize` is kept as `translate`
   * `construct` no longer allows value aggregation; do this on the `data.frame`

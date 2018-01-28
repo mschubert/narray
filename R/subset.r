@@ -7,7 +7,7 @@
 #' @param drop   Remove unused dimensions after mapping; default: TRUE
 #' @return       The subset of the array
 #' @export
-subset = function(X, index, along=NULL, drop=FALSE) {
+subset = function(X, index, along=-1, drop=FALSE) {
     if (!is.list(index)) {
         # ignore along for vectors
         if (is.atomic(X) && is.vector(X))
@@ -24,7 +24,7 @@ subset = function(X, index, along=NULL, drop=FALSE) {
         tmp = base::rep(list(TRUE), ndim_X)
 
         # by default, subset the last dimension
-        if (is.null(along))
+        if (along == -1)
             along = ndim_X
         tmp[[along]] = index
         index = tmp

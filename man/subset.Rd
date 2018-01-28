@@ -4,7 +4,7 @@
 \alias{subset}
 \title{Subsets an array using a list with indices or names}
 \usage{
-subset(X, index, along = NULL, drop = FALSE)
+subset(X, index, along = -1, drop = FALSE)
 }
 \arguments{
 \item{X}{The array to subset}

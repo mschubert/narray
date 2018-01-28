@@ -4,12 +4,12 @@
 \alias{flatten}
 \title{Flattens an array along an axis}
 \usage{
-flatten(X, along, name_sep = NA)
+flatten(X, along = -1, name_sep = NA)
 }
 \arguments{
 \item{X}{Array}
 
-\item{along}{Along which axis to bind them together}
+\item{along}{Along which axis to bind them together (default: last)}
 
 \item{name_sep}{Which character to use for naming new arrays [default: NA, do not touch names]}
 }
