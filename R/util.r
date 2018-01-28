@@ -59,7 +59,7 @@ guess_structure = function(df, verbose=TRUE) {
     value_var = colnames(df)[ncol(df)]
     axes = setdiff(colnames(df), value_var)
     struct = paste(value_var, "~", paste(axes, collapse=" + "))
-    fml = as.formula(struct)
+    fml = stats::as.formula(struct)
     environment(fml) = .GlobalEnv
     if (verbose)
         message("Using structure: ", struct)
