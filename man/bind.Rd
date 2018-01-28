@@ -4,12 +4,12 @@
 \alias{bind}
 \title{Binds arrays together disregarding names}
 \usage{
-bind(arrayList, along = length(dim(arrayList[[1]])) + 1)
+bind(..., along = length(dim(arrayList[[1]])) + 1)
 }
 \arguments{
-\item{arrayList}{A list of n-dimensional arrays}
+\item{...}{N-dimensional arrays, or a list thereof}
 
-\item{along}{Along which axis to bind them together; default: new axis}
+\item{along}{Along which axis to bind them together (default: new axis)}
 }
 \value{
 A joined array
