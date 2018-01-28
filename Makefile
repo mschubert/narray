@@ -1,5 +1,5 @@
 .PHONY: all
-all: doc vignettes
+all: doc vignettes test
 
 R = Rscript --no-save --no-restore -e
 
