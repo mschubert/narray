@@ -29,11 +29,13 @@ lambda = function(fml, along, group=c(), simplify=TRUE, envir=parent.frame()) {
         }
         eval(call, envir=env)
     }
-    iter$result = simplify2array(lapply(seq_len(nrow(iter)), wrapper))
+    iter$result = lapply(seq_len(nrow(iter)), wrapper)
 
-    if (simplify && !is.list(iter$result)) {
+    if (simplify && is.atomic(iter$result[[1]]) && length(iter$result[[1]]) == 1) {
+        iter$result = simplify2array(iter$result)
         axes = setdiff(colnames(iter), "result")
         join = paste(axes, collapse="+")
+
         if (length(axes) > 1)
             iter = construct(iter, stats::as.formula(paste("result ~", join)))
         else if (is.character(iter[,1]))
