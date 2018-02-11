@@ -36,8 +36,11 @@ construct = function(data, formula=guess_structure(data), fill=NA,
     ndim = c(unname(sapply(dimNames, length)))
     result = array(fill, dim=ndim, dimnames=dimNames)
 
-    for (i in seq_len(nrow(data)))
+    pb = pb(nrow(data))
+    for (i in seq_len(nrow(data))) {
         result = do.call("[<-", c(list(result), axes[i,], list(values[[i]])))
+        pb$tick()
+    }
 
     result
 }

@@ -1,6 +1,6 @@
 Package: narray
 Title: Subset- And Name-Aware Array Utility Functions
-Version: 0.4.0
+Version: 0.4.1
 Author: Michael Schubert <mschu.dev@gmail.com>
 Maintainer: Michael Schubert <mschu.dev@gmail.com>
 Description: Stacking arrays according to dimension names, subset-aware
@@ -12,6 +12,7 @@ BugReports: https://github.com/mschubert/narray/issues
 Depends:
     R (>= 3.0.2)
 Imports:
+    progress,
     reshape2,
     stats,
     stringr,
