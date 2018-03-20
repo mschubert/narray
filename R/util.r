@@ -1,3 +1,11 @@
+#' Progress bar format to be consistent
+pb = function(ticks) progress::progress_bar$new(
+    total = ticks,
+    format = ":spin [:bar] :percent eta: :eta",
+    show_after = 5,
+    width = 20
+)
+
 #' If no dimnames, return NULL and not list of NULLs
 #'
 #' @param x  An array object

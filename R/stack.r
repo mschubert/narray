@@ -74,6 +74,7 @@ stack = function(..., along=length(dim(arrayList[[1]]))+1, fill=NA, drop=FALSE,
 
     # fill each result matrix slice with matched values of arrayList
     offset = 0
+    pb = pb(length(arrayList))
     for (i in seq_along(arrayList)) {
         dm = dimnames(arrayList[[i]], null_as_integer=TRUE)
         if (stack_offset) {
@@ -92,6 +93,7 @@ stack = function(..., along=length(dim(arrayList[[1]]))+1, fill=NA, drop=FALSE,
 
         # assign to the slice if there are any values in it
         result = do.call("[<-", c(list(result), dm, list(arrayList[[i]])))
+        pb$tick()
     }
 
     drop_if(result, drop)

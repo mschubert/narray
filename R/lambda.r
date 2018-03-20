@@ -29,7 +29,12 @@ lambda = function(fml, along, group=c(), simplify=TRUE, envir=parent.frame()) {
         }
         eval(call, envir=env)
     }
-    iter$result = lapply(seq_len(nrow(iter)), wrapper)
+    pb = pb(nrow(iter))
+    iter$result = lapply(seq_len(nrow(iter)), function(i) {
+        re = wrapper(i)
+        pb$tick()
+        re
+    })
 
     if (simplify && is.atomic(iter$result[[1]]) && length(iter$result[[1]]) == 1) {
         iter$result = simplify2array(iter$result)
