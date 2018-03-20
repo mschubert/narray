@@ -1,6 +1,6 @@
 Package: narray
 Title: Subset- And Name-Aware Array Utility Functions
-Version: 0.4.0
+Version: 0.4.0.99
 Author: Michael Schubert <mschu.dev@gmail.com>
 Maintainer: Michael Schubert <mschu.dev@gmail.com>
 Description: Stacking arrays according to dimension names, subset-aware
@@ -23,4 +23,4 @@ Suggests:
     knitr,
     testthat
 VignetteBuilder: knitr
-RoxygenNote: 6.0.1
+RoxygenNote: 6.0.1.9000

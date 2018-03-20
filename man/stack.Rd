@@ -5,7 +5,8 @@
 \title{Stacks arrays while respecting names in each dimension}
 \usage{
 stack(..., along = length(dim(arrayList[[1]])) + 1, fill = NA,
-  drop = FALSE, keep_empty = FALSE, fail_if_empty = TRUE)
+  drop = FALSE, keep_empty = FALSE, allow_overwrite = FALSE,
+  fail_if_empty = TRUE)
 }
 \arguments{
 \item{...}{N-dimensional arrays, or a list thereof}
@@ -17,6 +18,8 @@ stack(..., along = length(dim(arrayList[[1]])) + 1, fill = NA,
 \item{drop}{Drop unused dimensions (default: FALSE)}
 
 \item{keep_empty}{Keep empty elements when stacking (default: FALSE)}
+
+\item{allow_overwrite}{Overwrite values if more arrays share same key}
 
 \item{fail_if_empty}{Stop if no arrays left after removing empty elements}
 }
