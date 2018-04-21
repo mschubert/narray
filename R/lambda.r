@@ -17,6 +17,7 @@ lambda = function(fml, along, group=c(), simplify=TRUE, envir=parent.frame()) {
     }
     dnames = mapply(obj2dname, objname=names(along), along=along, SIMPLIFY=FALSE)
     iter = do.call(expand.grid, c(dnames, list(stringsAsFactors=FALSE)))
+    class(iter) = c("tbl_df", "tbl", class(iter))
 
     wrapper = function(row) {
         env = new.env(parent=envir)
@@ -36,17 +37,19 @@ lambda = function(fml, along, group=c(), simplify=TRUE, envir=parent.frame()) {
         re
     })
 
-    if (simplify && is.atomic(iter$result[[1]]) && length(iter$result[[1]]) == 1) {
+    if (is.atomic(iter$result[[1]]) && length(iter$result[[1]]) == 1) {
         iter$result = simplify2array(iter$result)
-        axes = setdiff(colnames(iter), "result")
-        join = paste(axes, collapse="+")
+        if (simplify) {
+            axes = setdiff(colnames(iter), "result")
+            join = paste(axes, collapse="+")
 
-        if (length(axes) > 1)
-            iter = construct(iter, stats::as.formula(paste("result ~", join)))
-        else if (is.character(iter[,1]))
-            iter = stats::setNames(iter$result, iter[,1])
-        else
-            iter = iter$result
+            if (length(axes) > 1)
+                iter = construct(iter, stats::as.formula(paste("result ~", join)))
+            else if (is.character(iter[,1]))
+                iter = stats::setNames(iter$result, iter[,1])
+            else
+                iter = iter$result
+        }
     }
     iter
 }
