@@ -33,14 +33,18 @@ construct = function(data, formula=guess_structure(data), fill=NA,
         stop("Duplicated entries in `data` are not allowed")
 
     dimNames = lapply(axes, unique)
-    ndim = c(unname(sapply(dimNames, length)))
-    result = array(fill, dim=ndim, dimnames=dimNames)
+    ndim = sapply(dimNames, length)
 
-    pb = pb(nrow(data))
-    for (i in seq_len(nrow(data))) {
-        result = do.call("[<-", c(list(result), axes[i,], list(values[[i]])))
-        pb$tick()
-    }
+    order_df = do.call(data.frame, mapply(base::match, axes, dimNames, SIMPLIFY=FALSE))
+    order_df$df = 1:nrow(order_df)
+    order_ar = do.call(expand.grid, lapply(ndim, seq_len))
+    order_ar$ar = 1:nrow(order_ar)
 
-    result
+    idx = merge(order_ar, order_df, all.x=TRUE, sort=FALSE)
+    idx = idx[order(idx$ar),]
+
+    if (!name_axes)
+        names(dimNames) = NULL
+
+    array(values[idx$df], dim=unname(ndim), dimnames=dimNames)
 }
