@@ -21,13 +21,13 @@ map = function(X, along, FUN, subsets=base::rep(1,dim(X)[along]), drop=TRUE, ...
     nsubsets = length(lsubsets)
 
     # create a list to index X with each subset
-    subsetIndices = base::rep(list(base::rep(list(TRUE), length(dim(X)))), nsubsets)
+    subs_idx = base::rep(list(base::rep(list(TRUE), length(dim(X)))), nsubsets)
     for (i in 1:nsubsets)
-        subsetIndices[[i]][[along]] = (subsets==lsubsets[i])
+        subs_idx[[i]][[along]] = (subsets==lsubsets[i])
 
-    # for each subset, call mymap
-    resultList = lapply(subsetIndices, function(f)
-        map_simple(subset(X, f), along, FUN, drop=FALSE, ...))
+    # for each subset, call map_one
+    resultList = lapply(subs_idx, function(f)
+        map_one(subset(X, f), along, FUN, drop=FALSE, ...))
 
     # assemble results together
     Y = bind(resultList, along=along)
@@ -47,7 +47,7 @@ map = function(X, along, FUN, subsets=base::rep(1,dim(X)[along]), drop=TRUE, ...
 #' @param drop     Remove unused dimensions after mapping; default: TRUE
 #' @param ...      Arguments passed to the function
 #' @return         An array where \code{FUN} has been applied
-map_simple = function(X, along, FUN, drop=TRUE, ...) {
+map_one = function(X, along, FUN, drop=TRUE, ...) {
     if (is.vector(X) || length(dim(X))==1)
         return(FUN(X, ...))
 
