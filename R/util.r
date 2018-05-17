@@ -1,4 +1,7 @@
 #' Progress bar format to be consistent
+#'
+#' @param ticks  Number of ticks the bar has
+#' @return  A progress bar object
 pb = function(ticks) progress::progress_bar$new(
     total = ticks,
     format = ":spin [:bar] :percent eta: :eta",

@@ -6,6 +6,12 @@
 \usage{
 pb(ticks)
 }
+\arguments{
+\item{ticks}{Number of ticks the bar has}
+}
+\value{
+A progress bar object
+}
 \description{
 Progress bar format to be consistent
 }
