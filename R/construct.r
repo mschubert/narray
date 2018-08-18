@@ -18,9 +18,9 @@ construct = function(data, formula=guess_structure(data), fill=NA,
     if (length(dep_var) != 1)
         stop("The dependent variable (left side of ~) needs to reference exactly one variable")
 
-    indep_vars = all.vars(formula[[3]]) #TODO: if factor, include all levels in matrix
+    indep_vars = all.vars(formula[[3]]) # include empty factor levels here?
 
-    axis_NA = apply(is.na(data[indep_vars]), 1, any)
+    axis_NA = apply(is.na(data[indep_vars]), 1, any) # taking quite a long time
     if (any(axis_NA)) {
         warning("Omitting ", sum(axis_NA), " rows where axis columns are NA")
         data = data[!axis_NA,]
@@ -29,7 +29,7 @@ construct = function(data, formula=guess_structure(data), fill=NA,
     axes = data[indep_vars]
     values = data[[dep_var]]
 
-    if (any(duplicated(axes)))
+    if (any(duplicated(axes))) # taking quite a long time
         stop("Duplicated entries in `data` are not allowed")
 
     dimNames = lapply(axes, unique)
