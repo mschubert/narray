@@ -26,8 +26,12 @@ map = function(X, along, FUN, subsets=base::rep(1,dim(X)[along]), drop=TRUE, ...
         subs_idx[[i]][[along]] = (subsets==lsubsets[i])
 
     # for each subset, call map_one
-    resultList = lapply(subs_idx, function(f)
-        map_one(subset(X, f), along, FUN, drop=FALSE, ...))
+    pb = pb(nsubsets)
+    resultList = lapply(subs_idx, function(f) {
+        re = map_one(subset(X, f), along, FUN, drop=FALSE, ...)
+        pb$tick()
+        re
+    })
 
     # assemble results together
     Y = bind(resultList, along=along)
@@ -44,10 +48,11 @@ map = function(X, along, FUN, subsets=base::rep(1,dim(X)[along]), drop=TRUE, ...
 #' @param X        An n-dimensional array
 #' @param along    Along which axis to apply the function
 #' @param FUN      A function that maps a vector to the same length or a scalar
+#' @param pb       progress bar object
 #' @param drop     Remove unused dimensions after mapping; default: TRUE
 #' @param ...      Arguments passed to the function
 #' @return         An array where \code{FUN} has been applied
-map_one = function(X, along, FUN, drop=TRUE, ...) {
+map_one = function(X, along, FUN, pb, drop=TRUE, ...) {
     if (is.vector(X) || length(dim(X))==1)
         return(FUN(X, ...))
 

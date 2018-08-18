@@ -4,7 +4,7 @@
 \alias{map_one}
 \title{Apply function that preserves order of dimensions}
 \usage{
-map_one(X, along, FUN, drop = TRUE, ...)
+map_one(X, along, FUN, pb, drop = TRUE, ...)
 }
 \arguments{
 \item{X}{An n-dimensional array}
@@ -12,6 +12,8 @@ map_one(X, along, FUN, drop = TRUE, ...)
 \item{along}{Along which axis to apply the function}
 
 \item{FUN}{A function that maps a vector to the same length or a scalar}
+
+\item{pb}{progress bar object}
 
 \item{drop}{Remove unused dimensions after mapping; default: TRUE}
 
