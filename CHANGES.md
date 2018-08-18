@@ -1,3 +1,9 @@
+* 0.4.1
+  * speed improvements for `construct`, `melt` (#23)
+  * `lambda` adds `tbl_df` class if `simplify=FALSE` (#19)
+  * `map`, `lambda`, `stack` now have progress bars after 5s (#16)
+  * Package no longer depends on `reshape2`
+
 * 0.4.0
   * Package no longer depends on `abind`, `pryr`
   * `along=-1` uses last dimension in `flatten`, `subset` (#6)
