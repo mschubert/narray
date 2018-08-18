@@ -1,4 +1,4 @@
-#' A wrapper around reshape2::acast using a more intuitive formula syntax
+#' Transform a data.frame with axes and value into an array
 #'
 #' The construct() function can be called either with the data.frame as the
 #' first argument or the formula and then specify `data=<data.frame>`

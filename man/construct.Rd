@@ -2,7 +2,7 @@
 % Please edit documentation in R/construct.r
 \name{construct}
 \alias{construct}
-\title{A wrapper around reshape2::acast using a more intuitive formula syntax}
+\title{Transform a data.frame with axes and value into an array}
 \usage{
 construct(data, formula = guess_structure(data), fill = NA,
   name_axes = TRUE)
