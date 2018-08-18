@@ -17,34 +17,25 @@ construct = function(data, formula=guess_structure(data), fill=NA,
     dep_var = all.vars(formula[[2]])
     if (length(dep_var) != 1)
         stop("The dependent variable (left side of ~) needs to reference exactly one variable")
-
     indep_vars = all.vars(formula[[3]]) # include empty factor levels here?
-
     axis_NA = apply(is.na(data[indep_vars]), 1, any) # taking quite a long time
     if (any(axis_NA)) {
         warning("Omitting ", sum(axis_NA), " rows where axis columns are NA")
         data = data[!axis_NA,]
     }
-
     axes = data[indep_vars]
     values = data[[dep_var]]
-
     if (any(duplicated(axes))) # taking quite a long time
         stop("Duplicated entries in `data` are not allowed")
 
     dimNames = lapply(axes, unique)
     ndim = sapply(dimNames, length)
 
-    order_df = do.call(data.frame, mapply(base::match, axes, dimNames, SIMPLIFY=FALSE))
-    order_df$df = 1:nrow(order_df)
-    order_ar = do.call(expand.grid, lapply(ndim, seq_len))
-    order_ar$ar = 1:nrow(order_ar)
+    order_df = t(mapply(base::match, axes, dimNames) - 1)
+    mult = c(1, rev(cumprod(ndim[-length(ndim)])))
+    ar_idx = colSums(order_df * mult) + 1
 
-    idx = merge(order_ar, order_df, all.x=TRUE, sort=FALSE)
-    idx = idx[order(idx$ar),]
-
-    if (!name_axes)
-        names(dimNames) = NULL
-
-    array(values[idx$df], dim=unname(ndim), dimnames=dimNames)
+    idx = rep(fill, prod(ndim))
+    idx[ar_idx] = values
+    array(idx, dim=unname(ndim), dimnames=dimNames)
 }
