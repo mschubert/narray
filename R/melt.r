@@ -19,7 +19,7 @@ melt_one = function(x, dn=dimnames(x), na_rm=FALSE) {
     dns = expand.grid(dn, KEEP.OUT.ATTRS=FALSE, stringsAsFactors=FALSE)
     re = cbind(dns, value=c(x))
     if (na_rm)
-        na.omit(re)
+        stats::na.omit(re)
     else
         re
 }

@@ -9,7 +9,7 @@ melt(..., dimnames = NULL, na_rm = TRUE)
 \arguments{
 \item{...}{Array[s] or data.frame[s] to be melted}
 
-\item{dimnames}{List of names along the dimensions (instead of `VarX`)}
+\item{dimnames}{List of names along the dimensions}
 
 \item{na_rm}{Remove rows with NAs}
 }
