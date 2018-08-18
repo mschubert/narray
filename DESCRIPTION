@@ -13,7 +13,6 @@ Depends:
     R (>= 3.0.2)
 Imports:
     progress,
-    reshape2,
     stats,
     stringr,
     utils
