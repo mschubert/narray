@@ -64,29 +64,29 @@ SEXP cpp_stack(SEXP arlist) {
 
         auto aidx = vector<int>(da.size()); // axes in orig array
         auto ridx = vector<int>(da.size()); // axes in result array
-        for (int d=0; d<aidx.size(); d++)
-            ridx[d] = a2r[d][aidx[0]];
+        for (int d=1; d<aidx.size(); d++)
+            ridx[d] = a2r[d][0];
         for (int e=0; e<va.size(); e++) {
-            for (int d=0; d<aidx.size(); d++) {
-                if (aidx[d] == da[d]) {
-                    aidx[d] = 0;
-                    aidx[d+1]++;
-                    ridx[d] = a2r[d][0];
-                    ridx[d+1] = a2r[d+1][aidx[d+1]];
-                } else
-                    break;
-            }
             ridx[0] = a2r[0][aidx[0]];
+            int ridx_flat = inner_product(rdim.begin(), rdim.end()-1,
+                    ridx.begin()+1, 0) + ridx[0];
+            result[ridx_flat] = va[e];
+
             copy(aidx.begin(), aidx.end(), ostream_iterator<int>(cout, " "));
             cout << "-> ";
             copy(ridx.begin(), ridx.end(), ostream_iterator<int>(cout, " "));
             cout << "-- ";
-
-            int ridx_flat = inner_product(rdim.begin(), rdim.end()-1,
-                    ridx.begin()+1, 0) + ridx[0];
             cout << va[e] << " @ " << ridx_flat << "\n";
-            result[ridx_flat] = va[e];
+
             aidx[0]++;
+            for (int d=0; d<aidx.size()-1; d++) {
+                if (aidx[d] == da[d]) {
+                    aidx[d] = 0;
+                    ridx[d] = a2r[d][0];
+                    ridx[d+1] = a2r[d+1][++aidx[d+1]];
+                } else
+                    break;
+            }
         }
         cout << "\n";
     }
