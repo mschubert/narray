@@ -6,4 +6,3 @@ vignettes/*.md
 vignettes/.build.timestamp
 src/*.o
 src/*.so
-**/RcppExports.*
