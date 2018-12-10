@@ -4,7 +4,8 @@
 \alias{lambda}
 \title{Lambda syntax for array iteration}
 \usage{
-lambda(fml, along, group = c(), simplify = TRUE, envir = parent.frame())
+lambda(fml, along, group = c(), simplify = TRUE,
+  envir = parent.frame())
 }
 \arguments{
 \item{fml}{A call prefixed with a tilde}

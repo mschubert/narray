@@ -4,7 +4,8 @@
 \alias{filter}
 \title{Function to discard subsets of an array (NA or drop)}
 \usage{
-filter(X, along, FUN, subsets = base::rep(1, dim(X)[along]), na.rm = FALSE)
+filter(X, along, FUN, subsets = base::rep(1, dim(X)[along]),
+  na.rm = FALSE)
 }
 \arguments{
 \item{X}{An n-dimensional array}
