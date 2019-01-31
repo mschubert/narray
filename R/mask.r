@@ -2,6 +2,7 @@
 #'
 #' @param x      A list of character vectors
 #' @param along  Which axis to spread mask on
+#' @param na_rm  Remove values that were translated to NAs
 #' @return       A logical occurrence matrix
 #' @export
 mask = function(x, along=2, na_rm=FALSE) {

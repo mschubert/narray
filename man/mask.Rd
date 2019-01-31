@@ -10,6 +10,8 @@ mask(x, along = 2, na_rm = FALSE)
 \item{x}{A list of character vectors}
 
 \item{along}{Which axis to spread mask on}
+
+\item{na_rm}{Remove values that were translated to NAs}
 }
 \value{
 A logical occurrence matrix
