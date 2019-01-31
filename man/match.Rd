@@ -5,8 +5,8 @@
 \title{match() function with extended functionality}
 \usage{
 match(x, from, to, filter_from = NULL, filter_to = NULL,
-  data = parent.frame(), fuzzy_level = 0, table = FALSE, na_rm = FALSE,
-  warn = !table && fuzzy_level > 0)
+  data = parent.frame(), fuzzy_level = 0, table = FALSE,
+  na_rm = FALSE, warn = !table && fuzzy_level > 0)
 }
 \arguments{
 \item{x}{Vector of identifiers that should be mapped}

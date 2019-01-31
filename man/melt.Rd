@@ -13,6 +13,9 @@ melt(..., dimnames = NULL, na_rm = TRUE)
 
 \item{na_rm}{Remove rows with NAs}
 }
+\value{
+data.frame with 'value' (or object names if multiple) indexed by axes
+}
 \description{
 Function to melt data.frame from one or multiple arrays
 }
