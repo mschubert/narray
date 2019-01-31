@@ -29,7 +29,9 @@ opts_chunk$set(
   fig.width = 12,
   fig.height = 8,
   dpi = 84,
-  concordance = TRUE
+  concordance = TRUE,
+  collapse = TRUE,
+  comment = "#>"
 )
 
 library(narray)
