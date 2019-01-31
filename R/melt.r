@@ -6,7 +6,7 @@
 #' @return   data.frame with 'value' (or object names if multiple) indexed by axes
 #' @export
 melt = function(..., dimnames=NULL, na_rm=TRUE) {
-    dots = lapply(named_dots(...), eval)
+    dots = lapply(named_dots(...), eval, envir=parent.frame())
     for (i in seq_along(dots)) {
         if (!is.null(dimnames))
             names(dimnames(dots[[i]])) = dimnames[1:length(dim(dots[[i]]))]
