@@ -32,7 +32,13 @@ lambda = function(fml, along, group=c(), simplify=TRUE, expand_grid=TRUE, envir=
             subs = subset(obj, index=args[[i]], along=along[objname], drop=TRUE)
             assign(objname, subs, envir=env)
         }
-        eval(call, envir=env)
+        tryCatch(eval(call, envir=env),
+            error = function(e) {
+                cur = paste(colnames(iter), as.character(iter[row,]), sep="=")
+                newmsg = paste(conditionMessage(e), "@", paste(cur, collapse=", "))
+                e$message = newmsg
+                stop(e)
+        })
     }
     pb = pb(nrow(iter))
     iter$result = lapply(seq_len(nrow(iter)), function(i) {
