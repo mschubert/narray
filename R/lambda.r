@@ -6,7 +6,7 @@
 #' @param simplify  Return array instead of index+result if scalar
 #' @param envir     Environment where variables can be found
 #' @export
-lambda = function(fml, along, group=c(), simplify=TRUE, envir=parent.frame()) {
+lambda = function(fml, along, group=c(), simplify=TRUE, expand_grid=TRUE, envir=parent.frame()) {
     if (fml[[1]] != "~")
         stop("lambda expression needs to start with a tilde character")
     call = fml[[2]]
@@ -16,7 +16,10 @@ lambda = function(fml, along, group=c(), simplify=TRUE, envir=parent.frame()) {
         dimnames(obj, null_as_integer=TRUE, along=along)
     }
     dnames = mapply(obj2dname, objname=names(along), along=along, SIMPLIFY=FALSE)
-    iter = do.call(expand.grid, c(dnames, list(stringsAsFactors=FALSE)))
+    if (expand_grid)
+        iter = do.call(expand.grid, c(dnames, list(stringsAsFactors=FALSE)))
+    else
+        iter = do.call(data.frame, c(dnames, list(stringsAsFactors=FALSE)))
     class(iter) = c("tbl_df", "tbl", class(iter))
 
     wrapper = function(row) {
