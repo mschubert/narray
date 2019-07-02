@@ -1,3 +1,7 @@
+* 0.4.2
+  * `mask` will now makes NA values as FALSE
+  * `melt` now keeps object names for multiple arrays (#25)
+
 * 0.4.1
   * speed improvements for `construct`, `melt` (#23)
   * `lambda` adds `tbl_df` class if `simplify=FALSE` (#19)

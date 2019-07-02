@@ -4,7 +4,8 @@
 \alias{translate}
 \title{Translate an axis between two sets of identifiers}
 \usage{
-translate(x, along = 1, to, from = dimnames(x)[[along]], ..., FUN)
+translate(x, along = 1, to, from = dimnames(x)[[along]], ..., FUN,
+  na_rm = FALSE)
 }
 \arguments{
 \item{x}{A matrix}
@@ -18,6 +19,8 @@ translate(x, along = 1, to, from = dimnames(x)[[along]], ..., FUN)
 \item{...}{Parameters passed to `match`}
 
 \item{FUN}{Which function to apply, default is throwing error on aggregation}
+
+\item{na_rm}{Remove values that were translated to NAs}
 }
 \value{
 A summarized matrix as defined by `from`, `to`

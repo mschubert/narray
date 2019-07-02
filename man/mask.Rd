@@ -4,12 +4,14 @@
 \alias{mask}
 \title{Converts a list of character vectors to a logical matrix}
 \usage{
-mask(x, along = 2)
+mask(x, along = 2, na_rm = FALSE)
 }
 \arguments{
 \item{x}{A list of character vectors}
 
 \item{along}{Which axis to spread mask on}
+
+\item{na_rm}{Remove values that were translated to NAs}
 }
 \value{
 A logical occurrence matrix
