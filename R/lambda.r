@@ -4,6 +4,7 @@
 #' @param along     A named vector which objects to subset (eg: c(x=1))
 #' @param group     Not implemented
 #' @param simplify  Return array instead of index+result if scalar
+#' @param expand_grid  Use all combinations of indices (default: TRUE)
 #' @param envir     Environment where variables can be found
 #' @export
 lambda = function(fml, along, group=c(), simplify=TRUE, expand_grid=TRUE, envir=parent.frame()) {
