@@ -4,7 +4,7 @@
 \alias{lambda}
 \title{Lambda syntax for array iteration}
 \usage{
-lambda(fml, along, group = c(), simplify = TRUE,
+lambda(fml, along, group = c(), simplify = TRUE, expand_grid = TRUE,
   envir = parent.frame())
 }
 \arguments{

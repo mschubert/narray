@@ -4,9 +4,10 @@
 #' @param along     A named vector which objects to subset (eg: c(x=1))
 #' @param group     Not implemented
 #' @param simplify  Return array instead of index+result if scalar
+#' @param expand_grid  Use all combinations of indices (default: TRUE)
 #' @param envir     Environment where variables can be found
 #' @export
-lambda = function(fml, along, group=c(), simplify=TRUE, envir=parent.frame()) {
+lambda = function(fml, along, group=c(), simplify=TRUE, expand_grid=TRUE, envir=parent.frame()) {
     if (fml[[1]] != "~")
         stop("lambda expression needs to start with a tilde character")
     call = fml[[2]]
@@ -16,7 +17,10 @@ lambda = function(fml, along, group=c(), simplify=TRUE, envir=parent.frame()) {
         dimnames(obj, null_as_integer=TRUE, along=along)
     }
     dnames = mapply(obj2dname, objname=names(along), along=along, SIMPLIFY=FALSE)
-    iter = do.call(expand.grid, c(dnames, list(stringsAsFactors=FALSE)))
+    if (expand_grid)
+        iter = do.call(expand.grid, c(dnames, list(stringsAsFactors=FALSE)))
+    else
+        iter = do.call(data.frame, c(dnames, list(stringsAsFactors=FALSE)))
     class(iter) = c("tbl_df", "tbl", class(iter))
 
     wrapper = function(row) {
@@ -28,7 +32,13 @@ lambda = function(fml, along, group=c(), simplify=TRUE, envir=parent.frame()) {
             subs = subset(obj, index=args[[i]], along=along[objname], drop=TRUE)
             assign(objname, subs, envir=env)
         }
-        eval(call, envir=env)
+        tryCatch(eval(call, envir=env),
+            error = function(e) {
+                cur = paste(colnames(iter), as.character(iter[row,]), sep="=")
+                newmsg = paste(conditionMessage(e), "@", paste(cur, collapse=", "))
+                e$message = newmsg
+                stop(e)
+        })
     }
     pb = pb(nrow(iter))
     iter$result = lapply(seq_len(nrow(iter)), function(i) {
