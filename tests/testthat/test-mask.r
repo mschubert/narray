@@ -25,3 +25,11 @@ test_that("NA is dropped without error", {
 
     expect_equal(Gm, Gref)
 })
+
+test_that("performance", {
+    skip_on_cran()
+
+    x = factor(sample(1e2, 5e3, replace=TRUE))
+    tt = system.time(narray::mask(x, along=2))
+    expect_lt(tt["user.self"], 5) #TODO: this should be faster (#26)
+})
