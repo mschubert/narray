@@ -35,3 +35,17 @@ test_that("ambiguous row", {
 test_that("only one dependent variable", {
     expect_error(construct(value + other ~ x1 + x2, data=DF))
 })
+
+test_that("performance", {
+    skip_on_cran()
+
+    syms = c(letters, LETTERS, 0:9)
+    idx = do.call(paste0, expand.grid(syms, syms))
+    idx = head(idx, 200) # squared for rows
+    df = expand.grid(x=idx, y=idx)
+    df$value=runif(nrow(df))
+    df = df[sample(seq_len(nrow(df))),]
+
+    tt = system.time(construct(df, value ~ x + y))
+    expect_lt(tt["user.self"], 5)
+})

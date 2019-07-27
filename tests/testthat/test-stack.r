@@ -70,3 +70,18 @@ test_that("keep_empty arg when stacking zero-length vectors", {
                     .Dimnames = list(c("a", "b", "c"), NULL)))
     expect_equal(re2, t(re3))
 })
+
+test_that("performance", {
+    skip_on_cran()
+
+    size = 100
+    syms = c(letters, LETTERS, 0:9)
+    idx = do.call(paste0, expand.grid(syms, syms))
+    idx = head(idx, 300)
+
+    ars = replicate(size, simplify=FALSE,
+                    matrix(runif(size*size), nrow=size, ncol=size,
+                           dimnames=list(sample(idx, size), sample(idx, size))))
+    tt = system.time(stack(ars, along=3))
+    expect_lt(tt["user.self"], 5)
+})
