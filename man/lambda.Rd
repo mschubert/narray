@@ -16,6 +16,8 @@ lambda(fml, along, group = c(), simplify = TRUE, expand_grid = TRUE,
 
 \item{simplify}{Return array instead of index+result if scalar}
 
+\item{expand_grid}{Use all combinations of indices (default: TRUE)}
+
 \item{envir}{Environment where variables can be found}
 }
 \description{
