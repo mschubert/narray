@@ -35,7 +35,7 @@ construct = function(data, formula=guess_structure(data), fill=NA,
     mult = c(1, rev(cumprod(ndim[-length(ndim)])))
     ar_idx = colSums(order_df * mult) + 1
 
-    idx = rep(fill, prod(ndim))
+    idx = base::rep(fill, prod(ndim))
     idx[ar_idx] = values
     array(idx, dim=unname(ndim), dimnames=dimNames)
 }

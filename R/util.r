@@ -103,7 +103,7 @@ guess_structure = function(df, verbose=TRUE) {
 #' @return     Named function arguments
 named_dots = function(...) {
     dots = eval(substitute(alist(...)))
-    dnames = names(dots) %or% rep("", length(dots))
+    dnames = names(dots) %or% base::rep("", length(dots))
     noname = dnames == ""
     if (any(noname)) {
         deparse2 = function(x) paste(deparse(x, 500L), collapse = "")
