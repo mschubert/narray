@@ -57,7 +57,8 @@ test_that("data.frame fields", {
 
     expect_is(A, "matrix")
     expect_is(DF, "data.frame")
-    expect_equal(DF, DF3, DFref, tolerance=1e-5, scale=1)
+    expect_equal(DF, DFref, tolerance=1e-5, scale=1)
+    expect_equal(DF3, DFref, tolerance=1e-5, scale=1)
     expect_true(all(DF == DFref, DF3 == DFref))
 
 })
