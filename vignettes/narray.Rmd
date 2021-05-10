@@ -43,7 +43,7 @@ arbitrary dimensions (summary below).
 
 We recommend to load this package in its own namespace to not shadow base R
 functions using [`modules`](https://github.com/klmr/modules) or
-[`import`](https://github.com/smbache/import).
+[`import`](https://github.com/rticulate/import).
 
 ```{r namespace, eval=FALSE}
 # example referencing the package namespace
