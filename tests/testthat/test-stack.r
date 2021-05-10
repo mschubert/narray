@@ -56,6 +56,18 @@ test_that("vector stacking", {
     expect_equal(stack(list(a=a), along=1), t(amat))
 })
 
+test_that("1-row/col matrix stacking", {
+    expect_equal(stack(B, along=1), B)
+    expect_equal(stack(B, along=2), B)
+    expect_equal(stack(list(B=B), along=1), B)
+    expect_equal(stack(list(B=B), along=2), B)
+
+    expect_equal(stack(t(B), along=1), t(B))
+    expect_equal(stack(t(B), along=2), t(B))
+    expect_equal(stack(list(B=t(B)), along=1), t(B))
+    expect_equal(stack(list(B=t(B)), along=2), t(B))
+})
+
 test_that("keep_empty arg when stacking zero-length vectors", {
     a = setNames(1:3, letters[1:3])
     b = numeric()
