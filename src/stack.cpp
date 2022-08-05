@@ -14,12 +14,12 @@ SEXP cpp_stack(SEXP arlist) {
     auto a2r = vector<vector<vector<int>>>(array_list.size()); // array > dim > element
 
     // create lookup tables for all present dimension names
-    for (int a=0; a<Rf_xlength(array_list); a++) { // array in arlist
-        auto va = as<NumericVector>(array_list[a]);
-        auto dn = as<List>(va.attr("dimnames"));
-        auto da = as<vector<int>>(va.attr("dim"));
+    for (int ai=0; ai<Rf_xlength(array_list); ai++) { // array in arlist
+        auto a = as<NumericVector>(array_list[ai]);
+        auto dn = as<List>(a.attr("dimnames"));
+        auto da = as<vector<int>>(a.attr("dim"));
 
-        a2r[a] = vector<vector<int>>(da.size());
+        a2r[ai] = vector<vector<int>>(da.size());
         if (dimnames.size() < da.size()) {
             dimnames.resize(da.size());
             axmap.resize(da.size());
@@ -30,11 +30,11 @@ SEXP cpp_stack(SEXP arlist) {
 
             for (int e=0; e<da[d]; e++) { // element in dimension
                 if (axmap[d].count(dni[e]) == 0) {
-                    cout << "array " << a << " dim " << d << ": " << dni[e] << " -> " << axmap[d].size() << "\n";
+                    cout << "array " << ai << " dim " << d << ": " << dni[e] << " -> " << axmap[d].size() << "\n";
                     axmap[d].emplace(dni[e], axmap[d].size());
                     dimnames[d].push_back(dni[e]);
                 }
-                a2r[a][d].push_back(axmap[d][dni[e]]);
+                a2r[ai][d].push_back(axmap[d][dni[e]]);
             }
         }
     }
