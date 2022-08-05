@@ -59,27 +59,35 @@ SEXP cpp_stack(SEXP arlist) {
     result.attr("dimnames") = rdnames;
 
     // fill the result array
-    auto maxdim = rdim.size() - 1;
+    int maxdim = rdim.size() - 1;
     for (int ai=0; ai<Rf_xlength(array_list); ai++) {
         auto a = as<NumericVector>(array_list[ai]);
-        auto it = vector<vector<int>::iterator>(a2r[ai].size()); // one for each result dim
-        for (int rd=0; rd<it.size(); rd++)
-            it[rd] = a2r[ai][rd].begin();
-
         int aidx = 0; // consecutive elements in original array
+
+        auto it = vector<vector<int>::iterator>(a2r[ai].size()); // one for each result dim
+        for (int d=0; d<it.size(); d++)
+            it[d] = a2r[ai][d].begin();
+
+        int dim_offset = 0;
+        for (int d=0; d<maxdim; d++)
+            dim_offset += rdim[d] * *it[d+1];
+
         do {
-            int ridx_flat = *it[0];
+            int cur_offset = *it[0];
+            int dim_offset_new = 0;
             it[0]++;
             for (int d=0; d<maxdim; d++) {
-                ridx_flat += rdim[d] * *it[d+1];
+                if (it[d] != a2r[ai][d].end()) // no dimension jump
+                    break;
 
-                if (it[d] == a2r[ai][d].end()) {
-                    it[d] = a2r[ai][d].begin();
-                    it[d+1]++;
-                }
+                dim_offset_new += rdim[d]; // add only dimensions we jump
+                it[d] = a2r[ai][d].begin();
+                it[d+1]++;
             }
-            cout << "result[" << ridx_flat << "] = a[" << aidx << "++]\n";
-            result[ridx_flat] = a[aidx++];
+
+            cout << "result[" << cur_offset + dim_offset << "] = a[" << ai << "][" << aidx << "]\n";
+            result[cur_offset + dim_offset] = a[aidx++];
+            dim_offset += dim_offset_new;
         } while(it[maxdim] != a2r[ai][maxdim].end());
     }
 
