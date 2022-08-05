@@ -8,14 +8,14 @@ using namespace std;
 
 // [[Rcpp::export]]
 SEXP cpp_stack(SEXP arlist) {
-    auto ar = as<List>(arlist);
-    auto dimnames = vector<vector<string>>();
-    auto axmap = vector<unordered_map<string, int>>();
-    auto a2r = vector<vector<vector<int>>>(ar.size());
+    auto array_list = as<List>(arlist);
+    auto dimnames = vector<vector<string>>(); // dim: names along
+    auto axmap = vector<unordered_map<string, int>>(); // dim: element name->index
+    auto a2r = vector<vector<vector<int>>>(array_list.size()); // array > dim > element
 
     // create lookup tables for all present dimension names
-    for (int a=0; a<Rf_xlength(ar); a++) { // array in arlist
-        auto va = as<NumericVector>(ar[a]);
+    for (int a=0; a<Rf_xlength(array_list); a++) { // array in arlist
+        auto va = as<NumericVector>(array_list[a]);
         auto dn = as<List>(va.attr("dimnames"));
         auto da = as<vector<int>>(va.attr("dim"));
 
@@ -30,7 +30,7 @@ SEXP cpp_stack(SEXP arlist) {
 
             for (int e=0; e<da[d]; e++) { // element in dimension
                 if (axmap[d].count(dni[e]) == 0) {
-//                    cout << a << " @ " << d << ": " << dni[e] << " -> " << axmap[d].size() << "\n";
+                    cout << "array " << a << " dim " << d << ": " << dni[e] << " -> " << axmap[d].size() << "\n";
                     axmap[d].emplace(dni[e], axmap[d].size());
                     dimnames[d].push_back(dni[e]);
                 }
@@ -39,6 +39,14 @@ SEXP cpp_stack(SEXP arlist) {
         }
     }
 
+    for (auto ai=0; ai<a2r.size(); ai++)
+        for (auto di=0; di<a2r[ai].size(); di++) {
+            cout << "*** array " << ai << " dim " << di << ": ";
+            copy(a2r[ai][di].begin(), a2r[ai][di].end(), ostream_iterator<int>(cout, " "));
+            cout << "\n";
+        }
+
+    // create result array with attributes
     auto rdim = IntegerVector(dimnames.size());
     auto rdnames = List(dimnames.size());
     for (int i=0; i<dimnames.size(); i++) {
@@ -51,35 +59,28 @@ SEXP cpp_stack(SEXP arlist) {
     result.attr("dimnames") = rdnames;
 
     // fill the result array
-    for (int a=0; a<Rf_xlength(ar); a++) { // array in arlist
-        auto va = as<NumericVector>(ar[a]);
-        auto aidx = vector<int>(a2r[a].size()); // axes in orig array
-        auto ridx = vector<int>(a2r[a].size()); // axes in result array
-        for (int d=1; d<aidx.size(); d++)
-            ridx[d] = a2r[a][d][0];
+    auto maxdim = rdim.size() - 1;
+    for (int ai=0; ai<Rf_xlength(array_list); ai++) {
+        auto a = as<NumericVector>(array_list[ai]);
+        auto it = vector<vector<int>::iterator>(a2r[ai].size()); // one for each result dim
+        for (int rd=0; rd<it.size(); rd++)
+            it[rd] = a2r[ai][rd].begin();
 
-        for (int e=0; e<va.size(); e++) {
-            ridx[0] = a2r[a][0][aidx[0]];
-            int ridx_flat = inner_product(rdim.begin(), rdim.end()-1,
-                    ridx.begin()+1, 0) + ridx[0];
-            result[ridx_flat] = va[e];
+        int aidx = 0; // consecutive elements in original array
+        do {
+            int ridx_flat = *it[0];
+            it[0]++;
+            for (int d=0; d<maxdim; d++) {
+                ridx_flat += rdim[d] * *it[d+1];
 
-/*            copy(aidx.begin(), aidx.end(), ostream_iterator<int>(cout, " "));
-            cout << "-> ";
-            copy(ridx.begin(), ridx.end(), ostream_iterator<int>(cout, " "));
-            cout << "-- " << va[e] << " @ " << ridx_flat << "\n";
-*/
-            aidx[0]++;
-            for (int d=0; d<aidx.size()-1; d++) {
-                if (aidx[d] != a2r[a][d].size())
-                    break;
-
-                aidx[d] = 0;
-                ridx[d] = a2r[a][d][0];
-                ridx[d+1] = a2r[a][d+1][++aidx[d+1]];
+                if (it[d] == a2r[ai][d].end()) {
+                    it[d] = a2r[ai][d].begin();
+                    it[d+1]++;
+                }
             }
-        }
-//        cout << "\n";
+            cout << "result[" << ridx_flat << "] = a[" << aidx << "++]\n";
+            result[ridx_flat] = a[aidx++];
+        } while(it[maxdim] != a2r[ai][maxdim].end());
     }
 
     return result;
