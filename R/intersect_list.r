@@ -1,4 +1,4 @@
-#' Intersects a lits of arrays for common dimension names
+#' Intersects a list of arrays for common dimension names
 #'
 #' @param l.     List of arrays to perform operations on
 #' @param along  The axis along which to intersect
