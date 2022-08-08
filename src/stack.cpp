@@ -78,7 +78,9 @@ SEXP cpp_stack(SEXP arlist) {
                 new_offset = false;
             }
 
-            int cur_offset = *it[0];
+            cout << "result[" << *it[0] + dim_offset << "] = a[" << ai << "][" << aidx << "]\n";
+            result[*it[0] + dim_offset] = a[aidx++];
+
             it[0]++;
             for (int d=0; d<maxdim; d++) { // check if we're jumping dimensions
                 if (it[d] != a2r[ai][d].end()) // higher-order jump needs lower-order
@@ -88,9 +90,6 @@ SEXP cpp_stack(SEXP arlist) {
                 it[d] = a2r[ai][d].begin();
                 it[d+1]++;
             }
-
-            cout << "result[" << cur_offset + dim_offset << "] = a[" << ai << "][" << aidx << "]\n";
-            result[cur_offset + dim_offset] = a[aidx++];
         } while(it[maxdim] != a2r[ai][maxdim].end());
     }
 
