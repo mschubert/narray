@@ -4,15 +4,14 @@
 using namespace Rcpp;
 using namespace std;
 
-// [[Rcpp::export]]
-SEXP cpp_stack(List array_list) {
+template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list) {
     auto dimnames = vector<vector<string>>(); // dim: names along
     auto axmap = vector<unordered_map<string, int>>(); // dim: element name->index
     auto a2r = vector<vector<vector<int>>>(array_list.size()); // array > dim > element
 
     // create lookup tables for all present dimension names
     for (int ai=0; ai<Rf_xlength(array_list); ai++) { // array index
-        auto a = as<NumericVector>(array_list[ai]);
+        auto a = as<Vector<RTYPE>>(array_list[ai]);
         auto dn = as<List>(a.attr("dimnames"));
         auto da = as<vector<int>>(a.attr("dim"));
 
@@ -51,14 +50,14 @@ SEXP cpp_stack(List array_list) {
         rdnames[i] = CharacterVector(dimnames[i].begin(), dimnames[i].end());
     }
     auto n = accumulate(rdim.begin(), rdim.end(), 1, multiplies<int>());
-    auto result = NumericVector(n);
+    auto result = Vector<RTYPE>(n);
     result.attr("dim") = rdim;
     result.attr("dimnames") = rdnames;
 
     // fill the result array
     int maxdim = rdim.size() - 1;
     for (int ai=0; ai<Rf_xlength(array_list); ai++) { // each original array
-        auto a = as<NumericVector>(array_list[ai]);
+        auto a = as<Vector<RTYPE>>(array_list[ai]);
         auto it = vector<vector<int>::iterator>(a2r[ai].size()); // each result dim
         for (int d=0; d<it.size(); d++)
             it[d] = a2r[ai][d].begin();
@@ -89,4 +88,25 @@ SEXP cpp_stack(List array_list) {
     }
 
     return result;
+}
+
+// [[Rcpp::export]]
+SEXP cpp_stack(List array_list) {
+    auto max_type = NILSXP;
+    for (int ai=0; ai<array_list.size(); ai++) {
+        int cur_type = TYPEOF(array_list[ai]);
+        if (cur_type < LGLSXP || cur_type > STRSXP)
+            stop("Invalid type: %d %s\n", cur_type, type2name(array_list[ai]));
+        if (cur_type > max_type)
+            max_type = cur_type;
+    }
+
+    switch(max_type) {
+        case LGLSXP: return cpp_stack_impl<LGLSXP>(array_list);
+        case INTSXP: return cpp_stack_impl<INTSXP>(array_list);
+        case REALSXP: return cpp_stack_impl<REALSXP>(array_list);
+        case CPLXSXP: return cpp_stack_impl<CPLXSXP>(array_list);
+        case STRSXP: return cpp_stack_impl<STRSXP>(array_list);
+        default: return R_NilValue; // this should not happen
+    }
 }
