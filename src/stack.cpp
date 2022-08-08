@@ -4,9 +4,10 @@
 using namespace Rcpp;
 using namespace std;
 
-template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list) {
-    auto dimnames = vector<vector<string>>(); // dim: names along
-    auto axmap = vector<unordered_map<string, int>>(); // dim: element name->index
+template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list, int along) {
+    auto array_names = as<vector<string>>(array_list.attr("names"));
+    auto dimnames = vector<vector<string>>(along); // dim: names along
+    auto axmap = vector<unordered_map<string, int>>(along); // dim: element name->index
     auto a2r = vector<vector<vector<int>>>(array_list.size()); // array > dim > element
 
     // create lookup tables for all present dimension names
@@ -14,6 +15,10 @@ template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list) {
         auto a = as<Vector<RTYPE>>(array_list[ai]);
         auto dn = as<List>(a.attr("dimnames"));
         auto da = as<vector<int>>(a.attr("dim"));
+        if (along == da.size()+1) { // along introduces new dimension
+            dn.push_back(array_names[ai]);
+            da.push_back(1);
+        }
 
         a2r[ai] = vector<vector<int>>(da.size());
         if (dimnames.size() < da.size()) {
@@ -44,6 +49,10 @@ template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list) {
 */
     // create result array with attributes
     auto rdim = IntegerVector(dimnames.size());
+    for (int ai=0; ai<Rf_xlength(array_list); ai++)
+        if (a2r[ai].size() != rdim.size())
+            stop("Names are required for all dimensions except the one stacked along.\n%s",
+                 "  Use bind() if you want to just bind together arrays without names.");
     auto rdnames = List(dimnames.size());
     for (int i=0; i<dimnames.size(); i++) {
         rdim[i] = dimnames[i].size();
@@ -91,7 +100,7 @@ template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list) {
 }
 
 // [[Rcpp::export]]
-SEXP cpp_stack(List array_list) {
+SEXP cpp_stack(List array_list, int along) {
     auto max_type = NILSXP;
     for (int ai=0; ai<array_list.size(); ai++) {
         int cur_type = TYPEOF(array_list[ai]);
@@ -102,11 +111,11 @@ SEXP cpp_stack(List array_list) {
     }
 
     switch(max_type) {
-        case LGLSXP: return cpp_stack_impl<LGLSXP>(array_list);
-        case INTSXP: return cpp_stack_impl<INTSXP>(array_list);
-        case REALSXP: return cpp_stack_impl<REALSXP>(array_list);
-        case CPLXSXP: return cpp_stack_impl<CPLXSXP>(array_list);
-        case STRSXP: return cpp_stack_impl<STRSXP>(array_list);
+        case LGLSXP: return cpp_stack_impl<LGLSXP>(array_list, along);
+        case INTSXP: return cpp_stack_impl<INTSXP>(array_list, along);
+        case REALSXP: return cpp_stack_impl<REALSXP>(array_list, along);
+        case CPLXSXP: return cpp_stack_impl<CPLXSXP>(array_list, along);
+        case STRSXP: return cpp_stack_impl<STRSXP>(array_list, along);
         default: return R_NilValue; // this should not happen
     }
 }
