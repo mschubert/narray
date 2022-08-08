@@ -68,26 +68,29 @@ SEXP cpp_stack(SEXP arlist) {
         for (int d=0; d<it.size(); d++)
             it[d] = a2r[ai][d].begin();
 
-        int dim_offset = 0;
-        for (int d=0; d<maxdim; d++)
-            dim_offset += rdim[d] * *it[d+1];
-
+        int dim_offset;
+        bool new_offset = true;
         do {
+            if (new_offset) { // calculate new offset if we're jumping dimensions
+                dim_offset = 0;
+                for (int d=0; d<maxdim; d++)
+                    dim_offset += rdim[d] * *it[d+1];
+                new_offset = false;
+            }
+
             int cur_offset = *it[0];
-            int dim_offset_new = 0;
             it[0]++;
-            for (int d=0; d<maxdim; d++) {
-                if (it[d] != a2r[ai][d].end()) // no dimension jump
+            for (int d=0; d<maxdim; d++) { // check if we're jumping dimensions
+                if (it[d] != a2r[ai][d].end()) // higher-order jump needs lower-order
                     break;
 
-                dim_offset_new += rdim[d]; // add only dimensions we jump
+                new_offset = true;
                 it[d] = a2r[ai][d].begin();
                 it[d+1]++;
             }
 
             cout << "result[" << cur_offset + dim_offset << "] = a[" << ai << "][" << aidx << "]\n";
             result[cur_offset + dim_offset] = a[aidx++];
-            dim_offset += dim_offset_new;
         } while(it[maxdim] != a2r[ai][maxdim].end());
     }
 
