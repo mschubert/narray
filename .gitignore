@@ -1,8 +1,14 @@
 Meta
 doc
+docs
 inst/doc
 vignettes/*.R
 vignettes/*.md
 vignettes/.build.timestamp
 src/*.o
 src/*.so
+*.swp
+*.tar.gz
+*.log
+narray.Rcheck
+.github/*.html
