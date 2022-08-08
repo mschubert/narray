@@ -76,8 +76,11 @@ template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list, int along) {
         for (int aidx=0; aidx<a.size(); aidx++) { // element in original array
             if (new_offset) { // dimension jump
                 dim_offset = 0;
-                for (int d=0; d<maxdim; d++)
-                    dim_offset += rdim[d] * *it[d+1];
+                int dim_mult = 1;
+                for (int d=0; d<maxdim; d++) {
+                    dim_mult *= rdim[d];
+                    dim_offset += dim_mult * *it[d+1];
+                }
                 new_offset = false;
             }
 
