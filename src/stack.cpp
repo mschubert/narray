@@ -26,7 +26,7 @@ template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list) {
 
             for (int e=0; e<da[d]; e++) { // element in dimension
                 if (axmap[d].count(dni[e]) == 0) {
-                    cout << "array " << ai << " dim " << d << ": " << dni[e] << " -> " << axmap[d].size() << "\n";
+//                    cout << "array " << ai << " dim " << d << ": " << dni[e] << " -> " << axmap[d].size() << "\n";
                     axmap[d].emplace(dni[e], axmap[d].size());
                     dimnames[d].push_back(dni[e]);
                 }
@@ -35,13 +35,13 @@ template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list) {
         }
     }
 
-    for (int ai=0; ai<a2r.size(); ai++)
+/*    for (int ai=0; ai<a2r.size(); ai++)
         for (int di=0; di<a2r[ai].size(); di++) {
             cout << "*** array " << ai << " dim " << di << ": ";
             copy(a2r[ai][di].begin(), a2r[ai][di].end(), ostream_iterator<int>(cout, " "));
             cout << "\n";
         }
-
+*/
     // create result array with attributes
     auto rdim = IntegerVector(dimnames.size());
     auto rdnames = List(dimnames.size());
@@ -72,7 +72,7 @@ template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list) {
                 new_offset = false;
             }
 
-            cout << "result[" << *it[0] + dim_offset << "] = a[" << ai << "][" << aidx << "]\n";
+//            cout << "result[" << *it[0] + dim_offset << "] = a[" << ai << "][" << aidx << "]\n";
             result[*it[0] + dim_offset] = a[aidx];
 
             it[0]++;
