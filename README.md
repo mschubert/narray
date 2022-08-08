@@ -10,16 +10,16 @@ arbitrary dimensions (summary below).
 
 We recommend to reference functions using the package namespace or
 loading the package into its own namespace to not shadow base R
-functions. The latter can be done using [`modules`](https://github.com/klmr/modules) or
-[`import`](https://github.com/smbache/import).
+functions. The latter can be done using [`box`](https://github.com/klmr/box) or
+[`import`](https://github.com/rticulate/import).
 
 ```r
 # example referencing the package namespace
 narray::stack(...)
 
-# example using `modules`
-ar = modules::import_package('narray')
-ar$stack(...)
+# example using `box`
+box::use(narray)
+narray$stack(...)
 ```
 
 Stacking and splitting

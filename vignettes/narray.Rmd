@@ -44,7 +44,7 @@ This package provides consistent utility functions for array programming with
 arbitrary dimensions (summary below).
 
 We recommend to load this package in its own namespace to not shadow base R
-functions using [`modules`](https://github.com/klmr/modules) or
+functions using [`box`](https://github.com/klmr/box) or
 [`import`](https://github.com/rticulate/import).
 
 ```{r namespace, eval=FALSE}
@@ -56,7 +56,7 @@ narray::stack(...)
 Stacking and splitting
 ----------------------
 
-`stack()` is like `cbind`/`rbind`, but along arbitrary axes, and taking care of (1) names 
+`stack()` is like `cbind`/`rbind`, but along arbitrary axes, and taking care of (1) names
 along each dimension and (2) padding partial matching arrays.
 
 ![](stack.png)
@@ -83,7 +83,7 @@ split(C, along=2, subsets=c('s1','s1','s2'))
 Mapping functions on arrays
 ---------------------------
 
-Like `apply`, but not reordering array dimensions and allowing to specify 
+Like `apply`, but not reordering array dimensions and allowing to specify
 subsets that the function should be applied on. The function must either return
 a vector of the same length as the input (returns matrix of same dimension) or
 of length 1 (drops current dimension or returns subsets).
@@ -108,7 +108,7 @@ Intersecting
 ------------
 
 Takes a number of arrays, intersects their names along a given dimension,
-and returns sub-arrays that match in their names; `intersect_list` takes 
+and returns sub-arrays that match in their names; `intersect_list` takes
 a list of arrays and returns a list of subsets.
 
 ![](intersect.png)
@@ -139,7 +139,7 @@ construct(v ~ k1 + k2, data=DF)
 Masks from factors and lists
 ----------------------------
 
-Takes either a factor or a list of vectors and creates a binary matrix 
+Takes either a factor or a list of vectors and creates a binary matrix
 specifying whether each element is present.
 
 ![](mask.png)
