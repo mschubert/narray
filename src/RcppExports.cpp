@@ -5,14 +5,19 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // cpp_stack
-SEXP cpp_stack(SEXP arlist);
-RcppExport SEXP _narray_cpp_stack(SEXP arlistSEXP) {
+SEXP cpp_stack(List array_list);
+RcppExport SEXP _narray_cpp_stack(SEXP array_listSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type arlist(arlistSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_stack(arlist));
+    Rcpp::traits::input_parameter< List >::type array_list(array_listSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_stack(array_list));
     return rcpp_result_gen;
 END_RCPP
 }

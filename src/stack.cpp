@@ -1,20 +1,17 @@
 #include <unordered_map>
 #include <string>
-#include <numeric>
-#include <algorithm>
 #include <Rcpp.h>
 using namespace Rcpp;
 using namespace std;
 
 // [[Rcpp::export]]
-SEXP cpp_stack(SEXP arlist) {
-    auto array_list = as<List>(arlist);
+SEXP cpp_stack(List array_list) {
     auto dimnames = vector<vector<string>>(); // dim: names along
     auto axmap = vector<unordered_map<string, int>>(); // dim: element name->index
     auto a2r = vector<vector<vector<int>>>(array_list.size()); // array > dim > element
 
     // create lookup tables for all present dimension names
-    for (int ai=0; ai<Rf_xlength(array_list); ai++) { // array in arlist
+    for (int ai=0; ai<Rf_xlength(array_list); ai++) { // array index
         auto a = as<NumericVector>(array_list[ai]);
         auto dn = as<List>(a.attr("dimnames"));
         auto da = as<vector<int>>(a.attr("dim"));
@@ -39,8 +36,8 @@ SEXP cpp_stack(SEXP arlist) {
         }
     }
 
-    for (auto ai=0; ai<a2r.size(); ai++)
-        for (auto di=0; di<a2r[ai].size(); di++) {
+    for (int ai=0; ai<a2r.size(); ai++)
+        for (int di=0; di<a2r[ai].size(); di++) {
             cout << "*** array " << ai << " dim " << di << ": ";
             copy(a2r[ai][di].begin(), a2r[ai][di].end(), ostream_iterator<int>(cout, " "));
             cout << "\n";

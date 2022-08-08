@@ -15,6 +15,10 @@ inst/doc:
 inst/doc/%.md: vignettes/%.rmd
 	$(R) "knitr::knit('$<', '$@')"
 
+.PHONY: rcpp
+rcpp:
+	$(R) "Rcpp::compileAttributes()"
+
 .PHONY: vignettes
 vignettes: inst/doc ${knit_results}
 	$(R) "library(knitr); library(devtools); build_vignettes()"
