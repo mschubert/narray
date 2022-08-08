@@ -60,18 +60,16 @@ SEXP cpp_stack(SEXP arlist) {
 
     // fill the result array
     int maxdim = rdim.size() - 1;
-    for (int ai=0; ai<Rf_xlength(array_list); ai++) {
+    for (int ai=0; ai<Rf_xlength(array_list); ai++) { // each original array
         auto a = as<NumericVector>(array_list[ai]);
-        int aidx = 0; // consecutive elements in original array
-
-        auto it = vector<vector<int>::iterator>(a2r[ai].size()); // one for each result dim
+        auto it = vector<vector<int>::iterator>(a2r[ai].size()); // each result dim
         for (int d=0; d<it.size(); d++)
             it[d] = a2r[ai][d].begin();
 
         int dim_offset;
         bool new_offset = true;
-        do {
-            if (new_offset) { // calculate new offset if we're jumping dimensions
+        for (int aidx=0; aidx<a.size(); aidx++) { // element in original array
+            if (new_offset) { // dimension jump
                 dim_offset = 0;
                 for (int d=0; d<maxdim; d++)
                     dim_offset += rdim[d] * *it[d+1];
@@ -79,18 +77,18 @@ SEXP cpp_stack(SEXP arlist) {
             }
 
             cout << "result[" << *it[0] + dim_offset << "] = a[" << ai << "][" << aidx << "]\n";
-            result[*it[0] + dim_offset] = a[aidx++];
+            result[*it[0] + dim_offset] = a[aidx];
 
             it[0]++;
             for (int d=0; d<maxdim; d++) { // check if we're jumping dimensions
-                if (it[d] != a2r[ai][d].end()) // higher-order jump needs lower-order
+                if (it[d] != a2r[ai][d].end()) // dim+1 jump only if dim jump
                     break;
 
                 new_offset = true;
                 it[d] = a2r[ai][d].begin();
                 it[d+1]++;
             }
-        } while(it[maxdim] != a2r[ai][maxdim].end());
+        };
     }
 
     return result;
