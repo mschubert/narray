@@ -4,7 +4,7 @@
 using namespace Rcpp;
 using namespace std;
 
-template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list, int along) {
+template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list, int along, Vector<RTYPE> fill) {
     auto array_names = as<vector<string>>(array_list.attr("names"));
     auto dimnames = vector<vector<string>>(along); // dim: names along
     auto axmap = vector<unordered_map<string, int>>(along); // dim: element name->index
@@ -59,7 +59,7 @@ template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list, int along) {
         rdnames[i] = CharacterVector(dimnames[i].begin(), dimnames[i].end());
     }
     auto n = accumulate(rdim.begin(), rdim.end(), 1, multiplies<int>());
-    auto result = Vector<RTYPE>(n);
+    auto result = Vector<RTYPE>(n, fill[0]);
     result.attr("dim") = rdim;
     result.attr("dimnames") = rdnames;
 
@@ -103,7 +103,7 @@ template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list, int along) {
 }
 
 // [[Rcpp::export]]
-SEXP cpp_stack(List array_list, int along) {
+SEXP cpp_stack(List array_list, int along, SEXP fill) {
     auto max_type = NILSXP;
     for (int ai=0; ai<array_list.size(); ai++) {
         int cur_type = TYPEOF(array_list[ai]);
@@ -114,11 +114,11 @@ SEXP cpp_stack(List array_list, int along) {
     }
 
     switch(max_type) {
-        case LGLSXP: return cpp_stack_impl<LGLSXP>(array_list, along);
-        case INTSXP: return cpp_stack_impl<INTSXP>(array_list, along);
-        case REALSXP: return cpp_stack_impl<REALSXP>(array_list, along);
-        case CPLXSXP: return cpp_stack_impl<CPLXSXP>(array_list, along);
-        case STRSXP: return cpp_stack_impl<STRSXP>(array_list, along);
+        case LGLSXP: return cpp_stack_impl<LGLSXP>(array_list, along, as<LogicalVector>(fill));
+        case INTSXP: return cpp_stack_impl<INTSXP>(array_list, along, as<IntegerVector>(fill));
+        case REALSXP: return cpp_stack_impl<REALSXP>(array_list, along, as<NumericVector>(fill));
+        case CPLXSXP: return cpp_stack_impl<CPLXSXP>(array_list, along, as<ComplexVector>(fill));
+        case STRSXP: return cpp_stack_impl<STRSXP>(array_list, along, as<CharacterVector>(fill));
         default: return R_NilValue; // this should not happen
     }
 }

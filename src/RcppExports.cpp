@@ -11,20 +11,21 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // cpp_stack
-SEXP cpp_stack(List array_list, int along);
-RcppExport SEXP _narray_cpp_stack(SEXP array_listSEXP, SEXP alongSEXP) {
+SEXP cpp_stack(List array_list, int along, SEXP fill);
+RcppExport SEXP _narray_cpp_stack(SEXP array_listSEXP, SEXP alongSEXP, SEXP fillSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< List >::type array_list(array_listSEXP);
     Rcpp::traits::input_parameter< int >::type along(alongSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_stack(array_list, along));
+    Rcpp::traits::input_parameter< SEXP >::type fill(fillSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_stack(array_list, along, fill));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_narray_cpp_stack", (DL_FUNC) &_narray_cpp_stack, 2},
+    {"_narray_cpp_stack", (DL_FUNC) &_narray_cpp_stack, 3},
     {NULL, NULL, 0}
 };
 
