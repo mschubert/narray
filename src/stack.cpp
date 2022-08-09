@@ -13,8 +13,14 @@ template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list, int along, Vec
     // create lookup tables for all present dimension names
     for (int ai=0; ai<Rf_xlength(array_list); ai++) { // array index
         auto a = as<Vector<RTYPE>>(array_list[ai]);
-        auto dn = as<List>(a.attr("dimnames"));
         auto da = as<vector<int>>(a.attr("dim"));
+        List dn;
+        if (a.attr("dimnames") == R_NilValue) { // no dimnames = NULL in R
+            dn = List::create(); // we want NULL per dim
+            for (int i=0; i<da.size(); i++)
+                dn.push_back(R_NilValue);
+        } else
+            dn = as<List>(a.attr("dimnames"));
         if (along == da.size()+1) { // along introduces new dimension
             if (array_list.attr("names") == R_NilValue)
                 dn.push_back(CharacterVector::create(NA_STRING));
