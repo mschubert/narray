@@ -5,10 +5,9 @@ using namespace Rcpp;
 using namespace std;
 
 template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list, int along, Vector<RTYPE> fill) {
-    auto array_names = as<vector<string>>(array_list.attr("names"));
     auto dimnames = vector<CharacterVector>(along); // dim: names along
     auto axmap = vector<unordered_map<string, int>>(along); // dim: element name->index
-    auto ax_unnamed = vector<int>(along);
+    auto ax_unnamed = vector<int>(along); // counter for unnamed dimension elements
     auto a2r = vector<vector<vector<int>>>(array_list.size()); // array > dim > element
 
     // create lookup tables for all present dimension names
@@ -17,7 +16,10 @@ template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list, int along, Vec
         auto dn = as<List>(a.attr("dimnames"));
         auto da = as<vector<int>>(a.attr("dim"));
         if (along == da.size()+1) { // along introduces new dimension
-            dn.push_back(array_names[ai]);
+            if (array_list.attr("names") == R_NilValue)
+                dn.push_back(CharacterVector::create(NA_STRING));
+            else
+                dn.push_back(as<vector<string>>(array_list.attr("names"))[ai]);
             da.push_back(1);
         }
 
@@ -42,7 +44,7 @@ template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list, int along, Vec
                         axmap[d].emplace(dni[e], axmap[d].size() + ax_unnamed[d]);
                         dimnames[d].push_back(dni[e]);
                     }
-//                    Rprintf("array %i dim %i: %s -> %i\n", ai, d, dni[e].c_str(), axmap[d].size() + ax_unnamed[d]);
+//                    Rprintf("array %i dim %i: %s -> %i\n", ai, d, dni[e].c_str(), axmap[d][dni[e]]);
                     a2r[ai][d].push_back(axmap[d][dni[e]]);
                 }
             }
