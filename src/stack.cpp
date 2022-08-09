@@ -6,8 +6,9 @@ using namespace std;
 
 template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list, int along, Vector<RTYPE> fill) {
     auto array_names = as<vector<string>>(array_list.attr("names"));
-    auto dimnames = vector<vector<string>>(along); // dim: names along
+    auto dimnames = vector<CharacterVector>(along); // dim: names along
     auto axmap = vector<unordered_map<string, int>>(along); // dim: element name->index
+    auto ax_unnamed = vector<int>(along);
     auto a2r = vector<vector<vector<int>>>(array_list.size()); // array > dim > element
 
     // create lookup tables for all present dimension names
@@ -24,18 +25,26 @@ template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list, int along, Vec
         if (dimnames.size() < da.size()) {
             dimnames.resize(da.size());
             axmap.resize(da.size());
+            ax_unnamed.resize(da.size());
         }
 
         for (int d=0; d<da.size(); d++) { // dimension in array
-            auto dni = as<vector<string>>(dn[d]);
-
-            for (int e=0; e<da[d]; e++) { // element in dimension
-                if (axmap[d].count(dni[e]) == 0) {
-//                    cout << "array " << ai << " dim " << d << ": " << dni[e] << " -> " << axmap[d].size() << "\n";
-                    axmap[d].emplace(dni[e], axmap[d].size());
-                    dimnames[d].push_back(dni[e]);
+            if (dn[d] == R_NilValue) {
+                for (int e=0; e<da[d]; e++) {
+//                    Rprintf("array %i dim %i: %i -> %i\n", ai, d, e, axmap[d].size() + ax_unnamed[d]);
+                    a2r[ai][d].push_back(axmap[d].size() + ax_unnamed[d]++);
+                    dimnames[d].push_back(NA_STRING);
                 }
-                a2r[ai][d].push_back(axmap[d][dni[e]]);
+            } else {
+                auto dni = as<vector<string>>(dn[d]);
+                for (int e=0; e<da[d]; e++) { // element in dimension
+                    if (axmap[d].count(dni[e]) == 0) {
+                        axmap[d].emplace(dni[e], axmap[d].size() + ax_unnamed[d]);
+                        dimnames[d].push_back(dni[e]);
+                    }
+//                    Rprintf("array %i dim %i: %s -> %i\n", ai, d, dni[e].c_str(), axmap[d].size() + ax_unnamed[d]);
+                    a2r[ai][d].push_back(axmap[d][dni[e]]);
+                }
             }
         }
     }
@@ -56,7 +65,10 @@ template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list, int along, Vec
     auto rdnames = List(dimnames.size());
     for (int i=0; i<dimnames.size(); i++) {
         rdim[i] = dimnames[i].size();
-        rdnames[i] = CharacterVector(dimnames[i].begin(), dimnames[i].end());
+        if (all(is_na(dimnames[i])))
+            rdnames[i] = R_NilValue;
+        else
+            rdnames[i] = dimnames[i];
     }
     auto n = accumulate(rdim.begin(), rdim.end(), 1, multiplies<int>());
     auto result = Vector<RTYPE>(n, fill[0]);
@@ -84,7 +96,7 @@ template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list, int along, Vec
                 new_offset = false;
             }
 
-//            cout << "result[" << *it[0] + dim_offset << "] = a[" << ai << "][" << aidx << "]\n";
+//            Rprintf("result[%i] = a[%i][%i]\n", *it[0] + dim_offset, ai, aidx);
             result[*it[0] + dim_offset] = a[aidx];
 
             it[0]++;
