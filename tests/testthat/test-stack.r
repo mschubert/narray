@@ -91,6 +91,15 @@ test_that("keep_empty arg when stacking zero-length vectors", {
     expect_equal(re2, t(re3))
 })
 
+test_that("allow overwrite", {
+    ov = A
+    ov[1,1] = 10
+    expect_error(stack(ov, A, along=2))
+    expect_error(stack(A, ov, along=2))
+    expect_equal(stack(ov, A, along=2, allow_overwrite=TRUE), A)
+    expect_equal(stack(A, ov, along=2, allow_overwrite=TRUE), ov)
+})
+
 test_that("performance", {
     skip_on_cran()
 

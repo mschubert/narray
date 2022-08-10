@@ -4,7 +4,7 @@
 using namespace Rcpp;
 using namespace std;
 
-template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list, int along, Vector<RTYPE> fill) {
+template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list, int along, Vector<RTYPE> fill, bool ovr) {
     auto dimnames = vector<CharacterVector>(along); // dim: names along
     auto axmap = vector<unordered_map<string, int>>(along); // dim: element name->index
     auto ax_unnamed = vector<int>(along); // counter for unnamed dimension elements
@@ -105,7 +105,13 @@ template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list, int along, Vec
             }
 
 //            Rprintf("result[%i] = a[%i][%i]\n", *it[0] + dim_offset, ai, aidx);
-            result[*it[0] + dim_offset] = a[aidx];
+            int ri = *it[0] + dim_offset;
+            auto newval = a[aidx];
+            if (!ovr) {
+                if (! (result[ri] == fill[0] || result[ri] == newval))
+                    stop("Different values on same position and allow_overwrite=FALSE");
+            }
+            result[ri] = newval;
 
             it[0]++;
             for (int d=0; d<maxdim; d++) { // check if we're jumping dimensions
@@ -123,7 +129,7 @@ template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list, int along, Vec
 }
 
 // [[Rcpp::export]]
-SEXP cpp_stack(List array_list, int along, SEXP fill) {
+SEXP cpp_stack(List array_list, int along, SEXP fill, bool ovr) {
     auto max_type = NILSXP;
     for (int ai=0; ai<array_list.size(); ai++) {
         int cur_type = TYPEOF(array_list[ai]);
@@ -134,11 +140,11 @@ SEXP cpp_stack(List array_list, int along, SEXP fill) {
     }
 
     switch(max_type) {
-        case LGLSXP: return cpp_stack_impl<LGLSXP>(array_list, along, as<LogicalVector>(fill));
-        case INTSXP: return cpp_stack_impl<INTSXP>(array_list, along, as<IntegerVector>(fill));
-        case REALSXP: return cpp_stack_impl<REALSXP>(array_list, along, as<NumericVector>(fill));
-        case CPLXSXP: return cpp_stack_impl<CPLXSXP>(array_list, along, as<ComplexVector>(fill));
-        case STRSXP: return cpp_stack_impl<STRSXP>(array_list, along, as<CharacterVector>(fill));
+        case LGLSXP: return cpp_stack_impl<LGLSXP>(array_list, along, as<LogicalVector>(fill), ovr);
+        case INTSXP: return cpp_stack_impl<INTSXP>(array_list, along, as<IntegerVector>(fill), ovr);
+        case REALSXP: return cpp_stack_impl<REALSXP>(array_list, along, as<NumericVector>(fill), ovr);
+        case CPLXSXP: return cpp_stack_impl<CPLXSXP>(array_list, along, as<ComplexVector>(fill), ovr);
+        case STRSXP: return cpp_stack_impl<STRSXP>(array_list, along, as<CharacterVector>(fill), ovr);
         default: return R_NilValue; // this should not happen
     }
 }

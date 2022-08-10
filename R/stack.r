@@ -33,6 +33,6 @@ stack = function(..., along=length(dim(arrayList[[1]]))+1, fill=NA, drop=FALSE,
     }
 
     arrayList = vectors_to_row_or_col(arrayList, along=along)
-    result = cpp_stack(arrayList, along, fill)
+    result = cpp_stack(arrayList, along, fill, allow_overwrite)
     drop_if(result, drop)
 }

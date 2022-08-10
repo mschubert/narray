@@ -11,21 +11,22 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // cpp_stack
-SEXP cpp_stack(List array_list, int along, SEXP fill);
-RcppExport SEXP _narray_cpp_stack(SEXP array_listSEXP, SEXP alongSEXP, SEXP fillSEXP) {
+SEXP cpp_stack(List array_list, int along, SEXP fill, bool ovr);
+RcppExport SEXP _narray_cpp_stack(SEXP array_listSEXP, SEXP alongSEXP, SEXP fillSEXP, SEXP ovrSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< List >::type array_list(array_listSEXP);
     Rcpp::traits::input_parameter< int >::type along(alongSEXP);
     Rcpp::traits::input_parameter< SEXP >::type fill(fillSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_stack(array_list, along, fill));
+    Rcpp::traits::input_parameter< bool >::type ovr(ovrSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_stack(array_list, along, fill, ovr));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_narray_cpp_stack", (DL_FUNC) &_narray_cpp_stack, 3},
+    {"_narray_cpp_stack", (DL_FUNC) &_narray_cpp_stack, 4},
     {NULL, NULL, 0}
 };
 
