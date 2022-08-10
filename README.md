@@ -14,6 +14,8 @@ functions. The latter can be done using [`box`](https://github.com/klmr/box) or
 [`import`](https://github.com/rticulate/import).
 
 ```r
+# do not use library() or require()
+
 # example referencing the package namespace
 narray::stack(...)
 
