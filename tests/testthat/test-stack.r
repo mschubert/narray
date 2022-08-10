@@ -115,5 +115,5 @@ test_that("performance", {
                     matrix(runif(size*size), nrow=size, ncol=size,
                            dimnames=list(sample(idx, size), sample(idx, size))))
     tt = system.time(stack(ars, along=2, allow_overwrite=TRUE))
-    expect_lt(tt["user.self"], 5)
+    expect_lt(tt["user.self"], 6)
 })
