@@ -3,7 +3,6 @@
 export(bind)
 export(collect)
 export(construct)
-export(cpp)
 export(crep)
 export(dim)
 export(dimnames)

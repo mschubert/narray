@@ -22,6 +22,14 @@ test_that("supply objects instead of list", {
     expect_equal(Cobj2, C[c(2,1),c(3,1,2)])
 })
 
+test_that("stack arrays with different dimensions", {
+    B2 = as.array(drop(B))
+    expect_error(stack(A, B2, along=1)) # no name in B2 along dim 2
+    expect_error(stack(A, B2, along=3)) # no name in B2 along dim 2
+    res = stack(A, z=B2, along=2)
+    expect_equal(res, C)
+})
+
 test_that("fill empty elements", {
     D = stack(list(m=A, n=C), along=3)
     D2 = stack(m=A, n=C, along=3)
@@ -41,7 +49,7 @@ test_that("same as first but without colnames", {
     colnames(A) = NULL
     colnames(B) = NULL
     colnames(C) = NULL
-    Cnull = stack(list(A, B), along=2)
+    Cnull = stack(list(A=A, B=B), along=2)
     expect_equal(C, Cnull)
 })
 
@@ -71,7 +79,7 @@ test_that("1-row/col matrix stacking", {
 test_that("keep_empty arg when stacking zero-length vectors", {
     a = setNames(1:3, letters[1:3])
     b = numeric()
-    re1 = stack(list(a=a, b=b), keep_empty=TRUE)
+    re1 = stack(list(a=a, b=b), along=2, keep_empty=TRUE)
     expect_equal(re1,
           structure(c(1, 2, 3, NA, NA, NA), .Dim = c(3L, 2L),
                     .Dimnames = list(c("a", "b", "c"), c("a", "b"))))
@@ -86,14 +94,13 @@ test_that("keep_empty arg when stacking zero-length vectors", {
 test_that("performance", {
     skip_on_cran()
 
-    size = 100
+    size = 500 # 500x500, 500 arrays
     syms = c(letters, LETTERS, 0:9)
     idx = do.call(paste0, expand.grid(syms, syms))
-    idx = head(idx, 300)
 
     ars = replicate(size, simplify=FALSE,
                     matrix(runif(size*size), nrow=size, ncol=size,
                            dimnames=list(sample(idx, size), sample(idx, size))))
-    tt = system.time(stack(ars, along=3))
+    tt = system.time(stack(ars, along=2, allow_overwrite=TRUE))
     expect_lt(tt["user.self"], 5)
 })

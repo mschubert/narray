@@ -33,68 +33,6 @@ stack = function(..., along=length(dim(arrayList[[1]]))+1, fill=NA, drop=FALSE,
     }
 
     arrayList = vectors_to_row_or_col(arrayList, along=along)
-
-    newAxis = FALSE
-    if (along > length(dim(arrayList[[1]])))
-        newAxis = TRUE
-
-    # get dimension names; dimNames is set of all elements in list
-    dn = dimnames(arrayList)
-    dimNames = lapply(1:length(dn[[1]]), function(j) 
-        unique(c(unlist(sapply(1:length(dn), function(i) 
-            dn[[i]][[j]]
-        ))))
-    )
-    # check if names are valid
-    all_names = unlist(dimNames)
-    if (any(is.na(all_names)))
-        stop("NA found in list dimension names")
-    if (any(nchar(all_names) == 0))
-        stop("Empty dimension name found in list")
-
-    # track the stacking dimension index if there are no names
-    stack_offset = FALSE
-    ndim = sapply(dimNames, length)
-    if (along <= length(ndim) && ndim[along] == 0) {
-        ndim[along] = sum(sapply(arrayList, function(x) dim(x)[along]))
-        stack_offset = TRUE
-    }
-    if (any(ndim == 0))
-        stop("Names are required for all dimensions except the one stacked along.
-  Use bind() if you want to just bind together arrays without names.")
-
-    # if creating new axis, amend ndim and dimNames
-    if (newAxis) {
-        dimNames = c(dimNames, list(names(arrayList)))
-        ndim = c(ndim, length(arrayList))
-    }
-
-    # create an empty result matrix
-    result = array(fill, dim=ndim, dimnames=dimNames)
-
-    # fill each result matrix slice with matched values of arrayList
-    offset = 0
-    pb = pb(length(arrayList))
-    for (i in seq_along(arrayList)) {
-        dm = dimnames(arrayList[[i]], null_as_integer=TRUE)
-        if (stack_offset) {
-            dm[[along]] = dm[[along]] + offset
-            offset = offset + dim(arrayList[[i]])[along]
-        }
-
-        if (newAxis)
-            dm[[along]] = i
-        else {
-            # do not overwrite values unless empty or the same
-            slice = do.call("[", c(list(result), dm, drop=FALSE))
-            if (!allow_overwrite && (!all(slice==fill | is.na(slice) | slice==arrayList[[i]])))
-                stop("value aggregation not allowed, stack along new axis+summarize after")
-        }
-
-        # assign to the slice if there are any values in it
-        result = do.call("[<-", c(list(result), dm, list(arrayList[[i]])))
-        pb$tick()
-    }
-
+    result = cpp_stack(arrayList, along, fill)
     drop_if(result, drop)
 }
