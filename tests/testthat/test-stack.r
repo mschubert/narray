@@ -2,15 +2,11 @@ context("stack")
 
 A = matrix(1:4, nrow=2, ncol=2, dimnames=list(c('a','b'),c('x','y')))
 B = matrix(5:6, nrow=2, ncol=1, dimnames=list(c('b','a'),'z'))
-
-C = stack(list(A, B), along=2)
-#    x y z
-#  a 1 3 6   # B is stacked correctly according to its names
-#  b 2 4 5
+C = structure(c(1L, 2L, 3L, 4L, 6L, 5L), .Dim = 2:3,
+              .Dimnames = list(c("a", "b"), c("x", "y", "z")))
 
 test_that("match names, not extent", {
-    Cref = structure(c(1L, 2L, 3L, 4L, 6L, 5L), .Dim = 2:3,
-                     .Dimnames = list(c("a", "b"), c("x", "y", "z")))
+    Cref = stack(list(A, B), along=2)
     expect_equal(C, Cref)
 })
 
@@ -76,6 +72,23 @@ test_that("1-row/col matrix stacking", {
     expect_equal(stack(list(B=t(B)), along=2), t(B))
 })
 
+test_that("allow overwrite", {
+    ov = A
+    ov[1,1] = 10
+    expect_error(stack(ov, A, along=2))
+    expect_error(stack(A, ov, along=2))
+    expect_equal(stack(ov, A, along=2, allow_overwrite=TRUE), A)
+    expect_equal(stack(A, ov, along=2, allow_overwrite=TRUE), ov)
+    expect_equal(stack(A, A, along=2), A)
+
+    ov[] = NA
+    expect_equal(stack(A, ov, along=2), A)
+    expect_equal(stack(ov, A, along=2), A)
+    ov[] = 0
+    expect_equal(stack(A, ov, along=2, fill=0), A)
+    expect_equal(stack(ov, A, along=2, fill=0), A)
+})
+
 test_that("keep_empty arg when stacking zero-length vectors", {
     a = setNames(1:3, letters[1:3])
     b = numeric()
@@ -89,15 +102,6 @@ test_that("keep_empty arg when stacking zero-length vectors", {
     expect_equal(re3, structure(c(1, 2, 3, NA, NA, NA), .Dim = c(3L, 2L),
                     .Dimnames = list(c("a", "b", "c"), NULL)))
     expect_equal(re2, t(re3))
-})
-
-test_that("allow overwrite", {
-    ov = A
-    ov[1,1] = 10
-    expect_error(stack(ov, A, along=2))
-    expect_error(stack(A, ov, along=2))
-    expect_equal(stack(ov, A, along=2, allow_overwrite=TRUE), A)
-    expect_equal(stack(A, ov, along=2, allow_overwrite=TRUE), ov)
 })
 
 test_that("performance", {

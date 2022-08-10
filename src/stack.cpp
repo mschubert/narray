@@ -107,11 +107,12 @@ template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list, int along, Vec
 //            Rprintf("result[%i] = a[%i][%i]\n", *it[0] + dim_offset, ai, aidx);
             int ri = *it[0] + dim_offset;
             auto newval = a[aidx];
-            if (!ovr) {
-                if (! (result[ri] == fill[0] || result[ri] == newval))
+            // same-value comparisons below: catch double NaN equality
+            if (ovr || (result[ri] == fill[0]) || (!(result[ri] == result[ri])))
+                result[ri] = newval;
+            else
+                if (!((newval == fill[0]) || (result[ri] == newval) || (!(newval == newval))))
                     stop("Different values on same position and allow_overwrite=FALSE");
-            }
-            result[ri] = newval;
 
             it[0]++;
             for (int d=0; d<maxdim; d++) { // check if we're jumping dimensions
