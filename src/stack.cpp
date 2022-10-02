@@ -5,10 +5,10 @@ using namespace Rcpp;
 using namespace std;
 
 template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list, int along, Vector<RTYPE> fill, bool ovr) {
-    auto dimnames = vector<CharacterVector>(along); // dim: names along
+    auto dimnames = vector<vector<String>>(along); // dim: names along
     auto axmap = vector<unordered_map<string, int>>(along); // dim: element name->index
     auto ax_unnamed = vector<int>(along); // counter for unnamed dimension elements
-    auto a2r = vector<vector<vector<int>>>(array_list.size()); // array > dim > element
+    auto a2r = vector<vector<vector<int>>>(array_list.size()); // index array>dim>element
 
     // create lookup tables for all present dimension names
     for (int ai=0; ai<Rf_xlength(array_list); ai++) { // array index
@@ -46,12 +46,16 @@ template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list, int along, Vec
             } else {
                 auto dni = as<vector<string>>(dn[d]);
                 for (int e=0; e<da[d]; e++) { // element in dimension
-                    if (axmap[d].count(dni[e]) == 0) {
-                        axmap[d].emplace(dni[e], axmap[d].size() + ax_unnamed[d]);
+                    auto it = axmap[d].find(dni[e]);
+                    if (it == axmap[d].end()) {
+                        int val = axmap[d].size() + ax_unnamed[d];
+                        axmap[d].emplace(dni[e], val);
                         dimnames[d].push_back(dni[e]);
+                        a2r[ai][d].push_back(val);
+                    } else {
+                        a2r[ai][d].push_back(it->second);
                     }
 //                    Rprintf("array %i dim %i: %s -> %i\n", ai, d, dni[e].c_str(), axmap[d][dni[e]]);
-                    a2r[ai][d].push_back(axmap[d][dni[e]]);
                 }
             }
         }
@@ -73,10 +77,13 @@ template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list, int along, Vec
     auto rdnames = List(dimnames.size());
     for (int i=0; i<dimnames.size(); i++) {
         rdim[i] = dimnames[i].size();
-        if (all(is_na(dimnames[i])))
+        auto rdni = CharacterVector(dimnames[i].size());
+        for (int j=0; j<rdni.size(); j++)
+            rdni[j] = dimnames[i][j];
+        if (all(is_na(rdni)))
             rdnames[i] = R_NilValue;
         else
-            rdnames[i] = dimnames[i];
+            rdnames[i] = rdni;
     }
     auto n = accumulate(rdim.begin(), rdim.end(), 1, multiplies<int>());
     auto result = Vector<RTYPE>(n, fill[0]);

@@ -107,13 +107,22 @@ test_that("keep_empty arg when stacking zero-length vectors", {
 test_that("performance", {
     skip_on_cran()
 
-    size = 500 # 500x500, 500 arrays
+    # stack 500 arrays, 500x500 with overwriting
+    size = 500
     syms = c(letters, LETTERS, 0:9)
     idx = do.call(paste0, expand.grid(syms, syms))
-
     ars = replicate(size, simplify=FALSE,
                     matrix(runif(size*size), nrow=size, ncol=size,
                            dimnames=list(sample(idx, size), sample(idx, size))))
     tt = system.time(stack(ars, along=2, allow_overwrite=TRUE))
-    expect_lt(tt["user.self"], 6)
+    expect_lt(tt["user.self"], 6) # 1.5 sec locally
+
+    # stack 10 arrays, 10k rows and 1 column
+    size = 5e4
+    idx = do.call(paste0, expand.grid(syms, syms, syms))[1:size]
+    ars2 = replicate(10, simplify=FALSE,
+                     matrix(runif(size), nrow=size, ncol=1,
+                            dimnames=list(sample(idx, size), sample(idx,1))))
+    tt = system.time(stack(ars2, along=2))
+    expect_lt(tt["user.self"], 2) # 0.1 sec locally
 })

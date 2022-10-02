@@ -1,4 +1,6 @@
-# git head
+# narray 0.5.1
+
+ * Fixed a bug where `stack` made unnecessary vector copies
 
 # narray 0.5.0
 
@@ -27,11 +29,13 @@
   * new `lambda` syntax (#14)
 
 # narray 0.3.2
+
   * add `collect` function as opposite to `mask`
   * deprecate `summarize` in favor of `map`
   * adjust tests for `testthat>=2`
 
 # narray 0.2.2
+
   * fix bug where `split` with `NA` in `subsets` caused wrong splitting; these
     are now dropped with a warning (#5)
   * fix bug where vectors are not bound along the right dimensions (#7)
@@ -39,4 +43,5 @@
     columns, respectively)
 
 # narray 0.1.1
+
   * Initial release on CRAN
