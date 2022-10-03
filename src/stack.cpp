@@ -13,39 +13,39 @@ template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list, int along, Vec
     // create lookup tables for all present dimension names
     for (int ai=0; ai<Rf_xlength(array_list); ai++) { // array index
         auto a = as<Vector<RTYPE>>(array_list[ai]);
-        auto da = as<vector<int>>(a.attr("dim"));
+        auto dim = as<vector<int>>(a.attr("dim"));
         List dn;
         if (a.attr("dimnames") == R_NilValue) { // no dimnames = NULL in R
             dn = List::create(); // we want NULL per dim
-            for (int i=0; i<da.size(); i++)
+            for (int i=0; i<dim.size(); i++)
                 dn.push_back(R_NilValue);
         } else
             dn = as<List>(a.attr("dimnames"));
-        if (along == da.size()+1) { // along introduces new dimension
+        if (along == dim.size()+1) { // along introduces new dimension
             if (array_list.attr("names") == R_NilValue)
                 dn.push_back(CharacterVector::create(NA_STRING));
             else
                 dn.push_back(as<vector<string>>(array_list.attr("names"))[ai]);
-            da.push_back(1);
+            dim.push_back(1);
         }
 
-        a2r[ai] = vector<vector<int>>(da.size());
-        if (dimnames.size() < da.size()) {
-            dimnames.resize(da.size());
-            axmap.resize(da.size());
-            ax_unnamed.resize(da.size());
+        a2r[ai] = vector<vector<int>>(dim.size());
+        if (dimnames.size() < dim.size()) {
+            dimnames.resize(dim.size());
+            axmap.resize(dim.size());
+            ax_unnamed.resize(dim.size());
         }
 
-        for (int d=0; d<da.size(); d++) { // dimension in array
+        for (int d=0; d<dim.size(); d++) { // dimension in array
             if (dn[d] == R_NilValue) {
-                for (int e=0; e<da[d]; e++) {
+                for (int e=0; e<dim[d]; e++) {
 //                    Rprintf("array %i dim %i: %i -> %i\n", ai, d, e, axmap[d].size() + ax_unnamed[d]);
                     a2r[ai][d].push_back(axmap[d].size() + ax_unnamed[d]++);
                     dimnames[d].push_back(NA_STRING);
                 }
             } else {
                 auto dni = as<vector<string>>(dn[d]);
-                for (int e=0; e<da[d]; e++) { // element in dimension
+                for (int e=0; e<dim[d]; e++) { // element in dimension
                     auto it = axmap[d].find(dni[e]);
                     if (it == axmap[d].end()) {
                         it = axmap[d].emplace(dni[e], axmap[d].size() + ax_unnamed[d]).first;
