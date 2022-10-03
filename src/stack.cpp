@@ -48,14 +48,11 @@ template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list, int along, Vec
                 for (int e=0; e<da[d]; e++) { // element in dimension
                     auto it = axmap[d].find(dni[e]);
                     if (it == axmap[d].end()) {
-                        int val = axmap[d].size() + ax_unnamed[d];
-                        axmap[d].emplace(dni[e], val);
+                        it = axmap[d].emplace(dni[e], axmap[d].size() + ax_unnamed[d]).first;
                         dimnames[d].push_back(dni[e]);
-                        a2r[ai][d].push_back(val);
-                    } else {
-                        a2r[ai][d].push_back(it->second);
                     }
-//                    Rprintf("array %i dim %i: %s -> %i\n", ai, d, dni[e].c_str(), axmap[d][dni[e]]);
+                    a2r[ai][d].push_back(it->second);
+//                    Rprintf("array %i dim %i: %s -> %i\n", ai, d, dni[e].c_str(), it->second);
                 }
             }
         }
