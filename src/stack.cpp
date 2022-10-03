@@ -14,13 +14,8 @@ template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list, int along, Vec
     for (int ai=0; ai<Rf_xlength(array_list); ai++) { // array index
         auto a = as<Vector<RTYPE>>(array_list[ai]);
         auto dim = as<vector<int>>(a.attr("dim"));
-        List dn;
-        if (a.attr("dimnames") == R_NilValue) { // no dimnames = NULL in R
-            dn = List::create(); // we want NULL per dim
-            for (int i=0; i<dim.size(); i++)
-                dn.push_back(R_NilValue);
-        } else
-            dn = as<List>(a.attr("dimnames"));
+        auto dn = as<List>(a.attr("dimnames"));
+
         if (along == dim.size()+1) { // along introduces new dimension
             if (array_list.attr("names") == R_NilValue)
                 dn.push_back(CharacterVector::create(NA_STRING));
@@ -37,7 +32,7 @@ template<int RTYPE> Vector<RTYPE> cpp_stack_impl(List array_list, int along, Vec
         }
 
         for (int d=0; d<dim.size(); d++) { // dimension in array
-            if (dn[d] == R_NilValue) {
+            if (dn.size() == 0 || dn[d] == R_NilValue) {
                 for (int e=0; e<dim[d]; e++) {
 //                    Rprintf("array %i dim %i: %i -> %i\n", ai, d, e, axmap[d].size() + ax_unnamed[d]);
                     a2r[ai][d].push_back(axmap[d].size() + ax_unnamed[d]++);
