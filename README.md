@@ -1,9 +1,9 @@
 narray :: Array and Matrix processing
 =====================================
 
-[![CRAN version](http://www.r-pkg.org/badges/version/narray)](https://cran.r-project.org/package=narray)
+[![CRAN version](https://www.r-pkg.org/badges/version/narray)](https://cran.r-project.org/package=narray)
 [![Build Status](https://github.com/mschubert/narray/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/mschubert/narray/actions)
-[![CRAN downloads](http://cranlogs.r-pkg.org/badges/narray)](http://cran.rstudio.com/web/packages/narray/index.html)
+[![CRAN downloads](https://cranlogs.r-pkg.org/badges/narray)](http://cran.rstudio.com/web/packages/narray/index.html)
 
 This package provides consistent utility functions for array programming with
 arbitrary dimensions (summary below).
