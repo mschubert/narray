@@ -1,3 +1,7 @@
+# narray 0.5.2
+
+* Removed explicit C++ standard for CRAN compatibility
+
 # narray 0.5.1
 
  * Fixed a bug where `stack` made unnecessary vector copies
